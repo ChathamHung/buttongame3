@@ -12,23 +12,25 @@
     <div class="left">
       <div class="title">The Button Game 3</div>
       <div class="level">Level 1</div>
-      <button class="menu">
-        <img src="./res/images/menu-icon.png" class="menu-icon" draggable="false">
+      <button class="menu-button" data-tooltip="Menu" id="menu-toggle-btn">
+        <img src="./res/images/icons/menu-icon.png" draggable="false">
       </button>
-      <button class="refresh">
-        <img src="./res/images/refresh-icon.png" class="refresh-icon" draggable="false">
+      <button class="refresh-button" data-tooltip="Refresh level">
+        <img src="./res/images/icons/refresh-icon.png" draggable="false">
       </button>
     </div>
     <div class="right">
-      <button class="tip">
-        <img src="./res/images/tip-icon.png" class="tip-icon" draggable="false">
+      <button class="tip-button" data-tooltip="Tip">
+        <img src="./res/images/icons/tip-icon.png" draggable="false">
       </button>
     </div>
   </div>
-  <div class="menu">
-    <!-- Coming Soon -->
+  <div class="menu" id="menu-panel">
+    <!-- <button>Button 1</button>
+    <button>Button 2</button>
+    <button>Button 3</button> -->
   </div>
-  <iframe src="" class="iframe">
+  <iframe src="./res/images/Bliss.jpg" class="iframe">
     Your browser does not support iframes.
   </iframe>
   <script src="./src/js/main.js"></script>
