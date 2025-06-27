@@ -32,6 +32,8 @@ body {
   border-radius: 40px;
   display: flex;
   align-items: center;
+  white-space: nowrap;
+  font-size: 14px;
 }
 
 .topbar .left, .topbar .right {
@@ -40,18 +42,22 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: nowrap;
 }
 
 .topbar button {
   height: 42px;
   width: 42px;
+  min-width: 42px;
+  min-height: 42px;
   border: none;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0;
-  transform: background-color 0.3s ease;
+  flex-shrink: 0;
+  transition: background-color 0.1s ease;
 }
 
 .topbar button:hover {
@@ -63,11 +69,22 @@ body {
   height: 20px;
   object-fit: contain;
   filter: brightness(0) invert(1);
+  flex-shrink: 0;
 }
 
 .left button, .right button, .left div, .right div {
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+}
+
+.title {
+  cursor: pointer;
+  overflow: hidden;
+  transition: background-color 0.1s ease;
+}
+
+.title:hover {
+  background-color: rgba(96, 96, 96, 0.7);
 }
 
 /* Custom tooltips */
@@ -101,6 +118,12 @@ body {
   pointer-events: none;
 }
 
+/* Hide tooltips when menu is open */
+.menu:not(.menu-hidden) ~ .topbar button[data-tooltip]:hover::after,
+.menu:not(.menu-hidden) ~ .topbar button[data-tooltip]::after {
+  display: none !important;
+}
+
 @media (hover: none) and (pointer: coarse) {
   .topbar button[data-tooltip]:hover::after,
   .topbar button[data-tooltip]::after {
@@ -114,24 +137,87 @@ body {
   position: absolute;
   top: 60px;
   left: 10px;
-  width: 350px;
-  height: calc(100vh - 90px);
+  width: 315px;
+  max-width: calc(100vw - 20px);
+  height: calc(100vh - 100px);
   background-color: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   border-radius: 20px;
-  padding: 10px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
   z-index: 9;
-  transition: opacity 0.2s, visibility 0.2s;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translateX(0);
+  opacity: 1;
 }
 
 .menu.menu-hidden {
+  transform: translateX(-100%);
   opacity: 0;
-  visibility: hidden;
   pointer-events: none;
+}
+
+/* Menu Content */
+
+.menu-options {
+  display: flex;
+  gap: 10px;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 10px;
+  margin-bottom: 5px;
+  border-bottom: rgba(135, 135, 135, 0.5) 1px solid;
+}
+
+.menu-options img {
+  background-color: transparent;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  border-radius: 10px;
+  padding: 5px;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.menu-options img:hover {
+  background-color: rgba(96, 96, 96, 0.7);
+}
+
+.menu-options img.select {
+  background-color: rgba(96, 96, 96, 0.7);
+}
+
+.menu-options img.select:hover {
+  background-color: rgba(135, 135, 135, 0.7);
+}
+
+.menu-pages div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.menu button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px 15px;
+  height: 40px;
+  text-align: left;
+  flex-wrap: nowrap;
+  border-radius: 20px;
+  transition: background-color 0.1s ease;
+}
+
+.menu button:hover {
+  background-color: rgba(96, 96, 96, 0.7);
 }
 
 /* Main screen */
@@ -143,4 +229,95 @@ body {
   width: 100vw;
   height: 100vh;
   border: none;
+}
+
+/* Mobile optimizations */
+@media screen and (max-width: 768px) {
+  .topbar {
+    padding: 8px;
+    height: 44px;
+    gap: 6px;
+  }
+  
+  .topbar div {
+    font-size: 12px;
+    padding: 4px 12px;
+    height: 32px;
+  }
+  
+  .topbar button {
+    height: 40px;
+    width: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  .topbar button img {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .topbar .left {
+    gap: 6px;
+  }
+  
+  .menu {
+    top: 60px;
+    left: 8px;
+    width: calc(100vw - 32px);
+    max-width: none;
+    height: calc(100vh - 84px);
+    border-radius: 16px;
+    padding: 8px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .topbar {
+    padding: 6px;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+  
+  .topbar div {
+    font-size: 11px;
+    padding: 3px 8px;
+    height: 30px;
+    min-width: 0;
+  }
+  
+  .level {
+    flex-shrink: 0;
+  }
+  
+  .topbar button {
+    height: 36px;
+    width: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+  
+  .topbar button img {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .topbar .left {
+    gap: 4px;
+    min-width: 0;
+  }
+  
+  .topbar .right {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  
+  .menu {
+    top: 54px;
+    left: 6px;
+    width: calc(100vw - 24px);
+    height: calc(100vh - 72px);
+    border-radius: 12px;
+    padding: 6px;
+  }
 }
