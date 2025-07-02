@@ -197,15 +197,15 @@ body {
 }
 
 .menu-options img:hover {
-  background-color: rgba(96, 96, 96, 0.7);
+  background-color: rgba(190, 190, 190, 0.3);
 }
 
 .menu-options img.select {
-  background-color: rgba(96, 96, 96, 0.7);
+  background-color: rgba(190, 190, 190, 0.4);
 }
 
 .menu-options img.select:hover {
-  background-color: rgba(135, 135, 135, 0.7);
+  background-color: rgba(190, 190, 190, 0.6);
 }
 
 .menu-pages {
@@ -219,6 +219,7 @@ body {
   flex-direction: column;
   gap: 5px;
   position: absolute;
+  overflow-y: auto;
   top: 0;
   left: 0;
   width: 100%;
@@ -240,7 +241,7 @@ body {
 }
 
 .menu button:hover {
-  background-color: rgba(96, 96, 96, 0.7);
+  background-color: rgba(190, 190, 190, 0.3);
 }
 
 /* Main screen */
@@ -252,6 +253,128 @@ body {
   width: 100vw;
   height: 100vh;
   border: none;
+}
+
+/* Dialog */
+
+.dialog {
+  position: absolute;
+  margin: 0;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: white;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  border-radius: 20px;
+  /*width: 300px;*/
+  overflow: hidden;
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 0.1s ease-out, transform 0.1s ease-out;
+}
+
+.dialog[open] {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  animation: macosDialogShow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.dialog.closing {
+  animation: macosDialogHide 0.15s ease-out forwards;
+}
+
+@keyframes macosDialogShow {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes macosDialogHide {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+.dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.1s ease-out;
+}
+
+.dialog[open]::backdrop {
+  opacity: 1;
+}
+
+.dialog.closing::backdrop {
+  opacity: 0;
+}
+
+.dialog .dialog-content {
+  padding: 10px 10px 10px 10px;
+}
+
+.dialog .dialog-title {
+  margin-top: 0;
+  text-align: center;
+}
+
+.dialog .dialog-text {
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.dialog .dialog-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.dialog .dialog-button {
+  background-color: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px 15px;
+  height: 40px;
+  text-align: center;
+  flex-wrap: nowrap;
+  border-radius: 20px;
+  outline: none;
+  flex: 1;
+  transition: background-color 0.1s ease;
+}
+
+.dialog .dialog-button:hover {
+  background-color: rgba(190, 190, 190, 0.3);
+}
+
+.dialog .dialog-button:focus {
+  background-color: rgba(190, 190, 190, 0.4);
+  outline: none;
+}
+
+.dialog .dialog-button:focus:hover {
+  background-color: rgba(190, 190, 190, 0.6);
 }
 
 /* Mobile optimizations */

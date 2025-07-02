@@ -2,8 +2,13 @@ const title = document.querySelector('.title');
 const menuBtn = document.querySelector('.menu-button');
 const menuPanel = document.querySelector('.menu');
 const iframe = document.querySelector('.iframe');
+const refreshButton = document.querySelector('.refresh-button');
+const tipButton = document.querySelector('.tip-button');
 const menuOptions = document.querySelectorAll('.menu-options img'); // Fixed: select img elements
 const menuPages = document.querySelectorAll('.menu-pages > div');
+const dialog = document.querySelector('.dialog');
+
+var currentLevel = 0;
 
 let currentPageIndex = 0;
 
@@ -65,6 +70,89 @@ function initializeMenuPages() {
   });
 }
 
+function showDialog(title, text, buttonType = "OK", callback = (button) => {}) {
+  const dialogTitle = dialog.querySelector('.dialog-title');
+  const dialogText = dialog.querySelector('.dialog-text');
+  const okButton = dialog.querySelector('.ok-button');
+  const cancelButton = dialog.querySelector('.cancel-button');
+  
+  dialogTitle.textContent = title;
+  dialogText.textContent = text;
+  
+  // Remove any existing closing class
+  dialog.classList.remove('closing');
+
+  // Handle button visibility and text
+  if (cancelButton && buttonType === "OK") {
+    cancelButton.style.display = "none";
+  } else if (cancelButton) {
+    cancelButton.style.display = "inline-block";
+  }
+  if (buttonType === "OK") {
+    okButton.textContent = "OK";
+  } else if (buttonType === "OKCancel") {
+    okButton.textContent = "OK";
+    cancelButton.textContent = "Cancel";
+  } else if (buttonType === "YesNo") {
+    okButton.textContent = "Yes";
+    cancelButton.textContent = "No";
+  }
+
+  // Show the dialog
+  dialog.showModal();
+
+  // Remove any existing event listeners to avoid duplicates
+  const newOkButton = okButton.cloneNode(true);
+  const newCancelButton = cancelButton.cloneNode(true);
+  okButton.parentNode.replaceChild(newOkButton, okButton);
+  cancelButton.parentNode.replaceChild(newCancelButton, cancelButton);
+
+  newOkButton.focus();
+
+  // Add click event listeners for both buttons
+  newOkButton.addEventListener('click', () => {
+    hideDialog(buttonType === "YesNo" ? "yes" : "ok", callback);
+  });
+
+  newCancelButton.addEventListener('click', () => {
+    hideDialog(buttonType === "YesNo" ? "no" : "cancel", callback);
+  });
+}
+
+function goToLevel(level) {
+  iframe.src = `./levels/${level}.html`;
+}
+
+function hideDialog(button = "ok", callback = (button) => {}) {
+  // Add closing animation class
+  dialog.classList.add('closing');
+
+  // Wait for animation to complete before actually closing
+  setTimeout(() => {
+    dialog.close();
+    dialog.classList.remove('closing');
+    callback(button);
+  }, 150); // Match the animation duration
+}
+
+function refresh() {
+  goToLevel(currentLevel)
+}
+
+function showTip() {
+  showDialog('Tip', 'There will have some tips!', 'OK', (button) => {
+    console.log('Clicked ' + button + ' button');
+  });
+}
+
+function askRefresh() {
+  showDialog('Refresh', 'Are you sure you want to refresh this level?', 'YesNo', (button) => {
+    if (button === "yes") {
+      refresh();
+    }
+  })
+}
+
 // Start with menu open or closed as desired
 menuPanel.classList.add('menu-hidden');
 
@@ -88,6 +176,14 @@ menuBtn.addEventListener('click', () => {
     ? './res/images/icons/menu-icon.png'
     : './res/images/icons/close-icon.png';
 });
+
+tipButton.addEventListener('click', () => {
+  showTip()
+})
+
+refreshButton.addEventListener('click', () => {
+  askRefresh()
+})
 
 title.addEventListener('click', () => {
   document.location.href = 'index.html';
