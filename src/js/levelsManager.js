@@ -1,0 +1,43 @@
+var currentLevel = 0;
+
+function init(level) {
+  currentLevel = level;
+  sendCommand("init", currentLevel);
+}
+
+
+function sendCommand(command, data) {
+  window.parent.postMessage({ command: command, text: data, level: currentLevel }, "*");
+}
+
+function level() {
+  self.tipText = "";
+  self.tipEnable = true;
+}
+
+level.prototype.nextLevel = function () {
+  sendCommand("nextLevel");
+};
+
+level.prototype.updateTip = function (text) {
+  self.tipText = text;
+  sendCommand("updateTip", self.tipText);
+};
+
+level.prototype.showTip = function () {
+  sendCommand("showTip", self.tipText);
+};
+
+level.prototype.setRefreshEnable = function (enable) {
+  sendCommand("setRefreshEnable", enable);
+};
+
+level.prototype.setLevelLabelEnable = function (enable) {
+  sendCommand("setLevelLabelEnable", enable);
+};
+
+document.addEventListener("click", (e) => {
+  if (e.target.closest('.menu') === null && e.target.closest('.menu-button') === null) {
+    sendCommand("closeMenu");
+  }
+});

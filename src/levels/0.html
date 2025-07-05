@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+* {
+  font-family: Arial, Helvetica, sans-serif;
+  user-select: none;
+}
+
+body {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 100px);
+}
+
+h1 {
+  margin-top: 30px;
+  text-align: center;
+}
+
+#nextLevel {
+  margin: 20px 0;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background-color: #75c64f;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.1s ease;
+}
+
+#nextLevel:hover {
+  background-color: #60a83e;
+}
+
+.logo {
+  display: flex;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  height: 120px;
+  width: 120px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.logo > button {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #75c64f;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  transition: background-color 0.1s ease;
+}
+
+.logo > button:hover {
+  background-color: #60a83e;
+}
+
+.logo > a {
+  text-decoration: underline;
+  color: rgb(0, 0, 238);
+  text-decoration-color: rgb(0, 0, 238);
+  font-size: 24px;
+  transition: color 0.1s ease;
+  cursor: pointer;
+}
+
+.logo > a:hover {
+  color: rgb(85, 26, 139);
+  text-decoration-color: rgb(85, 26, 139);
+}
+
+/* CSS here */
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <button>Button</button>
+    <a>Game</a>
+  </div>
+
+  <h1>Welcome to Button Game 3!</h1>
+
+  <button id="nextLevel">Start the Game!</button>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 0;
+
+    init(levelNumber);
+
+    const nextButton = document.querySelector('#nextLevel');
+
+    levelManager.updateTip("");
+    levelManager.setRefreshEnable(false);
+    levelManager.setLevelLabelEnable(false);
+
+    nextButton.addEventListener('click', () => {
+      levelManager.nextLevel();
+    });
+
+
+    // JS here
+  </script>
+</body>
+</html>

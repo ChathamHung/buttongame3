@@ -9,6 +9,10 @@ body {
   overflow: hidden;
 }
 
+.hide {
+  display: none !important;
+}
+
 /* Topbar */
 
 .topbar {
@@ -176,10 +180,14 @@ body {
 .menu-option {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background-color: transparent;
+  border: none;
   border-radius: 10px;
-  padding: 5px 10px;
+  padding: 5px;
+  height: 30px;
+  width: 30px;
   cursor: pointer;
   transition: background-color 0.2s ease;
   overflow: hidden;
@@ -196,15 +204,15 @@ body {
   transition: background-color 0.1s ease;
 }
 
-.menu-options img:hover {
+.menu-options button:hover {
   background-color: rgba(190, 190, 190, 0.3);
 }
 
-.menu-options img.select {
+.menu-options button.select {
   background-color: rgba(190, 190, 190, 0.4);
 }
 
-.menu-options img.select:hover {
+.menu-options button.select:hover {
   background-color: rgba(190, 190, 190, 0.6);
 }
 
@@ -226,9 +234,16 @@ body {
   height: 100%;
 }
 
-.menu button {
+.menu-pages .about-page {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.menu-pages button {
   background-color: transparent;
   border: none;
+  outline: none;
   color: white;
   cursor: pointer;
   font-size: 16px;
@@ -240,8 +255,22 @@ body {
   transition: background-color 0.1s ease;
 }
 
-.menu button:hover {
+/*.menu-pages .about-logo {*/
+/*  color: white;*/
+/*  height: 100px;*/
+/*}*/
+
+.menu-pages button:hover {
   background-color: rgba(190, 190, 190, 0.3);
+}
+
+.menu-pages button:focus {
+  background-color: rgba(190, 190, 190, 0.4);
+  outline: none;
+}
+
+.menu-pages button:focus:hover {
+  background-color: rgba(190, 190, 190, 0.6);
 }
 
 /* Main screen */
@@ -269,7 +298,8 @@ body {
   transform: translate(-50%, -50%) scale(0);
   border-radius: 20px;
   /*width: 300px;*/
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   z-index: 20;
   opacity: 0;
   transition: opacity 0.1s ease-out, transform 0.1s ease-out;
@@ -412,9 +442,9 @@ body {
     left: 8px;
     width: calc(100vw - 32px);
     max-width: none;
-    height: calc(100vh - 84px);
+    height: calc(100vh - 90px);
     border-radius: 16px;
-    padding: 8px;
+    padding: 15px 8px 8px;
   }
   
   .menu-option .option-text {
@@ -466,9 +496,9 @@ body {
     top: 54px;
     left: 6px;
     width: calc(100vw - 24px);
-    height: calc(100vh - 72px);
+    height: calc(100vh - 75px);
     border-radius: 12px;
-    padding: 6px;
+    padding: 10px 6px 6px;
   }
   
   .menu-option .option-text {

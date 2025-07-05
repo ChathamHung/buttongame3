@@ -10,16 +10,16 @@
 <body>
   <div class="topbar">
     <div class="left">
-      <div class="title">Button Game 3</div>
-      <div class="level">Level 1</div>
+      <div class="title" title="Reload the game">Button Game 3</div>
+      <div class="level-label">Level 1</div>
       <button class="menu-button" data-tooltip="Menu" id="menu-toggle-btn">
         <img src="./res/images/icons/menu-icon.png" draggable="false">
       </button>
+    </div>
+    <div class="right">
       <button class="refresh-button" data-tooltip="Refresh level">
         <img src="./res/images/icons/refresh-icon.png" draggable="false">
       </button>
-    </div>
-    <div class="right">
       <button class="tip-button" data-tooltip="Tip">
         <img src="./res/images/icons/tip-icon.png" draggable="false">
       </button>
@@ -27,9 +27,18 @@
   </div>
   <div class="menu menu-hidden" id="menu-panel">
     <div class="menu-options">
-      <img src="./res/images/icons/menu-options/level-icon.png" draggable="false" class="menu-option select" title="Levels">
-      <img src="./res/images/icons/menu-options/settings-icon.png" draggable="false" class="menu-option" title="Settings">
-      <img src="./res/images/icons/menu-options/about-icon.png" draggable="false" class="menu-option" title="About">
+      <button class="menu-option select" title="Levels">
+        <img src="./res/images/icons/menu-options/level-icon.png" draggable="false">
+      </button>
+      <button class="menu-option" title="Settings">
+        <img src="./res/images/icons/menu-options/settings-icon.png" draggable="false">
+      </button>
+      <button class="menu-option" title="About">
+        <img src="./res/images/icons/menu-options/about-icon.png" draggable="false">
+      </button>
+      <button class="menu-option debug-option hide" title="Debug">
+        <img src="./res/images/icons/menu-options/debug-icon.png" draggable="false">
+      </button>
     </div>
     <div class="menu-pages">
       <div class="level-page">
@@ -41,11 +50,21 @@
         <button>Settings</button>
       </div>
       <div class="about-page">
-        <button>About</button>
+<!--        <div class="about-logo">-->
+<!--          <img src="./res/images/logo.png" draggable="false">-->
+<!--          <p>Button Game 3 is using HTML, CSS and JS to maked.</p>-->
+<!--        </div>-->
+        <button id="about-the-game">About</button>
+        <button id="about-game-2">The Button Game 2</button>
+        <button id="about-game-1">The Button Game 1</button>
+      </div>
+      <div class="debug-page">
+        <button id="debug-print-state">Show current state</button>
+        <button id="debug-goto-level">Go to level...</button>
       </div>
     </div>
   </div>
-  <iframe src="./res/images/Bliss.jpg" class="iframe">
+  <iframe src="./src/levels/0.html" class="iframe">
     Your browser does not support iframes.
   </iframe>
   <dialog class="dialog">
