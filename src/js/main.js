@@ -7,12 +7,13 @@ const refreshButton = document.querySelector(".refresh-button");
 const tipButton = document.querySelector(".tip-button");
 const menuOptions = document.querySelectorAll(".menu-option");
 const menuPages = document.querySelectorAll(".menu-pages > div");
+const levelPage = document.querySelector(".level-page");
 const dialog = document.querySelector(".dialog");
 
 let currentPageIndex = 0;
-var currentTip = ``;
-
-var debugEnabled = false;
+let currentTip = ``;
+let debugEnabled = false;
+let levelsData = {};
 
 function level() {
   this.currentLevel = 0;
@@ -22,10 +23,12 @@ function level() {
 
 level.prototype.levelInit = function (level) {
   this.currentLevel = level;
+  this.currentCompleteMessage = "";
   levelManager.setTipEnable(true);
   levelManager.setRefreshEnable(true);
   levelManager.setLevelLabelEnable(true);
   levelLabel.textContent = "Level " + level;
+  updateLevelButtons(level);
 }
 
 level.prototype.setRefreshEnable = function (enable) {
@@ -44,6 +47,69 @@ level.prototype.setLevelLabelEnable = function (enable) {
 
 const levelManager = new level();
 
+function dlog(text) {
+  if (debugEnabled) {
+    console.log(text);
+  }
+}
+
+// Function to load levels from JSON
+async function loadLevels() {
+  try {
+    const response = await fetch('./src/data/levels.json');
+    levelsData = await response.json();
+    generateLevelButtons();
+  } catch (error) {
+    console.error('Error loading levels:', error);
+    // Fallback to default levels if JSON loading fails
+    levelsData = {
+      "0": { "name": "Welcome", "file": "0.html" }
+    };
+    generateLevelButtons();
+  }
+}
+
+// Function to generate level buttons dynamically
+function generateLevelButtons() {
+  // Clear existing buttons
+  levelPage.innerHTML = '';
+  
+  // Create buttons for each level
+  Object.keys(levelsData).forEach(levelKey => {
+    const levelNum = parseInt(levelKey);
+    const levelInfo = levelsData[levelKey];
+    
+    const button = document.createElement('button');
+    button.textContent = "Level " + levelKey + ": " + levelInfo.name;
+    button.setAttribute('data-level', levelNum);
+    
+    // Add current class if it's the current level
+    if (levelNum === levelManager.currentLevel) {
+      button.classList.add('current');
+    }
+    
+    // Add click event listener
+    button.addEventListener('click', () => {
+      goTo(levelNum);
+      updateLevelButtons(levelNum);
+      closeMenu();
+    });
+    
+    levelPage.appendChild(button);
+  });
+}
+
+// Function to update level buttons current state
+function updateLevelButtons(currentLevel) {
+  const levelButtons = levelPage.querySelectorAll('button');
+  levelButtons.forEach(button => {
+    button.classList.remove('current');
+    if (parseInt(button.getAttribute('data-level')) === currentLevel) {
+      button.classList.add('current');
+    }
+  });
+}
+
 function init() {
   let urlParams = new URLSearchParams(window.location.search);
   // let level = parseInt(urlParams.get('level'));
@@ -61,6 +127,9 @@ function init() {
   if (debugEnabled) {
     document.querySelector(".debug-option").classList.remove("hide");
   }
+
+  switchMenuPage(0, true);
+  loadLevels(); // Load levels from JSON
 }
 
 window.addEventListener("message", (e) => {
@@ -69,20 +138,24 @@ window.addEventListener("message", (e) => {
   switch (e.data.command) {
     case "init":
       levelManager.levelInit(e.data.level);
+      updateLevelButtons(e.data.level);
       break;
     case "nextLevel":
-      goTo(levelManager.currentLevel + 1);
+      completeLevel();
       break;
     case "showTip":
       showTip();
       break;
     case "updateTip":
-      currentTip = e.data.text;
-      if (e.data.text === "") {
+      currentTip = e.data.data;
+      if (e.data.data === "") {
         levelManager.setTipEnable(false);
       } else {
         levelManager.setTipEnable(true);
       }
+      break;
+    case "updateCompleteMessage":
+      levelManager.currentCompleteMessage = e.data.data;
       break;
     case "closeMenu":
       closeMenu();
@@ -93,8 +166,9 @@ window.addEventListener("message", (e) => {
     case "setLevelLabelEnable":
       levelManager.setLevelLabelEnable(e.data.enable);
       break;
-    // case "showMessage":
-    //   showDialog(e.data.title, e.data.text, e.data.buttonType, e.data.callback)
+    case "showMessage":
+      showDialog(e.data.data.title, e.data.data.text, "OK")
+      break;
   }
 });
 
@@ -102,16 +176,33 @@ function levelChanged() {
   // showDialog("Level", "Level changed", "OK");
 }
 
+function completeLevel() {
+  if (levelManager.currentLevel !== 0) {
+    let completeMessage = "Level " + levelManager.currentLevel + " complete"
+    if (levelManager.currentCompleteMessage !== "") {
+      completeMessage = levelManager.currentCompleteMessage;
+    }
+    showDialog("Level Complete", completeMessage, "CompleteLevel", (button) => {
+      if (button === "ok") {
+        goTo(levelManager.currentLevel + 1);
+      }
+    });
+  } else {
+    goTo(levelManager.currentLevel + 1);
+  }
+}
+
 function goTo(level) {
-  console.log("Go to level " + level);
   iframe.src = `./src/levels/${level}.html`;
+  let log = `Go to level: ${levelManager.currentLevel}
+Current page level: ${iframe.src}`;
+  dlog(log);
+  updateLevelButtons(level);
 }
 
 function showState() {
   let log = `Current level: ${levelManager.currentLevel}<br>
-  Current page level: ${iframe.src}
-  
-  `;
+Current page level: ${iframe.src}`;
 
   showDialog("Debug", log, "OK")
 }
@@ -125,11 +216,14 @@ function clickElement(e) {
 function closeMenu() {
   menuPanel.classList.add("menu-hidden");
   menuBtn.querySelector("img").src = "./res/images/icons/menu-icon.png";
+  menuBtn.setAttribute("data-tooltip", menuPanel.classList.contains("menu-hidden")
+    ? "Menu"
+    : "Close Menu");
 }
 
 // Function to switch between menu pages
-function switchMenuPage(targetIndex) {
-  if (targetIndex === currentPageIndex) return;
+function switchMenuPage(targetIndex, force = false) {
+  if (targetIndex === currentPageIndex && !force) return;
 
   const isGoingRight = targetIndex > currentPageIndex;
 
@@ -188,6 +282,10 @@ function initializeMenuPages() {
   });
 }
 
+// Store references to the event handlers
+let currentOkHandler = null;
+let currentCancelHandler = null;
+
 function showDialog(title, text, buttonType = "OK", callback = (button) => {}) {
   const dialogTitle = dialog.querySelector(".dialog-title");
   const dialogText = dialog.querySelector(".dialog-text");
@@ -214,27 +312,44 @@ function showDialog(title, text, buttonType = "OK", callback = (button) => {}) {
   } else if (buttonType === "YesNo") {
     okButton.textContent = "Yes";
     cancelButton.textContent = "No";
+  } else if (buttonType === "Delete") {
+    okButton.textContent = "Delete";
+    cancelButton.textContent = "No";
+  } else if (buttonType === "CompleteLevel") {
+    okButton.textContent = "Next Level";
+    cancelButton.textContent = "Stay here";
   }
 
   // Show the dialog
   dialog.showModal();
 
   // Remove any existing event listeners to avoid duplicates
-  const newOkButton = okButton.cloneNode(true);
-  const newCancelButton = cancelButton.cloneNode(true);
-  okButton.parentNode.replaceChild(newOkButton, okButton);
-  cancelButton.parentNode.replaceChild(newCancelButton, cancelButton);
+  if (currentOkHandler) {
+    okButton.removeEventListener("click", currentOkHandler);
+  }
+  if (currentCancelHandler) {
+    cancelButton.removeEventListener("click", currentCancelHandler);
+  }
 
-  newOkButton.focus();
+  // if (buttonType === "Delete") {
+  //   okButton.classList.add("delete");
+  // } else {
+  //   okButton.classList.remove("delete");
+  // }
+  okButton.focus();
+
+  // Create new event handlers and store references
+  currentOkHandler = () => {
+    hideDialog(buttonType === "YesNo" ? "yes" : "ok", callback);
+  };
+
+  currentCancelHandler = () => {
+    hideDialog(buttonType === "YesNo" ? "no" : "cancel", callback);
+  };
 
   // Add click event listeners for both buttons
-  newOkButton.addEventListener("click", () => {
-    hideDialog(buttonType === "YesNo" ? "yes" : "ok", callback);
-  });
-
-  newCancelButton.addEventListener("click", () => {
-    hideDialog(buttonType === "YesNo" ? "no" : "cancel", callback);
-  });
+  okButton.addEventListener("click", currentOkHandler);
+  cancelButton.addEventListener("click", currentCancelHandler);
 }
 
 function hideDialog(button = "ok", callback = (button) => {}) {
@@ -250,11 +365,14 @@ function hideDialog(button = "ok", callback = (button) => {}) {
 }
 
 function refresh() {
-  goTo(levelManager.currentLevel)
+  // goTo(levelManager.currentLevel)
+  iframe.src = iframe.src;
 }
 
 function showTip() {
-  if (!currentTip) return;
+  if (!currentTip) {
+    currentTip = "No tip available.";
+  }
   showDialog("Tip", currentTip, "OK", (button) => {
     // console.log("Clicked " + button + " button");
   });
@@ -341,5 +459,12 @@ document.querySelector("#debug-goto-level").addEventListener("click", () => {
   if (!value) return;
   goTo(value);
 })
+
+
+
+// Disable right click context menu
+document.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+});
 
 init();

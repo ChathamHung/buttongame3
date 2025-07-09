@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+    }
+
+    button { /* Example button (can be change) */
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+      -webkit-user-select: none !important; /* Safari */
+      user-select: none !important;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    /* CSS here */
+  </style>
+</head>
+<body>
+  <h1>Example page</h1>
+  <button id="nextLevel">Next Level</button> <!-- Example button -->
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    /* Please remember to remove all example comments when you used example change to a level.
+    *
+    * Level Manager (levelManager) has core APIs for the game, here have some basic AIPs (not all):
+    * nextLevel() - When level is completed, then run this API
+    * updateTip(text) - Set / update the tip (want to disable the tip then put: "")
+    * showTip() - Show up the tip for the user (when tip is disabled, it will do nothing)
+    * showDialog(title, text) - To show up a message box
+    */
+
+    const levelManager = new level();
+    const levelNumber = 0; // Change to a new number
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+
+    levelManager.updateTip(`Tip is here`); // Set the tip (Allow HTML elements)
+    levelManager.updateCompleteMessage(`Congratulations!`); // Set the complete message (Allow HTML elements)
+
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      levelManager.nextLevel();
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+
+    // JS here
+  </script>
+</body>
+</html>

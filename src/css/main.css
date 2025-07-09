@@ -1,5 +1,6 @@
 * {
   font-family: Arial, Helvetica, sans-serif;
+  -webkit-user-select: none; /* Safari */
   user-select: none;
 }
 
@@ -78,7 +79,7 @@ body {
 
 .left button, .right button, .left div, .right div {
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px); /* Safari */
 }
 
 .title {
@@ -146,7 +147,7 @@ body {
   height: calc(100vh - 100px);
   background-color: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px); /* Safari */
   border-radius: 20px;
   padding: 15px;
   display: flex;
@@ -253,12 +254,20 @@ body {
   flex-wrap: nowrap;
   border-radius: 20px;
   transition: background-color 0.1s ease;
+  -webkit-user-select: none !important; /* Safari */
+  user-select: none !important;
 }
 
 /*.menu-pages .about-logo {*/
 /*  color: white;*/
 /*  height: 100px;*/
 /*}*/
+
+.menu-pages button.current {
+  font-weight: bold;
+  background-color: rgba(190, 190, 190, 0.2);
+  /*border: 3px solid rgba(0, 149, 255, 1);*/
+}
 
 .menu-pages button:hover {
   background-color: rgba(190, 190, 190, 0.3);
@@ -297,7 +306,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
   border-radius: 20px;
-  /*width: 300px;*/
+  min-width: 250px;
   overflow-x: hidden;
   overflow-y: auto;
   z-index: 20;
@@ -344,7 +353,7 @@ body {
 .dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px); /* Safari */
   opacity: 0;
   transition: opacity 0.1s ease-out;
 }
@@ -392,6 +401,8 @@ body {
   outline: none;
   flex: 1;
   transition: background-color 0.1s ease;
+  -webkit-user-select: none !important; /* Safari */
+  user-select: none !important;
 }
 
 .dialog .dialog-button:hover {

@@ -7,7 +7,7 @@ function init(level) {
 
 
 function sendCommand(command, data) {
-  window.parent.postMessage({ command: command, text: data, level: currentLevel }, "*");
+  window.parent.postMessage({ command: command, data: data, level: currentLevel }, "*");
 }
 
 function level() {
@@ -24,6 +24,10 @@ level.prototype.updateTip = function (text) {
   sendCommand("updateTip", self.tipText);
 };
 
+level.prototype.updateCompleteMessage = function (text) {
+  sendCommand("updateCompleteMessage", text);
+};
+
 level.prototype.showTip = function () {
   sendCommand("showTip", self.tipText);
 };
@@ -34,6 +38,10 @@ level.prototype.setRefreshEnable = function (enable) {
 
 level.prototype.setLevelLabelEnable = function (enable) {
   sendCommand("setLevelLabelEnable", enable);
+};
+
+level.prototype.showDialog = function (title, text) {
+  sendCommand("showMessage", { title: title, text: text });
 };
 
 document.addEventListener("click", (e) => {
