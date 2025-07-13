@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button {
+      padding: 10px 10px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Find out an emoji is different between other emoji</h1>
+  <div class="buttons">
+    <button id="fakeButton">😊</button>
+    <button id="fakeButton">😂</button>
+    <button id="fakeButton">😍</button>
+    <button id="fakeButton">😅</button>
+    <button id="fakeButton">🤣</button>
+    <button id="fakeButton">😉</button>
+    <button id="fakeButton">😋</button>
+    <button id="fakeButton">😎</button>
+    <button id="fakeButton">😇</button>
+    <button id="fakeButton">🥰</button>
+    <button id="fakeButton">😘</button>
+    <button id="fakeButton">😗</button>
+    <button id="fakeButton">😙</button>
+    <button id="fakeButton">😚</button>
+    <button id="fakeButton">😌</button>
+    <button id="fakeButton">😋</button>
+    <button id="fakeButton">🤪</button>
+    <button id="nextLevel">🤔</button>
+    <button id="fakeButton">😜</button>
+    <button id="fakeButton">😝</button>
+    <button id="fakeButton">🤑</button>
+    <button id="fakeButton">🤗</button>
+    <button id="fakeButton">🤫</button>
+    <button id="fakeButton">🤭</button>
+    <button id="fakeButton">🥳</button>
+    <button id="fakeButton">😏</button>
+    <button id="fakeButton">😮</button>
+    <button id="fakeButton">🤩</button>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+
+    const levelManager = new level();
+    const levelNumber = 4;
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+    const fakeButtons = document.querySelectorAll("#fakeButton");
+
+    levelManager.updateTip("<font size=\"16\">🤔🤔🤔</font>");
+    levelManager.updateCompleteMessage("It is <strong>only</strong> one is thinking!");
+    levelManager.setRefreshEnable(false);
+
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      levelManager.nextLevel();
+    });
+
+    fakeButtons.forEach(fakeButton => {
+      fakeButton.addEventListener("click", () => {
+        levelManager.showDialog("Incorrect", "This is incorrect!");
+      });
+    })
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+
+    // JS here
+  </script>
+</body>
+</html>

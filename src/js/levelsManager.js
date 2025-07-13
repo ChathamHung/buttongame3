@@ -40,6 +40,14 @@ level.prototype.setLevelLabelEnable = function (enable) {
   sendCommand("setLevelLabelEnable", enable);
 };
 
+level.prototype.setSkipEnable = function (enable) {
+  sendCommand("setSkipEnable", enable);
+};
+
+level.prototype.setSkipTime = function (time) {
+  sendCommand("setSkipTime", time);
+};
+
 level.prototype.showDialog = function (title, text) {
   sendCommand("showMessage", { title: title, text: text });
 };

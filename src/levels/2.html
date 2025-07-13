@@ -12,15 +12,14 @@
 
     body {
       margin-top: 60px; /* Topbar area */
-
-      /*display: flex;*/
-      /*flex-direction: column;*/
-      /*justify-content: center;*/
-      /*align-items: center;*/
-      /*min-height: calc(100vh - 100px);*/
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
     }
 
-    button { /* Example button (can be change) */
+    button {
       padding: 10px 20px;
       border-radius: 10px;
       background-color: #75c64f;
@@ -40,33 +39,39 @@
   </style>
 </head>
 <body>
-  <h1>Example page</h1>
-  <button id="nextLevel">Next Level</button> <!-- Example button -->
+  <h1>Find out true button!</h1>
+  <div class="buttons">
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="nextLevel">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+  </div>
 
   <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
   <script>
-    /* Please remember to remove all example comments when you used example change to a level.
-    *
-    * Level Manager (levelManager) has core APIs for the game, here have some basic AIPs (not all):
-    * nextLevel() - When level is completed, then run this API
-    * updateTip(text) - Set / update the tip (want to disable the tip then put: "")
-    * showTip() - Show up the tip for the user (when tip is disabled, it will do nothing)
-    * showDialog(title, text) - To show up a message box
-    */
 
     const levelManager = new level();
-    const levelNumber = 0; // Change to a new number
+    const levelNumber = 2;
 
     init(levelNumber); // Initialize the level
 
     const nextButton = document.querySelector("#nextLevel");
+    const fakeButtons = document.querySelectorAll("#fakeButton");
 
-    levelManager.updateTip(`Tip is here`); // Set the tip (Allow HTML elements)
-    levelManager.updateCompleteMessage(`Congratulations!`); // Set the complete message (Allow HTML elements)
+    levelManager.updateTip(`Try to click every buttons to go to the next level.`);
+    levelManager.updateCompleteMessage(`Wow!`);
+    levelManager.setRefreshEnable(false);
 
     nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
       levelManager.nextLevel();
     });
+
+    fakeButtons.forEach(fakeButton => {
+      fakeButton.addEventListener("click", () => {
+        levelManager.showDialog("Incorrect", "This button is incorrect!");
+      });
+    })
 
     document.addEventListener("contextmenu", (e) => { // Disable right-click menu
       e.preventDefault();

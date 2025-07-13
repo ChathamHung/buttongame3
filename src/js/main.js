@@ -3,6 +3,7 @@ const levelLabel = document.querySelector(".level-label");
 const menuBtn = document.querySelector(".menu-button");
 const menuPanel = document.querySelector(".menu");
 const iframe = document.querySelector(".iframe");
+const skipButton = document.querySelector(".skip-button");
 const refreshButton = document.querySelector(".refresh-button");
 const tipButton = document.querySelector(".tip-button");
 const menuOptions = document.querySelectorAll(".menu-option");
@@ -15,10 +16,23 @@ let currentTip = ``;
 let debugEnabled = false;
 let levelsData = {};
 
+let backUpLevelData = {
+  "0": {
+    "name": "Welcome",
+    "file": "0.html"
+  },
+  "1": {
+    "name": "Basic",
+    "file": "1.html"
+  }
+}
+
 function level() {
   this.currentLevel = 0;
   this.tipEnable = true;
   this.refreshEnable = true;
+  this.skipEnable = false;
+  this.skipTime = 0;
 }
 
 level.prototype.levelInit = function (level) {
@@ -27,6 +41,7 @@ level.prototype.levelInit = function (level) {
   levelManager.setTipEnable(true);
   levelManager.setRefreshEnable(true);
   levelManager.setLevelLabelEnable(true);
+  levelManager.setSkipEnable(false);
   levelLabel.textContent = "Level " + level;
   updateLevelButtons(level);
 }
@@ -39,6 +54,25 @@ level.prototype.setRefreshEnable = function (enable) {
 level.prototype.setTipEnable = function (enable) {
   this.tipEnable = enable;
   tipButton.classList.toggle("hide", !enable);
+}
+
+level.prototype.setSkipEnable = function (enable) {
+  this.skipEnable = enable;
+  skipButton.classList.toggle("hide", !enable);
+}
+
+level.prototype.setSkipTime = function (time) {
+  this.skipTime = time;
+  if (!time) return;
+
+  timeout = setTimeout(function () {
+    if (this.skipTime === 0) {
+      clearTimeout(timeout);
+    }
+    levelManager.setSkipTime(0)
+    levelManager.setSkipEnable(true);
+    clearTimeout(timeout);
+  }, time * 1000);
 }
 
 level.prototype.setLevelLabelEnable = function (enable) {
@@ -62,9 +96,7 @@ async function loadLevels() {
   } catch (error) {
     console.error('Error loading levels:', error);
     // Fallback to default levels if JSON loading fails
-    levelsData = {
-      "0": { "name": "Welcome", "file": "0.html" }
-    };
+    levelsData = backUpLevelData;
     generateLevelButtons();
   }
 }
@@ -112,7 +144,7 @@ function updateLevelButtons(currentLevel) {
 
 function init() {
   let urlParams = new URLSearchParams(window.location.search);
-  // let level = parseInt(urlParams.get('level'));
+  let level = parseInt(urlParams.get('level'));
 
   if (urlParams.get('debug') === "true") {
     debugEnabled = true;
@@ -126,6 +158,10 @@ function init() {
 
   if (debugEnabled) {
     document.querySelector(".debug-option").classList.remove("hide");
+  }
+
+  if (level) {
+    goTo(level);
   }
 
   switchMenuPage(0, true);
@@ -161,10 +197,16 @@ window.addEventListener("message", (e) => {
       closeMenu();
       break;
     case "setRefreshEnable":
-      levelManager.setRefreshEnable(e.data.enable);
+      levelManager.setRefreshEnable(e.data.data);
       break;
     case "setLevelLabelEnable":
-      levelManager.setLevelLabelEnable(e.data.enable);
+      levelManager.setLevelLabelEnable(e.data.data);
+      break;
+    case "setSkipEnable":
+      levelManager.setSkipEnable(e.data.data);
+      break;
+    case "setSkipTime":
+      levelManager.setSkipTime(e.data.data);
       break;
     case "showMessage":
       showDialog(e.data.data.title, e.data.data.text, "OK")
@@ -369,6 +411,11 @@ function refresh() {
   iframe.src = iframe.src;
 }
 
+function skip() {
+  goTo(levelManager.currentLevel + 1)
+  // completeLevel();
+}
+
 function showTip() {
   if (!currentTip) {
     currentTip = "No tip available.";
@@ -382,6 +429,14 @@ function askRefresh() {
   showDialog("Refresh", "Are you sure you want to refresh this level?", "YesNo", (button) => {
     if (button === "yes") {
       refresh();
+    }
+  })
+}
+
+function askSkip() {
+  showDialog("Skip", "Are you sure you want to skip this level? You can come back later.", "YesNo", (button) => {
+    if (button === "yes") {
+      skip();
     }
   })
 }
@@ -411,12 +466,16 @@ menuBtn.addEventListener("click", () => {
 });
 
 tipButton.addEventListener("click", () => {
-  showTip()
-})
+  showTip();
+});
 
 refreshButton.addEventListener("click", () => {
-  askRefresh()
-})
+  askRefresh();
+});
+
+skipButton.addEventListener("click", () => {
+  askSkip();
+});
 
 title.addEventListener("click", () => {
   document.location.reload();
@@ -430,21 +489,21 @@ document.addEventListener("click", (e) => {
 document.querySelector("#about-the-game").addEventListener("click", () => {
   closeMenu();
   showDialog("Button Game", "Button Game 3 is made by @ChathamHung on Github, it is open source web game.", "OK");
-})
+});
 
 document.querySelector("#about-game-2").addEventListener("click", () => {
   closeMenu();
   window.open("https://chathamhung.github.io/TheButtonGame2/", "_blank");
-})
+});
 
 document.querySelector("#about-game-1").addEventListener("click", () => {
   closeMenu();
   showDialog("The Button Game 1", "The Button Game 1 is made by @ChathamHung, <br>but it is using PowerPoint to maked.", "OK");
-})
+});
 
 iframe.addEventListener("load", () => {
   levelChanged();
-})
+});
 
 // Deebug
 

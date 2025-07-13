@@ -20,38 +20,25 @@
     }
 
     #nextLevel {
-      padding: 10px 20px;
-      border-radius: 10px;
-      background-color: #75c64f;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      color: white;
-      border: none;
       cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.1s ease;
-    }
-
-    #nextLevel:hover {
-      background-color: #60a83e;
     }
   </style>
 </head>
 <body>
-  <h1>Click the Button!</h1>
-  <button id="nextLevel">Click me!</button>
+  <h1 id="nextLevel">Nothing in here... ?</h1>
 
   <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
   <script>
 
     const levelManager = new level();
-    const levelNumber = 1;
+    const levelNumber = 5;
 
     init(levelNumber); // Initialize the level
 
     const nextButton = document.querySelector("#nextLevel");
 
-    levelManager.updateTip("Click the button to move to the next level.");
-    levelManager.updateCompleteMessage("Congratulations! You have completed the first level...");
+    levelManager.updateTip("The title is suspicious...");
+    levelManager.updateCompleteMessage("🤨🤨🤨");
     levelManager.setRefreshEnable(false);
 
     nextButton.addEventListener("click", () => { // When clicked button, then go to the next level

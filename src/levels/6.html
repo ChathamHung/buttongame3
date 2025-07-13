@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      transition: background-color 0.1s ease;
+      margin: 5px;
+      min-width: 200px;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    .question-container {
+      text-align: center;
+      max-width: 600px;
+      padding: 0 20px 20px;
+    }
+
+    .answer-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .progress {
+      color: #666;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    #nextLevel {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="gameTitle">Get ready!</h1>
+  <div class="progress" id="progress"></div>
+  <div class="question-container" id="questionContainer">
+    <div class="buttons">
+      <button id="startGame">Start Quiz</button>
+    </div>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 6;
+
+    init(levelNumber); // Initialize the level
+
+    let questions = {
+      1: {
+        "question": "Which of these words is a synonym for 'benevolent'?",
+        "tip": "This is an English question. Consider the meaning of the prefix 'bene-' and common word roots.",
+        "answers": {
+          "a": "Malicious",
+          "b": "Kind",
+          "c": "Apathetic",
+          "d": "Hostile"
+        },
+        "correctAnswer": "b"
+      },
+      2: {
+        "question": "If a car travels at a constant speed of 60 miles per hour, how long will it take to travel 180 miles?",
+        "tip": "This is a Maths question. Remember the formula: time = distance / speed.",
+        "answers": {
+          "a": "2 hours",
+          "b": "3 hours",
+          "c": "4 hours",
+          "d": "5 hours"
+        },
+        "correctAnswer": "b"
+      },
+      3: {
+        "question": "What is the chemical symbol for water?",
+        "tip": "This is a Science question. Think about the elements that make up water.",
+        "answers": {
+          "a": "O2",
+          "b": "CO2",
+          "c": "H2O",
+          "d": "NaCl"
+        },
+        "correctAnswer": "c"
+      },
+      4: {
+        "question": "Which continent is the Amazon Rainforest primarily located in?",
+        "tip": "This is a Geography question. Consider the major rainforests of the world and their locations.",
+        "answers": {
+          "a": "Africa",
+          "b": "Asia",
+          "c": "South America",
+          "d": "Australia"
+        },
+        "correctAnswer": "c"
+      },
+      5: {
+        "question": "Identify the adverb in the following sentence: 'The cat quickly chased the mouse.'",
+        "tip": "This is an English question. Adverbs often describe how, when, or where an action occurs, and many end in '-ly'.",
+        "answers": {
+          "a": "cat",
+          "b": "chased",
+          "c": "quickly",
+          "d": "mouse"
+        },
+        "correctAnswer": "c"
+      }
+    };
+
+    let currentQuestionIndex = 1;
+    let totalQuestions = Object.keys(questions).length;
+    let gameStarted = false;
+
+    levelManager.updateTip("");
+    levelManager.updateCompleteMessage("Congratulations! You've completed the quiz!");
+    levelManager.setRefreshEnable(true);
+
+    // Function to generate answer buttons
+    function generateAnswerButtons(questionData) {
+      const container = document.getElementById('questionContainer');
+      container.innerHTML = '';
+      
+      // Add question text
+      const questionText = document.createElement('h2');
+      questionText.textContent = questionData.question;
+      questionText.style.marginBottom = '20px';
+      container.appendChild(questionText);
+      
+      // Create buttons container
+      const buttonsContainer = document.createElement('div');
+      buttonsContainer.className = 'answer-buttons';
+      
+      // Generate buttons for each answer
+      Object.keys(questionData.answers).forEach(key => {
+        const button = document.createElement('button');
+        button.textContent = `${key.toUpperCase()}) ${questionData.answers[key]}`;
+        button.setAttribute('data-answer', key);
+        
+        button.addEventListener('click', () => {
+          handleAnswerClick(key, questionData.correctAnswer);
+        });
+        
+        buttonsContainer.appendChild(button);
+      });
+      
+      container.appendChild(buttonsContainer);
+    }
+
+    // Function to handle answer clicks
+    function handleAnswerClick(selectedAnswer, correctAnswer) {
+      if (selectedAnswer === correctAnswer) {
+        // Correct answer
+        if (currentQuestionIndex < totalQuestions) {
+          currentQuestionIndex++;
+          showNextQuestion();
+        } else {
+          // All questions completed
+          completeGame();
+        }
+      } else {
+        // Wrong answer
+        levelManager.showDialog("Incorrect!", "That's not the right answer. Try again!");
+      }
+    }
+
+    // Function to show next question
+    function showNextQuestion() {
+      updateProgress();
+      updateTip();
+      
+      if (currentQuestionIndex <= totalQuestions) {
+        const questionData = questions[currentQuestionIndex];
+        generateAnswerButtons(questionData);
+      }
+    }
+
+    // Function to update progress display
+    function updateProgress() {
+      const progressElement = document.getElementById('progress');
+      progressElement.textContent = `Question ${currentQuestionIndex} of ${totalQuestions}`;
+    }
+
+    // Function to update tip
+    function updateTip() {
+      if (currentQuestionIndex <= totalQuestions) {
+        const questionData = questions[currentQuestionIndex];
+        levelManager.updateTip(questionData.tip);
+      }
+    }
+
+    // Function to complete the game
+    function completeGame() {
+      document.getElementById('gameTitle').textContent = 'Quiz Complete!';
+      document.getElementById('progress').textContent = 'All questions answered correctly!';
+      levelManager.updateTip("");
+      
+      const container = document.getElementById('questionContainer');
+      container.innerHTML = `
+        <div class="buttons">
+          <button id="nextLevel">Next Level</button>
+        </div>
+      `;
+      
+      // Add event listener for next level button
+      document.getElementById('nextLevel').addEventListener('click', () => {
+        levelManager.nextLevel();
+      });
+    }
+
+    // Start game function
+    function startGame() {
+      gameStarted = true;
+      document.getElementById('gameTitle').textContent = 'Quiz Game';
+      currentQuestionIndex = 1;
+      updateProgress();
+      updateTip();
+      showNextQuestion();
+    }
+
+    // Initialize start button
+    document.getElementById('startGame').addEventListener('click', startGame);
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

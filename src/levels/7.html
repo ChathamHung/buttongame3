@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    .hide {
+      display: none;
+    }
+
+    #nextLevel {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    #nextLevel:hover {
+      background-color: #60a83e;
+    }
+
+    #captcha {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 15px 10px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      background-color: #F9F9F9FF;
+      /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);*/
+      color: #4C4A4BFF;
+      border: solid 3px #D3D3D3FF;
+      cursor: pointer;
+      width: 300px;
+      height: 80px;
+    }
+
+    #captcha > .left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    #captcha > .left > .checkbox {
+      /*position: absolute;*/
+      width: 25px;
+      height: 25px;
+      border-radius: 5px;
+      background-color: white;
+      border: solid 3px #C3C3C3FF;
+      /*margin-left: -20px;*/
+    }
+
+    #captcha:hover > .left > .checkbox {
+      border-color: #b5b5b5;
+    }
+
+    #captcha > .right {
+      display: flex;
+      align-items: center;
+    }
+
+    #captcha > .right > .image {
+      width: 50px;
+      height: 50px;
+    }
+
+    
+    .captcha-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 100;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      width: 400px;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: stretch;
+      padding: 10px;
+    }
+
+    .captcha-content > .captcha-goal {
+      height: 100px;
+      background-color: #1A73E8;
+      border-radius: 10px;
+      padding: 10px;
+      color: white;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .captcha-content > .captcha-goal > .left {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .captcha-content > .captcha-goal > .left > h2 {
+      margin: 10px 0 0;
+    }
+
+    .captcha-content > .captcha-goal > .right {
+      display: flex;
+      align-items: center;
+      padding-right: 10px;
+    }
+
+    .captcha-content > .captcha-goal > .right > img {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+    }
+
+
+    .captcha-content > .captcha-main {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 10px 0;
+      gap: 5px;
+    }
+
+    .captcha-content > .captcha-main > img {
+      width: 120px;
+      height: 120px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      border: solid 5px transparent;
+    }
+
+    .captcha-content > .captcha-main > img:hover {
+      border: solid 5px rgba(26, 115, 232, 0.2);
+    }
+
+    .captcha-content > .captcha-main > img.selected {
+      border: solid 5px #1A73E8;
+      transform: scale(0.85);
+    }
+
+    .captcha-content > .captcha-buttons {
+      height: 40px;
+      background-color: #f4f4f4;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .captcha-content > .captcha-buttons > .left, .captcha-content > .captcha-buttons > .right {
+      display: flex;
+      align-items: stretch;
+    }
+
+
+    .captcha-content > .captcha-buttons > .right > .captcha-button-next {
+      padding: 10px 14px;
+      border-radius: 10px;
+      background-color: #1A73E8;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    .captcha-content > .captcha-buttons > .right > .captcha-button-next:hover {
+      background-color: #1764c8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Please verify you are not a robot</h1>
+
+  <button id="captcha">
+    <div class="left">
+      <div class="checkbox"></div>
+      <span>I'm not a robot</span>
+    </div>
+    <div class="right">
+      <img class="image" src="../../res/images/captcha.png" alt="captcha" draggable="false">
+    </div>
+  </button>
+
+  <div class="captcha-content">
+    <div class="captcha-goal">
+      <div class="left">
+        <span class="text1">Select all images with</span>
+        <h2 class="text2">Bicycles</h2>
+      </div>
+      <div class="right">
+        <img class="image" src="../../res/images/Bliss.jpg" alt="captcha" draggable="false">
+      </div>
+    </div>
+    <div class="captcha-main">
+      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
+      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
+      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
+      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
+      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
+      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
+      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
+      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
+      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
+    </div>
+    <div class="captcha-buttons">
+      <div class="left">
+      </div>
+      <div class="right">
+        <button class="captcha-button-next">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <button id="nextLevel" class="hide">Next Level</button>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 7;
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+    const captcha = document.querySelector("#captcha");
+    const goalText1 = document.querySelector(".text1");
+    const goalText2 = document.querySelector(".text2");
+    const captchaImages = document.querySelectorAll(".image");
+    const captchaButtonNext = document.querySelector(".captcha-button-next");
+
+    levelManager.updateTip(`Tip is here`); // Set the tip (Allow HTML elements)
+    levelManager.updateCompleteMessage(`Congratulations!`); // Set the complete message (Allow HTML elements)
+
+    captchaImages.forEach((image) => {
+      image.addEventListener("click", () => {
+        if (image.classList.contains("selected")) {
+          image.classList.remove("selected");
+        } else {
+          image.classList.add("selected");
+        }
+      });
+    });
+
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      levelManager.nextLevel();
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>
