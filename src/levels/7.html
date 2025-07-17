@@ -20,7 +20,7 @@
     }
 
     .hide {
-      display: none;
+      display: none !important;
     }
 
     #nextLevel {
@@ -47,7 +47,6 @@
       border-radius: 5px;
       font-size: 16px;
       background-color: #F9F9F9FF;
-      /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);*/
       color: #4C4A4BFF;
       border: solid 3px #D3D3D3FF;
       cursor: pointer;
@@ -62,13 +61,11 @@
     }
 
     #captcha > .left > .checkbox {
-      /*position: absolute;*/
       width: 25px;
       height: 25px;
       border-radius: 5px;
       background-color: white;
       border: solid 3px #C3C3C3FF;
-      /*margin-left: -20px;*/
     }
 
     #captcha:hover > .left > .checkbox {
@@ -85,7 +82,16 @@
       height: 50px;
     }
 
-    
+    .captcha-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+    }
+
     .captcha-content {
       position: absolute;
       top: 50%;
@@ -103,7 +109,13 @@
       padding: 10px;
     }
 
-    .captcha-content > .captcha-goal {
+    .captcha-core {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .captcha-goal {
       height: 100px;
       background-color: #1A73E8;
       border-radius: 10px;
@@ -114,31 +126,30 @@
       justify-content: space-between;
     }
 
-    .captcha-content > .captcha-goal > .left {
+    .captcha-goal > .left {
       padding-left: 20px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    .captcha-content > .captcha-goal > .left > h2 {
+    .captcha-goal > .left > h2 {
       margin: 10px 0 0;
     }
 
-    .captcha-content > .captcha-goal > .right {
+    .captcha-goal > .right {
       display: flex;
       align-items: center;
       padding-right: 10px;
     }
 
-    .captcha-content > .captcha-goal > .right > img {
+    .captcha-goal > .right > img {
       width: 80px;
       height: 80px;
       border-radius: 10px;
     }
 
-
-    .captcha-content > .captcha-main {
+    .captcha-main {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -146,7 +157,7 @@
       gap: 5px;
     }
 
-    .captcha-content > .captcha-main > img {
+    .captcha-main img {
       width: 120px;
       height: 120px;
       border-radius: 10px;
@@ -155,16 +166,16 @@
       border: solid 5px transparent;
     }
 
-    .captcha-content > .captcha-main > img:hover {
+    .captcha-main img:hover {
       border: solid 5px rgba(26, 115, 232, 0.2);
     }
 
-    .captcha-content > .captcha-main > img.selected {
+    .captcha-main img.selected {
       border: solid 5px #1A73E8;
       transform: scale(0.85);
     }
 
-    .captcha-content > .captcha-buttons {
+    .captcha-buttons {
       height: 40px;
       background-color: #f4f4f4;
       border-radius: 10px;
@@ -175,13 +186,12 @@
       align-items: center;
     }
 
-    .captcha-content > .captcha-buttons > .left, .captcha-content > .captcha-buttons > .right {
+    .captcha-buttons > .left, .captcha-buttons > .right {
       display: flex;
       align-items: stretch;
     }
 
-
-    .captcha-content > .captcha-buttons > .right > .captcha-button-next {
+    .captcha-buttons > .right > .captcha-button-next {
       padding: 10px 14px;
       border-radius: 10px;
       background-color: #1A73E8;
@@ -192,90 +202,158 @@
       transition: background-color 0.1s ease;
     }
 
-    .captcha-content > .captcha-buttons > .right > .captcha-button-next:hover {
+    .captcha-buttons > .right > .captcha-button-next:hover {
       background-color: #1764c8;
+    }
+
+    /* Page visibility */
+    .page-1, .page-2, .page-3, .page-4, 
+    .page-5, .page-6, .page-7, .page-8, 
+    .page-9, .page-10 {
+      display: block;
+    }
+
+    .page-1.hide, .page-2.hide, .page-3.hide, .page-4.hide,
+    .page-5.hide, .page-6.hide, .page-7.hide, .page-8.hide,
+    .page-9.hide, .page-10.hide {
+      display: none !important;
     }
   </style>
 </head>
 <body>
-  <h1>Please verify you are not a robot</h1>
+<h1>Please verify you are not a robot</h1>
 
-  <button id="captcha">
-    <div class="left">
-      <div class="checkbox"></div>
-      <span>I'm not a robot</span>
-    </div>
-    <div class="right">
-      <img class="image" src="../../res/images/captcha.png" alt="captcha" draggable="false">
-    </div>
-  </button>
+<button id="captcha">
+  <div class="left">
+    <div class="checkbox"></div>
+    <span>I'm not a robot</span>
+  </div>
+  <div class="right">
+    <img class="image" src="../../res/images/captcha.png" alt="captcha" draggable="false">
+  </div>
+</button>
 
-  <div class="captcha-content">
-    <div class="captcha-goal">
-      <div class="left">
-        <span class="text1">Select all images with</span>
-        <h2 class="text2">Bicycles</h2>
+<div class="captcha-overlay hide"></div>
+<div class="captcha-content hide">
+  <div class="captcha-core">
+    <div class="page-1">
+      <div class="captcha-goal">
+        <div class="left">
+          <span class="text1">Select all images with</span>
+          <h2 class="text2">Bicycles</h2>
+        </div>
+        <div class="right">
+          <img class="image" src="../../res/images/Bliss.jpg" alt="captcha" draggable="false">
+        </div>
       </div>
-      <div class="right">
-        <img class="image" src="../../res/images/Bliss.jpg" alt="captcha" draggable="false">
+      <div class="captcha-main">
+        <!-- Script will generate images here -->
       </div>
     </div>
-    <div class="captcha-main">
-      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
-      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
-      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
-      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
-      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
-      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
-      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
-      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
-      <img class="image" src="../../res/images/Bliss.jpg" draggable="false">
-    </div>
-    <div class="captcha-buttons">
-      <div class="left">
+
+    <div class="page-2 hide">
+      <div class="captcha-goal">
+        <div class="left">
+          <span class="text1">Select all images with</span>
+          <h2 class="text2">Bliss</h2>
+        </div>
+        <div class="right">
+          <!-- Optional reference image -->
+        </div>
       </div>
-      <div class="right">
-        <button class="captcha-button-next">Next</button>
+      <div class="captcha-main">
+        <img class="image" imgIndex="0" src="../../res/images/Bliss.jpg" draggable="false">
+        <img class="image" imgIndex="1" src="../../res/images/Bliss.jpg" draggable="false">
+        <img class="image" imgIndex="2" src="../../res/images/Bliss.jpg" draggable="false">
+        <img class="image" imgIndex="3" src="../../res/images/Bliss.jpg" draggable="false">
+        <img class="image" imgIndex="4" src="../../res/images/Bliss.jpg" draggable="false">
+        <img class="image" imgIndex="5" src="../../res/images/Bliss.jpg" draggable="false">
+        <img class="image" imgIndex="6" src="../../res/images/Bliss.jpg" draggable="false">
+        <img class="image" imgIndex="7" src="../../res/images/Bliss.jpg" draggable="false">
+        <img class="image" imgIndex="8" src="../../res/images/Bliss.jpg" draggable="false">
       </div>
     </div>
   </div>
 
-  <button id="nextLevel" class="hide">Next Level</button>
+  <div class="captcha-buttons">
+    <div class="left">
+    </div>
+    <div class="right">
+      <button class="captcha-button-next">Next</button>
+    </div>
+  </div>
+</div>
 
-  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
-  <script>
-    const levelManager = new level();
-    const levelNumber = 7;
+<button id="nextLevel" class="hide">Next Level</button>
 
-    init(levelNumber); // Initialize the level
+<script src="../js/levelsManager.js"></script>
+<script>
+  const levelManager = new level();
+  const levelNumber = 7;
 
-    const nextButton = document.querySelector("#nextLevel");
-    const captcha = document.querySelector("#captcha");
-    const goalText1 = document.querySelector(".text1");
-    const goalText2 = document.querySelector(".text2");
-    const captchaImages = document.querySelectorAll(".image");
-    const captchaButtonNext = document.querySelector(".captcha-button-next");
+  init(levelNumber);
 
-    levelManager.updateTip(`Tip is here`); // Set the tip (Allow HTML elements)
-    levelManager.updateCompleteMessage(`Congratulations!`); // Set the complete message (Allow HTML elements)
+  const nextButton = document.querySelector("#nextLevel");
+  const captcha = document.querySelector("#captcha");
+  const captchaContent = document.querySelector(".captcha-content");
+  const captchaOverlay = document.querySelector(".captcha-overlay");
+  const captchaImages = document.querySelectorAll(".image");
+  const captchaButtonNext = document.querySelector(".captcha-button-next");
 
-    captchaImages.forEach((image) => {
-      image.addEventListener("click", () => {
-        if (image.classList.contains("selected")) {
-          image.classList.remove("selected");
-        } else {
-          image.classList.add("selected");
-        }
-      });
+  let currentPage = 0;
+
+  levelManager.updateTip(`Tip is here`);
+  levelManager.updateCompleteMessage(`Congratulations!`);
+
+  captchaImages.forEach((image) => {
+    image.addEventListener("click", () => {
+      if (image.classList.contains("selected")) {
+        image.classList.remove("selected");
+      } else {
+        image.classList.add("selected");
+      }
+    });
+  });
+
+  function setCaptchaContent(bool) {
+    captchaContent.classList.toggle("hide", !bool);
+    captchaOverlay.classList.toggle("hide", !bool);
+  }
+
+  function goToPage(pageNumber) {
+    currentPage = pageNumber;
+    const pages = document.querySelectorAll('[class*="page-"]');
+    pages.forEach((page) => {
+      page.classList.add("hide");
     });
 
-    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
-      levelManager.nextLevel();
-    });
+    const targetPage = document.querySelector(`.page-${pageNumber}`);
+    if (targetPage) {
+      targetPage.classList.remove("hide");
+    }
+  }
 
-    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
-      e.preventDefault();
-    });
-  </script>
+  captcha.addEventListener("click", () => {
+    setCaptchaContent(true);
+  });
+
+  captchaButtonNext.addEventListener("click", () => {
+    goToPage(currentPage + 1);
+  });
+
+  captchaOverlay.addEventListener("click", () => {
+    setCaptchaContent(false);
+  });
+
+  nextButton.addEventListener("click", () => {
+    levelManager.nextLevel();
+  });
+
+  document.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+  });
+
+  goToPage(1);
+</script>
 </body>
 </html>
