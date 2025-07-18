@@ -100,7 +100,7 @@
       z-index: 100;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
       border-radius: 10px;
-      width: 400px;
+      width: 390px;
       background-color: white;
       display: flex;
       flex-direction: column;
@@ -143,10 +143,15 @@
       padding-right: 10px;
     }
 
-    .captcha-goal > .right > img {
+    .captcha-goal > .right > .image {
       width: 80px;
       height: 80px;
       border-radius: 10px;
+    }
+
+    .page-4 > .captcha-main > .code {
+      width: 300px;
+      height: 100px;
     }
 
     .captcha-main {
@@ -154,10 +159,23 @@
       flex-wrap: wrap;
       justify-content: center;
       padding: 10px 0;
-      gap: 5px;
     }
 
-    .captcha-main img {
+    .captcha-main .code {
+      border-radius: 10px;
+      border: solid 2px #D3D3D3FF;
+    }
+
+    .captcha-main .captcha-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: solid 2px #D3D3D3FF;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .captcha-main .image {
       width: 120px;
       height: 120px;
       border-radius: 10px;
@@ -166,11 +184,11 @@
       border: solid 5px transparent;
     }
 
-    .captcha-main img:hover {
+    .captcha-main .image:hover {
       border: solid 5px rgba(26, 115, 232, 0.2);
     }
 
-    .captcha-main img.selected {
+    .captcha-main .image.selected {
       border: solid 5px #1A73E8;
       transform: scale(0.85);
     }
@@ -240,14 +258,23 @@
       <div class="captcha-goal">
         <div class="left">
           <span class="text1">Select all images with</span>
-          <h2 class="text2">Bicycles</h2>
+          <h2 class="text2">Cars</h2>
         </div>
         <div class="right">
-          <img class="image" src="../../res/images/Bliss.jpg" alt="captcha" draggable="false">
+          <!-- Optional reference image -->
+          <img class="image" src="../../res/images/captcha/page-1/Hits.jpg" alt="captcha" draggable="false">
         </div>
       </div>
       <div class="captcha-main">
-        <!-- Script will generate images here -->
+        <img class="image" imgIndex="0" src="../../res/images/captcha/page-1/1.png" draggable="false">
+        <img class="image" imgIndex="1" src="../../res/images/captcha/page-1/2.png" draggable="false">
+        <img class="image" imgIndex="2" src="../../res/images/captcha/page-1/3.png" draggable="false">
+        <img class="image" imgIndex="3" src="../../res/images/captcha/page-1/4.png" draggable="false">
+        <img class="image" imgIndex="4" src="../../res/images/captcha/page-1/5.png" draggable="false">
+        <img class="image" imgIndex="5" src="../../res/images/captcha/page-1/6.png" draggable="false">
+        <img class="image" imgIndex="6" src="../../res/images/captcha/page-1/7.png" draggable="false">
+        <img class="image" imgIndex="7" src="../../res/images/captcha/page-1/8.png" draggable="false">
+        <img class="image" imgIndex="8" src="../../res/images/captcha/page-1/9.png" draggable="false">
       </div>
     </div>
 
@@ -255,26 +282,52 @@
       <div class="captcha-goal">
         <div class="left">
           <span class="text1">Select all images with</span>
-          <h2 class="text2">Bliss</h2>
-        </div>
-        <div class="right">
-          <!-- Optional reference image -->
+          <h2 class="text2">Trees</h2>
         </div>
       </div>
       <div class="captcha-main">
-        <img class="image" imgIndex="0" src="../../res/images/Bliss.jpg" draggable="false">
-        <img class="image" imgIndex="1" src="../../res/images/Bliss.jpg" draggable="false">
-        <img class="image" imgIndex="2" src="../../res/images/Bliss.jpg" draggable="false">
-        <img class="image" imgIndex="3" src="../../res/images/Bliss.jpg" draggable="false">
-        <img class="image" imgIndex="4" src="../../res/images/Bliss.jpg" draggable="false">
-        <img class="image" imgIndex="5" src="../../res/images/Bliss.jpg" draggable="false">
-        <img class="image" imgIndex="6" src="../../res/images/Bliss.jpg" draggable="false">
-        <img class="image" imgIndex="7" src="../../res/images/Bliss.jpg" draggable="false">
-        <img class="image" imgIndex="8" src="../../res/images/Bliss.jpg" draggable="false">
+        <img class="image" imgIndex="0" src="../../res/images/captcha/page-2/1.png" draggable="false">
+        <img class="image" imgIndex="1" src="../../res/images/captcha/page-2/2.png" draggable="false">
+        <img class="image" imgIndex="2" src="../../res/images/captcha/page-2/3.png" draggable="false">
+        <img class="image" imgIndex="3" src="../../res/images/captcha/page-2/4.png" draggable="false">
+        <img class="image" imgIndex="4" src="../../res/images/captcha/page-2/5.png" draggable="false">
+        <img class="image" imgIndex="5" src="../../res/images/captcha/page-2/6.png" draggable="false">
+        <img class="image" imgIndex="6" src="../../res/images/captcha/page-2/7.png" draggable="false">
+        <img class="image" imgIndex="7" src="../../res/images/captcha/page-2/8.png" draggable="false">
+        <img class="image" imgIndex="8" src="../../res/images/captcha/page-2/9.png" draggable="false">
       </div>
     </div>
-  </div>
 
+    <div class="page-3 hide">
+      <div class="captcha-goal">
+        <div class="left">
+          <span class="text1">Enter text from the</span>
+          <h2 class="text2">image</h2>
+        </div>
+      </div>
+      <div class="captcha-main">
+        <img class="code" src="../../res/images/captcha/page-3/captcha.png" draggable="false">
+        <input type="text" class="captcha-input" placeholder="Enter the text here" maxlength="6"/>
+      </div>
+    </div>
+
+    <div class="page-4 hide">
+      <div class="captcha-goal">
+        <div class="left">
+          <span class="text1">Enter text from the</span>
+          <h2 class="text2">image</h2>
+        </div>
+      </div>
+      <div class="captcha-main">
+        <img class="code" src="../../res/images/captcha/page-4/captcha.png" draggable="false">
+        <input type="text" class="captcha-input" placeholder="Enter the text here" maxlength="8"/>
+      </div>
+    </div>
+
+
+
+
+  </div>
   <div class="captcha-buttons">
     <div class="left">
     </div>
@@ -302,7 +355,14 @@
 
   let currentPage = 0;
 
-  levelManager.updateTip(`Tip is here`);
+  let captchaAnswers = {
+    1: [3, 4, 5, 6], // Answer images for page 1
+    2: [1, 2, 3, 4, 5, 8], // Answer images for page 2
+    3: "8HCBRH", // Answer text for page 3
+    4: "48D8LTAJ", // Answer text for page 4
+  };
+
+  levelManager.updateTip("");
   levelManager.updateCompleteMessage(`Congratulations!`);
 
   captchaImages.forEach((image) => {
@@ -320,6 +380,26 @@
     captchaOverlay.classList.toggle("hide", !bool);
   }
 
+  function checkCaptcha(pageNum, userAnswer) {
+    if (userAnswer.toLowerCase() === captchaAnswers[pageNum].toLowerCase()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function checkImageSelection(pageNum) {
+    const selectedImages = Array.from(captchaContent.querySelectorAll(`.page-${pageNum} .image.selected`));
+    const correctAnswers = captchaAnswers[pageNum];
+
+    if (selectedImages.length === correctAnswers.length &&
+        selectedImages.every((img, index) => img.getAttribute('imgIndex') == correctAnswers[index])) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   function goToPage(pageNumber) {
     currentPage = pageNumber;
     const pages = document.querySelectorAll('[class*="page-"]');
@@ -331,6 +411,31 @@
     if (targetPage) {
       targetPage.classList.remove("hide");
     }
+
+    if (pageNumber === 3 || pageNumber === 4) {
+      const input = captchaContent.querySelector('.page-' + pageNumber + ' .captcha-input');
+      if (input) input.focus();
+
+      let keydownHandler = input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          const inputValue = input.value.trim();
+          if (inputValue) {
+            if (checkCaptcha(pageNumber, inputValue)) {
+              goToPage(pageNumber + 1);
+              input.removeEventListener("keydown", keydownHandler);
+            } else {
+              incorrectAnswer();
+            }
+          } else {
+            incorrectAnswer();
+          }
+        }
+      });
+    }
+  }
+
+  function incorrectAnswer() {
+    levelManager.showDialog("Incorrect", "Incorrect answer. Please try again.");
   }
 
   captcha.addEventListener("click", () => {
@@ -338,7 +443,25 @@
   });
 
   captchaButtonNext.addEventListener("click", () => {
-    goToPage(currentPage + 1);
+    if (currentPage === 1 || currentPage === 2) {
+      if (checkImageSelection(currentPage)) {
+        goToPage(currentPage + 1);
+      } else {
+        incorrectAnswer();
+      }
+    } else if (currentPage === 3 || currentPage === 4) {
+      const input = captchaContent.querySelector('.page-' + currentPage + ' .captcha-input');
+      const userAnswer = input.value.trim();
+      if (userAnswer) {
+        if (checkCaptcha(currentPage, userAnswer)) {
+          goToPage(currentPage + 1);
+        } else {
+          incorrectAnswer();
+        }
+      } else {
+        levelManager.showDialog("Error", "Please enter the text.");
+      }
+    }
   });
 
   captchaOverlay.addEventListener("click", () => {
