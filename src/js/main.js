@@ -87,6 +87,51 @@ function dlog(text) {
   }
 }
 
+// Save system
+const SAVE_KEY = "buttonGame3Save";
+let saveData = {
+  unlockedLevels: [0, 1],
+  skippedLevels: []
+};
+
+function loadSave() {
+  const data = localStorage.getItem(SAVE_KEY);
+  if (data) {
+    try {
+      saveData = JSON.parse(data);
+    } catch (e) {
+      saveData = { unlockedLevels: [0, 1], skippedLevels: [] };
+    }
+  }
+}
+
+function saveProgress() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+}
+
+function unlockLevel(level) {
+  if (!saveData.unlockedLevels.includes(level)) {
+    saveData.unlockedLevels.push(level);
+    saveProgress();
+  }
+}
+
+function markSkipped(level) {
+  if (!saveData.skippedLevels.includes(level)) {
+    saveData.skippedLevels.push(level);
+    unlockLevel(level + 1);
+    saveProgress();
+  }
+}
+
+function unmarkSkipped(level) {
+  const index = saveData.skippedLevels.indexOf(level);
+  if (index !== -1) {
+    saveData.skippedLevels.splice(index, 1);
+    saveProgress();
+  }
+}
+
 // Function to load levels from JSON
 async function loadLevels() {
   try {
@@ -110,6 +155,9 @@ function generateLevelButtons() {
   Object.keys(levelsData).forEach(levelKey => {
     const levelNum = parseInt(levelKey);
     const levelInfo = levelsData[levelKey];
+
+    const locked = !saveData.unlockedLevels.includes(levelNum);
+    const skiped = saveData.skippedLevels.includes(levelNum);
     
     const button = document.createElement('button');
     button.textContent = "Level " + levelKey + ": " + levelInfo.name;
@@ -120,8 +168,21 @@ function generateLevelButtons() {
       button.classList.add('current');
     }
     
+    if (locked) {
+      button.classList.add('locked');
+      // button.classList.add('hide');
+      // button.textContent = "Level " + levelKey + ": ???";
+    } // else {
+      // button.textContent = "Level " + levelKey + ": " + levelInfo.name;
+    // }
+    
+    if (skiped) {
+      button.classList.add('skiped');
+    }
+    
     // Add click event listener
     button.addEventListener('click', () => {
+      if (locked) return;
       goTo(levelNum);
       updateLevelButtons(levelNum);
       closeMenu();
@@ -139,12 +200,29 @@ function updateLevelButtons(currentLevel) {
     if (parseInt(button.getAttribute('data-level')) === currentLevel) {
       button.classList.add('current');
     }
+
+    if (button.classList.contains('locked')) {
+      // button.textContent = "Level " + levelKey + ": ???";
+      button.disabled = true; // Disable locked buttons
+    } else {
+      // button.textContent = "Level " + levelKey + ": " + levelInfo.name;
+      button.disabled = false; // Enable unlocked buttons
+    }
+    // Update skiped class
+    const levelNum = parseInt(button.getAttribute('data-level'));
+    if (saveData.skippedLevels.includes(levelNum)) {
+      button.classList.add('skiped');
+    } else {
+      button.classList.remove('skiped');
+    }
   });
 }
 
 function init() {
+  loadSave();
   let urlParams = new URLSearchParams(window.location.search);
   let level = parseInt(urlParams.get('level'));
+  // let unlock = parseInt(urlParams.get('unlock'));
 
   if (urlParams.get('debug') === "true") {
     debugEnabled = true;
@@ -226,10 +304,25 @@ function completeLevel() {
     }
     showDialog("Level Complete", completeMessage, "CompleteLevel", (button) => {
       if (button === "ok") {
+        // Unlock next level only if user clicks "Next Level"
+        unlockLevel(levelManager.currentLevel + 1);
+        unmarkSkipped(levelManager.currentLevel);
+        generateLevelButtons();
+        updateLevelButtons(levelManager.currentLevel + 1);
         goTo(levelManager.currentLevel + 1);
+      } else if (button === "cancel") {
+        // Stay here: do not unlock next level, keep current button highlighted
+        unlockLevel(levelManager.currentLevel + 1);
+        unmarkSkipped(levelManager.currentLevel);
+        generateLevelButtons();
+        updateLevelButtons(levelManager.currentLevel);
       }
     });
   } else {
+    // For level 0, always unlock next level and go to it
+    unlockLevel(levelManager.currentLevel + 1);
+    generateLevelButtons();
+    updateLevelButtons(levelManager.currentLevel + 1);
     goTo(levelManager.currentLevel + 1);
   }
 }
@@ -299,7 +392,11 @@ function switchMenuPage(targetIndex, force = false) {
   }, 150);
 
   menuPages[targetIndex].querySelectorAll("button").forEach(button => {
-    button.disabled = false;
+    if (button.classList.contains("locked")) {
+      button.disabled = true;
+    } else {
+      button.disabled = false;
+    }
   });
 
   currentPageIndex = targetIndex;
@@ -373,12 +470,18 @@ function showDialog(title, text, buttonType = "OK", callback = (button) => {}) {
     cancelButton.removeEventListener("click", currentCancelHandler);
   }
 
-  // if (buttonType === "Delete") {
-  //   okButton.classList.add("delete");
-  // } else {
-  //   okButton.classList.remove("delete");
-  // }
-  okButton.focus();
+  if (buttonType === "Delete") {
+    okButton.classList.add("delete");
+  } else {
+    okButton.classList.remove("delete");
+  }
+
+  if (buttonType === "Delete") {
+    cancelButton.focus();
+  } else {
+    okButton.focus();
+  }
+
 
   // Create new event handlers and store references
   currentOkHandler = () => {
@@ -412,7 +515,10 @@ function refresh() {
 }
 
 function skip() {
-  goTo(levelManager.currentLevel + 1)
+  markSkipped(levelManager.currentLevel);
+  goTo(levelManager.currentLevel + 1);
+  generateLevelButtons();
+  updateLevelButtons(levelManager.currentLevel + 1);
   // completeLevel();
 }
 
@@ -510,16 +616,98 @@ iframe.addEventListener("load", () => {
 document.querySelector("#debug-print-state").addEventListener("click", () => {
   closeMenu();
   showState();
-})
+});
 
 document.querySelector("#debug-goto-level").addEventListener("click", () => {
   closeMenu();
   let value = prompt("Enter level number: ", "0");
   if (!value) return;
-  goTo(value);
-})
+  goTo(Number(value));
+  closeMenu();
+});
 
+// Debug: Delete all data
+document.querySelector("#debug-delete-data").addEventListener("click", () => {
+  localStorage.removeItem(SAVE_KEY);
+  saveData = { unlockedLevels: [0, 1], skippedLevels: [] };
+  generateLevelButtons();
+  updateLevelButtons(levelManager.currentLevel);
+  showDialog("Debug", "All save data deleted.", "OK");
+  closeMenu();
+});
 
+// Debug: Unlock all levels
+document.querySelector("#debug-unlock-all").addEventListener("click", () => {
+  saveData.unlockedLevels = Object.keys(levelsData).map(Number);
+  saveProgress();
+  generateLevelButtons();
+  updateLevelButtons(levelManager.currentLevel);
+  showDialog("Debug", "All levels unlocked.", "OK");
+  closeMenu();
+});
+
+// Debug: Unlock entered level
+document.querySelector("#debug-unlock-level").addEventListener("click", () => {
+  let value = prompt("Enter level number to unlock:", "0");
+  if (!value) return;
+  unlockLevel(Number(value));
+  generateLevelButtons();
+  updateLevelButtons(levelManager.currentLevel);
+  showDialog("Debug", "Level " + value + " unlocked.", "OK");
+  closeMenu();
+});
+
+// Debug: Delete entered level
+document.querySelector("#debug-delete-level").addEventListener("click", () => {
+  let value = prompt("Enter level number to delete unlock:", "0");
+  if (!value) return;
+  const num = Number(value);
+  // Remove from unlockedLevels
+  saveData.unlockedLevels = saveData.unlockedLevels.filter(lvl => lvl !== num);
+  // Remove from skippedLevels
+  saveData.skippedLevels = saveData.skippedLevels.filter(lvl => lvl !== num);
+  saveProgress();
+  generateLevelButtons();
+  updateLevelButtons(levelManager.currentLevel);
+  showDialog("Debug", "Level " + value + " deleted from save.", "OK");
+  closeMenu();
+});
+
+// Settings
+
+document.querySelector("#reset-all-game").addEventListener("click", () => {
+  closeMenu();
+  showDialog(
+    "Reset",
+    "Are you sure you want to reset all game progress?<br> This will delete all save data and reload the game.",
+    "Delete",
+    (button) => {
+      if (button === "ok") {
+        showDialog(
+          "Reset",
+          "<strong>It's last warning!</strong><br><br> Are you very sure you want to reset all game progress?<br><strong> It's not joking!</strong>",
+          "Delete",
+          (button) => {
+            if (button === "ok") {
+              localStorage.removeItem(SAVE_KEY);
+              location.reload();
+            }
+          }
+        );
+      }
+    }
+  );
+});
+
+document.querySelector("#fulllscreen-toggle").addEventListener("click", () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+    });
+  } else {
+    document.exitFullscreen();
+  }
+});
 
 // Disable right click context menu
 document.addEventListener('contextmenu', (e) => {

@@ -263,6 +263,12 @@ body {
 /*  height: 100px;*/
 /*}*/
 
+
+.menu-pages button.skiped {
+  background-color: rgba(255, 213, 0, 0.2);
+  color: rgba(255, 213, 0, 1);
+}
+
 .menu-pages button.current {
   font-weight: bold;
   background-color: rgba(190, 190, 190, 0.2);
@@ -280,6 +286,12 @@ body {
 
 .menu-pages button:focus:hover {
   background-color: rgba(190, 190, 190, 0.6);
+}
+
+.menu-pages button.locked {
+  background-color: transparent !important;
+  color: rgb(189, 189, 189);
+  cursor: not-allowed;
 }
 
 /* Main screen */
@@ -416,6 +428,23 @@ body {
 
 .dialog .dialog-button:focus:hover {
   background-color: rgba(190, 190, 190, 0.6);
+}
+
+.dialog .dialog-button.delete {
+  color: red;
+}
+
+.dialog .dialog-button.delete:hover {
+  background-color: rgba(190, 0, 0, 0.3);
+}
+
+.dialog .dialog-button.delete:focus {
+  background-color: rgba(190, 0, 0, 0.4);
+  outline: none;
+}
+
+.dialog .dialog-button.delete:focus:hover {
+  background-color: rgba(190, 0, 0, 0.6);
 }
 
 /* Mobile optimizations */
