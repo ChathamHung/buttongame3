@@ -13,11 +13,11 @@
     body {
       margin-top: 60px; /* Topbar area */
 
-      /*display: flex;*/
-      /*flex-direction: column;*/
-      /*justify-content: center;*/
-      /*align-items: center;*/
-      /*min-height: calc(100vh - 100px);*/
+      /* display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px); */
     }
 
     button { /* Example button (can be change) */
@@ -64,6 +64,8 @@
     levelManager.updateTip(`Tip is here`); // Set the tip (Allow HTML elements)
     levelManager.updateCompleteMessage(`Congratulations!`); // Set the complete message (Allow HTML elements)
 
+    // JS here
+
     nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
       levelManager.nextLevel();
     });
@@ -71,8 +73,6 @@
     document.addEventListener("contextmenu", (e) => { // Disable right-click menu
       e.preventDefault();
     });
-
-    // JS here
   </script>
 </body>
 </html>

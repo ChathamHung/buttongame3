@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    body {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+      background-color: #f5f5f5;
+    }
+    .chat-container {
+      width: 600px;
+      max-width: 95%;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 70vh;
+      margin-bottom: 20px;
+    }
+    .chat-header {
+      background-color: #9B1D20;
+      color: #fff;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #A92525;
+      margin-right: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .chat-name { font-size: 18px; font-weight: bold; }
+    .chat-status { font-size: 12px; margin-top: 5px; }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .message {
+      max-width: 70%;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      border-radius: 15px;
+      word-wrap: break-word;
+      animation: fadeIn 0.3s ease-in-out;
+      position: relative;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    @keyframes typing {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+    .received { background-color: #f0f0f0; align-self: flex-start; border-top-left-radius: 3px;}
+    .sent { background-color: #dcf8c6; align-self: flex-end; border-top-right-radius: 4px;}
+    .message-time {
+      font-size: 11px;
+      color: #999;
+      margin-top: 5px;
+      text-align: right;
+    }
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .option-button {
+      background: #e9eaeb;
+      color: #222;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 15px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+      animation: fadeIn 0.4s ease-in-out;
+			animation-fill-mode: both;
+    }
+    .option-button:nth-child(2) {
+			animation-delay: 0.1s;
+		}
+    .option-button:hover { background-color: #d1d3d4; }
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      background-color: #f0f0f0;
+      padding: 10px 15px;
+      border-radius: 15px;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #666;
+      animation: typing 1.5s infinite;
+    }
+    @keyframes typing {
+      0% { opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; }
+    }
+    .progress-bar {
+      height: 5px;
+      background-color: #e0e0e0;
+      margin-top: 10px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress {
+      height: 100%;
+      background-color: #75c64f;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    .failed-message {
+      text-align: center;
+      color: #e38494;
+      font-weight: bold;
+      margin: 20px 0;
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    .retry-button, #nextLevel {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+    .retry-button:hover, #nextLevel:hover { background-color: #60a83e; }
+
+    #nextLevel {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Interview simulation</h1>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="profile-pic">B</div>
+      <div>
+        <div class="chat-name">Boss</div>
+        <div class="chat-status">Online</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="typing-indicator" id="typing-indicator">Boss is typing...</div>
+    <div class="progress-bar"><div class="progress" id="progress-bar"></div></div>
+  </div>
+  <div class="failed-message" id="failed-message"></div>
+  <button class="retry-button" id="retry-button" style="display: none;">Try Again</button>
+  <button id="nextLevel">Next Level</button>
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 10;
+    init(levelNumber);
+
+    // Set up tip and complete message using new APIs
+    levelManager.updateTip(`You have a interview with the boss, <br>and you need to try to successfully the interview.`);
+    levelManager.updateCompleteMessage(`Congratulations! You've successfully have your new job!`);
+    // Chat elements
+    const chatMessages = document.getElementById('chat-messages');
+    const typingIndicator = document.getElementById('typing-indicator');
+    const progressBar = document.getElementById('progress-bar');
+    const nextButton = document.getElementById('nextLevel');
+    const failedMessage = document.getElementById('failed-message');
+    const retryButton = document.getElementById('retry-button');
+
+    // Game state
+    let trustLevel = 0;
+    const maxTrustLevel = 100;
+    let conversationStage = 0;
+    let waitingForResponse = false;
+
+    // Conversation pool (shortened for brevity, add more if needed)
+    const conversationPool = [
+      {
+        "message": "Tell me about yourself.",
+        "options": [
+          { "text": "I have a background in software engineering and enjoy solving complex problems.", "trustChange": 10 },
+          { "text": "I don't really know what to say.", "trustChange": -6 }
+        ]
+      },
+      {
+        "message": "Why do you want to work at our company?",
+        "options": [
+          { "text": "I'm passionate about your mission and see myself growing here.", "trustChange": 10 },
+          { "text": "Honestly, I just need a job right now.", "trustChange": -4 }
+        ]
+      },
+      {
+        "message": "What are your strengths?",
+        "options": [
+          { "text": "I'm very detail-oriented and great at time management.", "trustChange": 8 },
+          { "text": "I'm not really sure.", "trustChange": -6 }
+        ]
+      },
+      {
+        "message": "What is your greatest weakness?",
+        "options": [
+          { "text": "I tend to overcommit, but I'm learning to manage my workload better.", "trustChange": 6 },
+          { "text": "I have trouble getting up on time.", "trustChange": -8 }
+        ]
+      },
+      {
+        "message": "How do you handle tight deadlines?",
+        "options": [
+          { "text": "I break tasks down and prioritize to stay focused.", "trustChange": 8 },
+          { "text": "I tend to get stressed and freeze up.", "trustChange": -6 }
+        ]
+      },
+      {
+        "message": "Can you work well in a team?",
+        "options": [
+          { "text": "Absolutely, I thrive in collaborative environments.", "trustChange": 10 },
+          { "text": "I prefer to work alone whenever possible.", "trustChange": -4 }
+        ]
+      },
+      {
+        "message": "Where do you see yourself in 5 years?",
+        "options": [
+          { "text": "I hope to be in a leadership role, helping others grow.", "trustChange": 8 },
+          { "text": "Probably at a different company.", "trustChange": -6 }
+        ]
+      },
+      {
+        "message": "What do you know about our company?",
+        "options": [
+          { "text": "You're a leader in tech innovation with a focus on sustainability.", "trustChange": 10 },
+          { "text": "Not much, to be honest.", "trustChange": -8 }
+        ]
+      },
+      {
+        "message": "How do you handle failure?",
+        "options": [
+          { "text": "I reflect on what went wrong and improve for next time.", "trustChange": 8 },
+          { "text": "I try to forget it and move on.", "trustChange": -4 }
+        ]
+      },
+      {
+        "message": "Describe a time you solved a difficult problem.",
+        "options": [
+          { "text": "I broke it down into smaller tasks and consulted my team.", "trustChange": 8 },
+          { "text": "I didn't, it resolved itself eventually.", "trustChange": -10 }
+        ]
+      },
+      {
+        "message": "Are you willing to relocate?",
+        "options": [
+          { "text": "Yes, I'm open to new opportunities and locations.", "trustChange": 6 },
+          { "text": "No, I can only work from home.", "trustChange": -2 }
+        ]
+      },
+      {
+        "message": "Why did you leave your last job?",
+        "options": [
+          { "text": "I was looking for more growth and learning opportunities.", "trustChange": 6 },
+          { "text": "I didn't get along with my boss.", "trustChange": -6 }
+        ]
+      },
+      {
+        "message": "What are your salary expectations?",
+        "options": [
+          { "text": "I'm open to discussing fair compensation based on my skills.", "trustChange": 6 },
+          { "text": "As much as you can give me.", "trustChange": -4 }
+        ]
+      },
+      {
+        "message": "Do you have any leadership experience?",
+        "options": [
+          { "text": "Yes, I've led small teams on multiple projects.", "trustChange": 8 },
+          { "text": "Not really, but I'd like to try someday.", "trustChange": 0 }
+        ]
+      },
+      {
+        "message": "How do you deal with conflicts at work?",
+        "options": [
+          { "text": "I stay calm and try to understand all perspectives.", "trustChange": 8 },
+          { "text": "I usually avoid the situation entirely.", "trustChange": -6 }
+        ]
+      },
+      {
+        "message": "Do you take initiative or wait for instructions?",
+        "options": [
+          { "text": "I take initiative but know when to ask for guidance.", "trustChange": 8 },
+          { "text": "I prefer clear instructions before doing anything.", "trustChange": -2 }
+        ]
+      },
+      {
+        "message": "What motivates you?",
+        "options": [
+          { "text": "Solving meaningful problems and making a difference.", "trustChange": 8 },
+          { "text": "Getting paid at the end of the month.", "trustChange": -4 }
+        ]
+      },
+      {
+        "message": "How do you stay updated in your field?",
+        "options": [
+          { "text": "I read industry blogs and take online courses regularly.", "trustChange": 8 },
+          { "text": "I don't really follow new trends.", "trustChange": -8 }
+        ]
+      },
+      {
+        "message": "Do you have experience working remotely?",
+        "options": [
+          { "text": "Yes, and I'm productive and organized in remote setups.", "trustChange": 6 },
+          { "text": "No, I usually struggle to stay focused.", "trustChange": -6 }
+        ]
+      }
+    ];
+    
+    // Create a randomized conversation flow
+    let conversation = [];
+
+    function generateRandomConversation() {
+      conversation = [conversationPool[0]];
+      const remainingQuestions = [...conversationPool.slice(1)];
+      const questionCount = 3 + Math.floor(Math.random() * (remainingQuestions.length));
+      for (let i = 0; i < questionCount; i++) {
+        if (remainingQuestions.length === 0) break;
+        const randomIndex = Math.floor(Math.random() * remainingQuestions.length);
+        conversation.push(remainingQuestions[randomIndex]);
+        remainingQuestions.splice(randomIndex, 1);
+      }
+    }
+
+    function initChat() {
+      generateRandomConversation();
+      setTimeout(() => {
+        receiveMessage(conversation[0].message);
+        showOptions(conversation[0].options);
+      }, 1000);
+    }
+
+    function receiveMessage(text) {
+      waitingForResponse = false;
+      typingIndicator.style.display = 'none';
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message received';
+      messageDiv.innerHTML = text + '<div class="message-time">' + getCurrentTime() + '</div>';
+      chatMessages.appendChild(messageDiv);
+      scrollToBottom();
+    }
+
+    function sendMessage(text) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message sent';
+      messageDiv.innerHTML = text + '<div class="message-time">' + getCurrentTime() + '</div>';
+      chatMessages.appendChild(messageDiv);
+      scrollToBottom();
+    }
+
+    function showOptions(options) {
+      const optionsContainer = document.createElement('div');
+      optionsContainer.className = 'options-container';
+      const shuffledOptions = [...options].sort(() => Math.random() - 0.5);
+      shuffledOptions.forEach(option => {
+        const button = document.createElement('button');
+        button.className = 'option-button';
+        button.textContent = option.text;
+        button.addEventListener('click', () => selectOption(option));
+        optionsContainer.appendChild(button);
+      });
+      chatMessages.appendChild(optionsContainer);
+      scrollToBottom();
+    }
+
+    function selectOption(option) {
+      const optionsContainer = document.querySelector('.options-container');
+      if (optionsContainer) optionsContainer.remove();
+      sendMessage(option.text);
+      updateTrustLevel(option.trustChange);
+      waitingForResponse = true;
+      typingIndicator.style.display = 'block';
+      scrollToBottom();
+      conversationStage++;
+      setTimeout(() => {
+        if (trustLevel >= maxTrustLevel) {
+          receiveMessage("You know what? I trust you. I'll lend you the £10,000. Let me know your bank details and I'll transfer it today.");
+          completeLevel();
+        } else if (conversationStage >= conversation.length) {
+          if (trustLevel >= 70) {
+            receiveMessage("You know what? I trust you. I'll lend you the £10,000. Let me know your bank details and I'll transfer it today.");
+            completeLevel();
+          } else {
+            receiveMessage("I'm not quite convinced yet. I need to think about this more. Can we start this conversation again with more details?");
+            showFailedState(false);
+          }
+        } else {
+          receiveMessage(conversation[conversationStage].message);
+          showOptions(conversation[conversationStage].options);
+        }
+      }, getRandomDelay());
+    }
+
+    function showFailedState(permanent) {
+      progressBar.style.width = '0%';
+      if (permanent) {
+        failedMessage.textContent = "After 3 attempts, Alex has decided not to lend you the money. Game over.";
+        retryButton.style.display = 'none';
+      } else {
+        failedMessage.textContent = "You failed to convince Alex. Try again with better answers.";
+        retryButton.style.display = 'block';
+      }
+      failedMessage.style.display = 'block';
+    }
+
+    function updateTrustLevel(change) {
+      trustLevel += change;
+      if (trustLevel > maxTrustLevel) trustLevel = maxTrustLevel;
+      if (trustLevel < 0) trustLevel = 0;
+      progressBar.style.width = (trustLevel / maxTrustLevel * 100) + '%';
+    }
+
+    function completeLevel() {
+      progressBar.style.width = '100%';
+      nextButton.style.display = 'block';
+      // Use new API to trigger next level
+      nextButton.onclick = () => levelManager.nextLevel();
+      levelManager.nextLevel();
+    }
+
+    function resetChat() {
+      chatMessages.innerHTML = '';
+      trustLevel = 0;
+      conversationStage = 0;
+      progressBar.style.width = '0%';
+      failedMessage.style.display = 'none';
+      retryButton.style.display = 'none';
+      generateRandomConversation();
+      initChat();
+    }
+
+    function getCurrentTime() {
+      const now = new Date();
+      return now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+    }
+
+    function getRandomDelay() {
+      return 1000 + Math.random() * 2000;
+    }
+
+    function scrollToBottom() {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    retryButton.addEventListener('click', resetChat);
+
+    // Disable right-click menu
+    document.addEventListener("contextmenu", (e) => { e.preventDefault(); });
+
+    // Start the chat
+    initChat();
+  </script>
+</body>
+</html>

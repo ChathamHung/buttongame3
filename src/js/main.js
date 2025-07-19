@@ -183,6 +183,10 @@ function generateLevelButtons() {
     // Add click event listener
     button.addEventListener('click', () => {
       if (locked) return;
+      if (levelNum === levelManager.currentLevel) {
+        closeMenu();
+        return;
+      }
       goTo(levelNum);
       updateLevelButtons(levelNum);
       closeMenu();
@@ -297,6 +301,11 @@ function levelChanged() {
 }
 
 function completeLevel() {
+  unlockLevel(levelManager.currentLevel + 1);
+  unmarkSkipped(levelManager.currentLevel);
+  generateLevelButtons();
+  updateLevelButtons(levelManager.currentLevel);
+
   if (levelManager.currentLevel !== 0) {
     let completeMessage = "Level " + levelManager.currentLevel + " complete"
     if (levelManager.currentCompleteMessage !== "") {
@@ -305,18 +314,10 @@ function completeLevel() {
     showDialog("Level Complete", completeMessage, "CompleteLevel", (button) => {
       if (button === "ok") {
         // Unlock next level only if user clicks "Next Level"
-        unlockLevel(levelManager.currentLevel + 1);
-        unmarkSkipped(levelManager.currentLevel);
-        generateLevelButtons();
-        updateLevelButtons(levelManager.currentLevel + 1);
         goTo(levelManager.currentLevel + 1);
-      } else if (button === "cancel") {
+      } // else if (button === "cancel") {
         // Stay here: do not unlock next level, keep current button highlighted
-        unlockLevel(levelManager.currentLevel + 1);
-        unmarkSkipped(levelManager.currentLevel);
-        generateLevelButtons();
-        updateLevelButtons(levelManager.currentLevel);
-      }
+      // }
     });
   } else {
     // For level 0, always unlock next level and go to it
@@ -679,13 +680,13 @@ document.querySelector("#reset-all-game").addEventListener("click", () => {
   closeMenu();
   showDialog(
     "Reset",
-    "Are you sure you want to reset all game progress?<br> This will delete all save data and reload the game.",
+    "Are you sure you want to reset all game progress? <br>This will delete all save data and reload the game.",
     "Delete",
     (button) => {
       if (button === "ok") {
         showDialog(
           "Reset",
-          "<strong>It's last warning!</strong><br><br> Are you very sure you want to reset all game progress?<br><strong> It's not joking!</strong>",
+          "<strong>It's last warning! </strong><br><br>Are you very sure you want to reset all game progress? <br><strong>It's not joking!</strong>",
           "Delete",
           (button) => {
             if (button === "ok") {

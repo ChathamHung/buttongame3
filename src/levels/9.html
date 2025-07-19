@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      transition: background-color 0.1s ease;
+      margin: 5px;
+      min-width: 200px;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    .question-container {
+      text-align: center;
+      max-width: 600px;
+      padding: 0 20px 20px;
+    }
+
+    .answer-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .progress {
+      color: #666;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    #nextLevel {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="gameTitle">Get ready!</h1>
+  <div class="progress" id="progress"></div>
+  <div class="question-container" id="questionContainer">
+    <div class="buttons">
+      <button id="startGame">Start More Quiz</button>
+    </div>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 9;
+
+    init(levelNumber); // Initialize the level
+
+    let questions = {
+      "1": {
+        "question": "What is the capital city of Canada?",
+        "tip": "Think about the major political centers in Canada.",
+        "answers": {
+          "a": "Toronto",
+          "b": "Vancouver",
+          "c": "Ottawa",
+          "d": "Montreal"
+        },
+        "correctAnswer": "c"
+      },
+      "2": {
+        "question": "In a right-angled triangle, which side is opposite the right angle?",
+        "tip": "This side is always the longest in a right-angled triangle.",
+        "answers": {
+          "a": "Adjacent side",
+          "b": "Opposite side",
+          "c": "Hypotenuse",
+          "d": "Leg"
+        },
+        "correctAnswer": "c"
+      },
+      "3": {
+        "question": "Which planet is known as the 'Red Planet'?",
+        "tip": "Its surface is rich in iron minerals, giving it a distinctive color.",
+        "answers": {
+          "a": "Jupiter",
+          "b": "Mars",
+          "c": "Venus",
+          "d": "Saturn"
+        },
+        "correctAnswer": "b"
+      },
+      "4": {
+        "question": "Who wrote the play 'Romeo and Juliet'?",
+        "tip": "He is widely regarded as the greatest writer in the English language.",
+        "answers": {
+          "a": "Charles Dickens",
+          "b": "Jane Austen",
+          "c": "William Shakespeare",
+          "d": "Leo Tolstoy"
+        },
+        "correctAnswer": "c"
+      },
+      "5": {
+        "question": "What is the process by which plants make their own food?",
+        "tip": "This process involves sunlight, water, and carbon dioxide.",
+        "answers": {
+          "a": "Respiration",
+          "b": "Photosynthesis",
+          "c": "Transpiration",
+          "d": "Pollination"
+        },
+        "correctAnswer": "b"
+      },
+      "6": {
+        "question": "How many continents are there in the world?",
+        "tip": "Consider the largest landmasses on Earth.",
+        "answers": {
+          "a": "5",
+          "b": "6",
+          "c": "7",
+          "d": "8"
+        },
+        "correctAnswer": "c"
+      },
+      "7": {
+        "question": "What is the square root of 64?",
+        "tip": "Which number, when multiplied by itself, gives 64?",
+        "answers": {
+          "a": "6",
+          "b": "7",
+          "c": "8",
+          "d": "9"
+        },
+        "correctAnswer": "c"
+      },
+      "8": {
+        "question": "Which instrument is used to measure atmospheric pressure?",
+        "tip": "Think about devices used in meteorology.",
+        "answers": {
+          "a": "Thermometer",
+          "b": "Anemometer",
+          "c": "Barometer",
+          "d": "Hydrometer"
+        },
+        "correctAnswer": "c"
+      },
+      "9": {
+        "question": "What is the main function of verbs in a sentence?",
+        "tip": "Verbs are the 'doing' or 'being' words in a sentence.",
+        "answers": {
+          "a": "To describe nouns",
+          "b": "To connect ideas",
+          "c": "To show action or a state of being",
+          "d": "To modify other words"
+        },
+        "correctAnswer": "c"
+      },
+      "10": {
+        "question": "Which ocean is the largest and deepest on Earth?",
+        "tip": "This ocean covers about one-third of the surface of the Earth.",
+        "answers": {
+          "a": "Atlantic Ocean",
+          "b": "Indian Ocean",
+          "c": "Arctic Ocean",
+          "d": "Pacific Ocean"
+        },
+        "correctAnswer": "d"
+      }
+    };
+
+    let currentQuestionIndex = 1;
+    let totalQuestions = Object.keys(questions).length;
+    let gameStarted = false;
+
+    levelManager.updateTip("");
+    levelManager.updateCompleteMessage("Congratulations! You've completed all the quiz!");
+    levelManager.setRefreshEnable(true);
+
+    // Function to generate answer buttons
+    function generateAnswerButtons(questionData) {
+      const container = document.getElementById('questionContainer');
+      container.innerHTML = '';
+      
+      // Add question text
+      const questionText = document.createElement('h2');
+      questionText.textContent = questionData.question;
+      questionText.style.marginBottom = '20px';
+      container.appendChild(questionText);
+      
+      // Create buttons container
+      const buttonsContainer = document.createElement('div');
+      buttonsContainer.className = 'answer-buttons';
+      
+      // Generate buttons for each answer
+      Object.keys(questionData.answers).forEach(key => {
+        const button = document.createElement('button');
+        button.textContent = `${key.toUpperCase()}) ${questionData.answers[key]}`;
+        button.setAttribute('data-answer', key);
+        
+        button.addEventListener('click', () => {
+          handleAnswerClick(key, questionData.correctAnswer);
+        });
+        
+        buttonsContainer.appendChild(button);
+      });
+      
+      container.appendChild(buttonsContainer);
+    }
+
+    // Function to handle answer clicks
+    function handleAnswerClick(selectedAnswer, correctAnswer) {
+      if (selectedAnswer === correctAnswer) {
+        // Correct answer
+        if (currentQuestionIndex < totalQuestions) {
+          currentQuestionIndex++;
+          showNextQuestion();
+        } else {
+          // All questions completed
+          completeGame();
+        }
+      } else {
+        // Wrong answer
+        levelManager.showDialog("Incorrect!", "That's not the right answer. Try again!");
+      }
+    }
+
+    // Function to show next question
+    function showNextQuestion() {
+      updateProgress();
+      updateTip();
+      
+      if (currentQuestionIndex <= totalQuestions) {
+        const questionData = questions[currentQuestionIndex];
+        generateAnswerButtons(questionData);
+      }
+    }
+
+    // Function to update progress display
+    function updateProgress() {
+      const progressElement = document.getElementById('progress');
+      progressElement.textContent = `Question ${currentQuestionIndex} of ${totalQuestions}`;
+    }
+
+    // Function to update tip
+    function updateTip() {
+      if (currentQuestionIndex <= totalQuestions) {
+        const questionData = questions[currentQuestionIndex];
+        levelManager.updateTip(questionData.tip);
+      }
+    }
+
+    // Function to complete the game
+    function completeGame() {
+      document.getElementById('gameTitle').textContent = 'Quiz Complete!';
+      document.getElementById('progress').textContent = 'All questions answered correctly!';
+      levelManager.updateTip("");
+      
+      const container = document.getElementById('questionContainer');
+      container.innerHTML = `
+        <div class="buttons">
+          <button id="nextLevel">Next Level</button>
+        </div>
+      `;
+      
+      // Add event listener for next level button
+      document.getElementById('nextLevel').addEventListener('click', () => {
+        levelManager.nextLevel();
+      });
+    }
+
+    // Start game function
+    function startGame() {
+      gameStarted = true;
+      document.getElementById('gameTitle').textContent = 'Quiz Game';
+      currentQuestionIndex = 1;
+      updateProgress();
+      updateTip();
+      showNextQuestion();
+    }
+
+    // Initialize start button
+    document.getElementById('startGame').addEventListener('click', startGame);
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

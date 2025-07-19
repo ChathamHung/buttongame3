@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none;
+      /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px;
+      
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+      position: absolute;
+			transition: all 1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Catch the button!</h1>
+  <button id="nextLevel">Next Level</button>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 8;
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+
+    levelManager.updateTip("");
+    levelManager.updateCompleteMessage("Congratulations! You caught the button!");
+    levelManager.setSkipEnable(true);
+
+    // Set initial position
+    positionButtonRandomly();
+
+    // Start the movement
+    let moveInterval = setInterval(moveButtonRandomly, 1000);
+
+    // Add event listener for when the button is clicked
+    nextButton.addEventListener('mouseenter', function () {
+      // Move the button when mouse enters
+      moveButtonRandomly();
+    });
+
+    // Function to position the button randomly
+    function positionButtonRandomly() {
+      // Get viewport dimensions
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // Get button dimensions
+      const buttonWidth = nextButton.offsetWidth;
+      const buttonHeight = nextButton.offsetHeight;
+
+      // Calculate maximum positions
+      const maxX = viewportWidth - buttonWidth;
+      const maxY = viewportHeight - buttonHeight;
+
+      // Set random position
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
+
+      // Apply position
+      nextButton.style.left = randomX + 'px';
+      nextButton.style.top = randomY + 'px';
+    }
+
+    // Function to move the button randomly
+    function moveButtonRandomly() {
+      positionButtonRandomly();
+    }
+
+    // Clean up interval when page is unloaded
+    window.addEventListener('beforeunload', function () {
+      clearInterval(moveInterval);
+    });
+
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      levelManager.nextLevel();
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+
+</html>

@@ -32,15 +32,19 @@
     "file": "7.html"
   },
   "8": {
-    "name": "",
+    "name": "Catch Button",
     "file": "8.html"
   },
   "9": {
-    "name": "",
+    "name": "More questions",
     "file": "9.html"
   },
   "10": {
-    "name": "",
+    "name": "Chatting",
     "file": "10.html"
+  },
+  "11": {
+    "name": "",
+    "file": "11.html"
   }
 }

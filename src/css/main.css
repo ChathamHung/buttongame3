@@ -233,6 +233,9 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(190, 190, 190, 0.3) transparent;
 }
 
 .menu-pages .about-page {
@@ -263,12 +266,6 @@ body {
 /*  height: 100px;*/
 /*}*/
 
-
-.menu-pages button.skiped {
-  background-color: rgba(255, 213, 0, 0.2);
-  color: rgba(255, 213, 0, 1);
-}
-
 .menu-pages button.current {
   font-weight: bold;
   background-color: rgba(190, 190, 190, 0.2);
@@ -286,6 +283,27 @@ body {
 
 .menu-pages button:focus:hover {
   background-color: rgba(190, 190, 190, 0.6);
+}
+
+.menu-pages button.skiped {
+  background-color: rgba(255, 213, 0, 0.2);
+  color: rgba(255, 213, 0, 1);
+}
+
+.menu-pages button.skiped.current {
+  background-color: rgba(255, 213, 0, 0.25);
+}
+
+.menu-pages button.skiped:hover {
+  background-color: rgba(255, 213, 0, 0.3);
+}
+
+.menu-pages button.skiped:focus {
+  background-color: rgba(255, 213, 0, 0.4);
+}
+
+.menu-pages button.skiped:focus:hover {
+  background-color: rgba(255, 213, 0, 0.6);
 }
 
 .menu-pages button.locked {
