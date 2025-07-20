@@ -70,8 +70,8 @@
       position: relative;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px);}
-      to { opacity: 1; transform: translateY(0);}
+      from { opacity: 0;}
+      to { opacity: 1;}
     }
     @keyframes typing {
       0% { opacity: 0.3; }
@@ -168,14 +168,14 @@
   <h1>Interview simulation</h1>
   <div class="chat-container">
     <div class="chat-header">
-      <div class="profile-pic">B</div>
+      <div class="profile-pic">I</div>
       <div>
-        <div class="chat-name">Boss</div>
+        <div class="chat-name">Interviewer</div>
         <div class="chat-status">Online</div>
       </div>
     </div>
     <div class="chat-messages" id="chat-messages"></div>
-    <div class="typing-indicator" id="typing-indicator">Boss is typing...</div>
+    <div class="typing-indicator" id="typing-indicator">Interviewer is typing...</div>
     <div class="progress-bar"><div class="progress" id="progress-bar"></div></div>
   </div>
   <div class="failed-message" id="failed-message"></div>
@@ -188,7 +188,7 @@
     init(levelNumber);
 
     // Set up tip and complete message using new APIs
-    levelManager.updateTip(`You have a interview with the boss, <br>and you need to try to successfully the interview.`);
+    levelManager.updateTip(`You have a interview with the interviewer, <br>and you need to try to successfully the interview.`);
     levelManager.updateCompleteMessage(`Congratulations! You've successfully have your new job!`);
     // Chat elements
     const chatMessages = document.getElementById('chat-messages');
@@ -408,15 +408,15 @@
       conversationStage++;
       setTimeout(() => {
         if (trustLevel >= maxTrustLevel) {
-          receiveMessage("You know what? I trust you. I'll lend you the £10,000. Let me know your bank details and I'll transfer it today.");
+          receiveMessage("Congratulations! You've passed the interview.");
           completeLevel();
         } else if (conversationStage >= conversation.length) {
           if (trustLevel >= 70) {
-            receiveMessage("You know what? I trust you. I'll lend you the £10,000. Let me know your bank details and I'll transfer it today.");
+            receiveMessage("You've shown great potential! Welcome aboard.");
             completeLevel();
           } else {
-            receiveMessage("I'm not quite convinced yet. I need to think about this more. Can we start this conversation again with more details?");
-            showFailedState(false);
+            receiveMessage("Unfortunately, you didn't meet the requirements this time.");
+            showFailedState();
           }
         } else {
           receiveMessage(conversation[conversationStage].message);
@@ -425,15 +425,10 @@
       }, getRandomDelay());
     }
 
-    function showFailedState(permanent) {
+    function showFailedState() {
       progressBar.style.width = '0%';
-      if (permanent) {
-        failedMessage.textContent = "After 3 attempts, Alex has decided not to lend you the money. Game over.";
-        retryButton.style.display = 'none';
-      } else {
-        failedMessage.textContent = "You failed to convince Alex. Try again with better answers.";
-        retryButton.style.display = 'block';
-      }
+      failedMessage.textContent = "Try again with better answers.";
+      retryButton.style.display = 'block';
       failedMessage.style.display = 'block';
     }
 

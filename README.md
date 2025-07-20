@@ -1,4 +1,4 @@
-# Button Game 3 (Alpha)
+# Button Game 3
 
 Button Game 3 is a web-based puzzle and quiz game made with HTML, CSS, and JavaScript. Players progress through creative levels by solving challenges, finding hidden buttons, answering questions, and more.
 

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    .title {
+      cursor: pointer;
+    }
+
+    /* Custom context menu styles */
+    #customContextMenu {
+      display: block;
+      position: absolute;
+      z-index: 1000;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 25px;
+      border: none;
+      min-width: 150px;
+      padding: 8px;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px); /* Safari */
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.1s ease;
+    }
+    #customContextMenu ul {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    #customContextMenu li {
+      padding: 8px 15px;
+      color: white;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background-color 0.1s;
+    }
+    #customContextMenu li:hover {
+      background-color: rgba(190, 190, 190, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <h1 class="title">Where is the button?</h1>
+
+  <!-- Custom context menu -->
+  <div id="customContextMenu">
+    <ul>
+      <li id="nextLevel">Next level</li>
+    </ul>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 11;
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+    const title = document.querySelector(".title");
+    const customMenu = document.getElementById('customContextMenu');
+
+    levelManager.updateTip("Context menu?");
+    levelManager.updateCompleteMessage(`The button is in the context menu!`);
+    levelManager.setRefreshEnable(false);
+
+    title.addEventListener("click", () => {
+      levelManager.showDialog("Haha!", "Not in here! :D");
+    });
+
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      setContextMenuDisplay(false); // Hide the custom context menu
+      levelManager.nextLevel();
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+
+    function setContextMenuDisplay(visible) {
+      if (visible) {
+        customMenu.style.opacity = '1';
+        customMenu.style.pointerEvents = 'auto';
+      } else {
+        customMenu.style.opacity = '0';
+        customMenu.style.pointerEvents = 'none';
+      }
+    }
+
+    // Custom context menu logic
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      customMenu.style.left = e.pageX + 'px';
+      customMenu.style.top = e.pageY + 'px';
+      setContextMenuDisplay(true);
+    });
+    document.addEventListener('click', function(e) {
+      if (!customMenu.contains(e.target)) {
+        setContextMenuDisplay(false);
+      }
+    });
+  </script>
+</body>
+</html>
