@@ -74,9 +74,57 @@ let allLevelsData = { // Backup of all levels data
 
 let allAchievementsData = { // Backup of all achievements data
   "1": {
-    "name": "Welcome",
+    "name": "Welcome!",
     "tip": "Play Button Game 3!",
     "icon": "Welcome.png",
+    "hide": false
+  },
+  "2": {
+    "name": "Very Basic, right?",
+    "tip": "Complete Level 1",
+    "icon": "Basic.png",
+    "hide": false
+  },
+  "3": {
+    "name": "I'm really not a robot!",
+    "tip": "Complete Level 7",
+    "icon": "Robot.png",
+    "hide": false
+  },
+  "4": {
+    "name": "I can't do it!",
+    "tip": "Skipped a level",
+    "icon": "Skip.png",
+    "hide": false
+  },
+  "5": {
+    "name": "I did it!.. again...",
+    "tip": "Complete a skipped level",
+    "icon": "NoSkip.png",
+    "hide": false
+  },
+  "6": {
+    "name": "A little help",
+    "tip": "First time using tip button",
+    "icon": "Tip.png",
+    "hide": false
+  },
+  "7": {
+    "name": "Refreshing",
+    "tip": "Refresh a level",
+    "icon": "Refresh.png",
+    "hide": false
+  },
+  "8": {
+    "name": "Top 10 easily levels",
+    "tip": "Complete Levels 1-10",
+    "icon": "Easily.png",
+    "hide": false
+  },
+  "9": {
+    "name": "I got a new job!",
+    "tip": "Complete Level 10",
+    "icon": "Job.png",
     "hide": false
   }
 };
