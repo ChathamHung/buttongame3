@@ -10,13 +10,18 @@ const menuOptions = document.querySelectorAll(".menu-option");
 const menuPages = document.querySelectorAll(".menu-pages > div");
 const levelPage = document.querySelector(".level-page");
 const dialog = document.querySelector(".dialog");
+const notifications = document.querySelector(".notifications");
+
+const version = 0.1;
+const versionType = "Alpha";
+const updateName = "update 10";
 
 let currentPageIndex = 0;
 let currentTip = ``;
 let debugEnabled = false;
 let levelsData = {};
 
-let backUpLevelData = {
+let allLevelsData = { // Backup of all levels data
   "0": {
     "name": "Welcome",
     "file": "0.html"
@@ -24,7 +29,299 @@ let backUpLevelData = {
   "1": {
     "name": "Basic",
     "file": "1.html"
+  },
+  "2": {
+    "name": "More Buttons",
+    "file": "2.html"
+  },
+  "3": {
+    "name": "Hiding Button",
+    "file": "3.html"
+  },
+  "4": {
+    "name": "Emojis",
+    "file": "4.html"
+  },
+  "5": {
+    "name": "No button",
+    "file": "5.html"
+  },
+  "6": {
+    "name": "Some questions",
+    "file": "6.html"
+  },
+  "7": {
+    "name": "Captcha",
+    "file": "7.html"
+  },
+  "8": {
+    "name": "Catch Button",
+    "file": "8.html"
+  },
+  "9": {
+    "name": "More questions",
+    "file": "9.html"
+  },
+  "10": {
+    "name": "Chatting",
+    "file": "10.html"
+  },
+  "11": {
+    "name": "More hiding buttons",
+    "file": "11.html"
   }
+};
+
+let allAchievementsData = { // Backup of all achievements data
+  "1": {
+    "name": "Welcome",
+    "tip": "Play Button Game 3!",
+    "icon": "Welcome.png",
+    "hide": false
+  }
+};
+
+// Achievements save system
+const ACHIEVEMENTS_SAVE_KEY = "buttonGame3Achievements";
+let achievementsSaveData = {
+  unlocked: []
+};
+
+function loadAchievementsSave() {
+  const data = localStorage.getItem(ACHIEVEMENTS_SAVE_KEY);
+  if (data) {
+    try {
+      achievementsSaveData = JSON.parse(data);
+    } catch (e) {
+      achievementsSaveData = { unlocked: [] };
+    }
+  }
+}
+
+function saveAchievementsProgress() {
+  localStorage.setItem(ACHIEVEMENTS_SAVE_KEY, JSON.stringify(achievementsSaveData));
+}
+
+function showNotification(title, message, icon, type, callback = (closeType) => {}, timeout = 5000) {
+  let info = "";
+  switch (type) {
+    case "unlockAchievement":
+      info = "Achievement Unlocked!";
+      break;
+    case "error":
+      info = "Error";
+      break;
+    case "info":
+      info = "Info";
+      break;
+    case "debug":
+      info = "Debug";
+      break;
+    default:
+      info = "Notification";
+      break;
+  }
+  const notification = `
+  <div class="notification">
+    <img src="${icon}" class="notification-image" draggable="false">
+    <div class="notification-content">
+      <span class="notification-info">${info}</span>
+      <h1 class="notification-title">${title}</h1>
+      <span class="notification-text">${message}</span>
+    </div>
+    <button class="notification-close-button" title="Close notification">
+      <img src="./res/images/icons/close-icon.png" draggable="false">
+    </button>
+  </div>
+  `;
+  notifications.insertAdjacentHTML("beforeend", notification);
+  const newNotification = notifications.lastElementChild;
+  const notificationImage = newNotification.querySelector(".notification-image");
+  const closeButton = newNotification.querySelector(".notification-close-button");
+
+  if (!icon || icon === "") {
+    notificationImage.remove();
+  }
+
+  let timeoutId = null;
+  let closed = false;
+
+  // Helper to hide notification with animation
+  function hideNotification(closeType) {
+    if (closed) return;
+    closed = true;
+    newNotification.classList.add("hide-anim");
+    if (timeoutId) clearTimeout(timeoutId);
+    newNotification.addEventListener("animationend", () => {
+      newNotification.remove();
+      callback(closeType);
+    }, { once: true });
+  }
+
+  // Automatically remove notification after timeout
+  if (timeout && timeout > 0) {
+    timeoutId = setTimeout(() => {
+      hideNotification("timeout");
+    }, timeout);
+  }
+
+  newNotification.addEventListener("click", () => {
+    hideNotification("click");
+  });
+
+  closeButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    hideNotification("close");
+  });
+}
+
+function closeAllNotifications() {
+  const allNotifications = notifications.querySelectorAll(".notification");
+  allNotifications.forEach(notification => {
+    notification.classList.add("hide-anim");
+    notification.addEventListener("animationend", () => {
+      notification.remove();
+    }, { once: true });
+  });
+}
+
+// function hideAllNotifications() {
+//   const allNotifications = notifications.querySelectorAll(".notification");
+//   allNotifications.forEach(notification => {
+//     notification.classList.add("hide-anim");
+//     notification.addEventListener("animationend", () => {
+//       notification.classList.add("hidden");
+//     }, { once: true });
+//   });
+// }
+
+// function showAllNotifications() {
+//   const allNotifications = notifications.querySelectorAll(".notification");
+//   allNotifications.forEach(notification => {
+//     notification.classList.remove("hide-anim");
+//     notification.classList.remove("hidden");
+//     // notification.addEventListener("animationend", () => {
+      
+//     // }, { once: true });
+//   });
+// }
+
+function showAchievementNotification(achievementId) {
+  const achievement = achievementsData[achievementId];
+  if (!achievement) return;
+
+  const icon = achievement.icon ? `./res/images/achievements/${achievement.icon}` : "./res/images/achievement-icon.png";
+  showNotification(achievement.name, achievement.tip, icon, "unlockAchievement", (closeType) => {
+    if (closeType === "click") {
+      openMenu();
+      switchMenuPage(1); // Switch to achievements page
+    }
+  }, 10000);
+}
+
+function unlockAchievementNotification(id) {
+  if (isAchievementUnlocked(id)) return;
+  showAchievementNotification(id);
+}
+
+function unlockAchievement(id) {
+  id = Number(id);
+  if (!achievementsSaveData.unlocked.includes(id)) {
+    achievementsSaveData.unlocked.push(id);
+    saveAchievementsProgress();
+    generateAchievementButtons();
+  }
+}
+
+function lockAchievement(id) {
+  id = Number(id);
+  const idx = achievementsSaveData.unlocked.indexOf(id);
+  if (idx !== -1) {
+    achievementsSaveData.unlocked.splice(idx, 1);
+    saveAchievementsProgress();
+    generateAchievementButtons();
+  }
+}
+
+function unlockAllAchievements() {
+  achievementsSaveData.unlocked = Object.keys(achievementsData).map(Number);
+  saveAchievementsProgress();
+  generateAchievementButtons();
+}
+
+function lockAllAchievements() {
+  achievementsSaveData.unlocked = [];
+  saveAchievementsProgress();
+  generateAchievementButtons();
+}
+
+function isAchievementUnlocked(id) {
+  return achievementsSaveData.unlocked.includes(Number(id));
+}
+
+function completeAchievement(id) {
+  unlockAchievementNotification(id);
+  unlockAchievement(id);
+}
+
+// Load achievements data from JSON
+let achievementsData = {};
+
+async function loadAchievements() {
+  try {
+    const response = await fetch('./src/data/achievements.json');
+    achievementsData = await response.json();
+    generateAchievementButtons();
+  } catch (error) {
+    achievementsData = allAchievementsData;
+    generateAchievementButtons();
+  }
+}
+
+// Generate achievement buttons
+const achievementPage = document.querySelector(".achievement-page");
+function generateAchievementButtons() {
+  achievementPage.innerHTML = '';
+  Object.keys(achievementsData).forEach(key => {
+    const ach = achievementsData[key];
+    if (ach.hide) return;
+    const unlocked = isAchievementUnlocked(key);
+
+    const button = document.createElement('button');
+    button.className = 'achievement-button';
+    button.setAttribute('data-achievement', key);
+    if (unlocked) {
+      button.classList.add('unlocked');
+    }
+
+    const img = document.createElement('img');
+    if (!ach.icon || ach.icon === "") {
+      img.src = "./res/images/achievement-icon.png";
+    } else {
+      img.src = `./res/images/achievements/${ach.icon}`;
+    }
+    img.classList.add('achievement-image');
+    img.draggable = false;
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'achievement-name';
+    nameSpan.textContent = ach.name;
+
+    button.appendChild(img);
+    button.appendChild(nameSpan);
+
+    // Show tip on click
+    button.addEventListener('click', () => {
+      closeMenu();
+      if (unlocked) {
+        showDialog(ach.name, ach.tip, "OK");
+      } else {
+        showDialog(ach.name + " (Locked)", ach.tip, "OK");
+      }
+    });
+
+    achievementPage.appendChild(button);
+  });
 }
 
 function level() {
@@ -141,7 +438,7 @@ async function loadLevels() {
   } catch (error) {
     console.error('Error loading levels:', error);
     // Fallback to default levels if JSON loading fails
-    levelsData = backUpLevelData;
+    levelsData = allLevelsData;
     generateLevelButtons();
   }
 }
@@ -224,6 +521,7 @@ function updateLevelButtons(currentLevel) {
 
 function init() {
   loadSave();
+  loadAchievementsSave();
   let urlParams = new URLSearchParams(window.location.search);
   let level = parseInt(urlParams.get('level'));
   // let unlock = parseInt(urlParams.get('unlock'));
@@ -248,7 +546,13 @@ function init() {
 
   switchMenuPage(0, true);
   loadLevels(); // Load levels from JSON
+  loadAchievements(); // Load achievements from JSON
 }
+
+// Example: unlock "Welcome" achievement when game starts
+// You can call unlockAchievement("1") wherever you want to unlock an achievement
+init();
+unlockAchievement(1);
 
 window.addEventListener("message", (e) => {
   if (!e.data) return;
@@ -301,10 +605,43 @@ function levelChanged() {
 }
 
 function completeLevel() {
+  const isSkipped = saveData.skippedLevels.includes(levelManager.currentLevel);
+
+  if (isSkipped) {
+    completeAchievement(5);
+  }
+
   unlockLevel(levelManager.currentLevel + 1);
   unmarkSkipped(levelManager.currentLevel);
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel);
+
+  switch (levelManager.currentLevel) {
+    case 1:
+      completeAchievement(2);
+      break;
+    case 7:
+      completeAchievement(3);
+      break;
+    case 10:
+      completeAchievement(9);
+      break;
+  
+    default:
+      break;
+  }
+
+  let hasAllLevels = true;
+  for (let i = 1; i < 10; i++) {
+    if (!saveData.unlockedLevels.includes(i)) {
+      hasAllLevels = false;
+      break;
+    }
+  }
+  if (hasAllLevels) {
+    completeAchievement(8);
+  }
+
 
   if (levelManager.currentLevel !== 0) {
     let completeMessage = "Level " + levelManager.currentLevel + " complete"
@@ -313,17 +650,18 @@ function completeLevel() {
     }
     showDialog("Level Complete", completeMessage, "CompleteLevel", (button) => {
       if (button === "ok") {
-        // Unlock next level only if user clicks "Next Level"
         goTo(levelManager.currentLevel + 1);
-      } // else if (button === "cancel") {
-        // Stay here: do not unlock next level, keep current button highlighted
-      // }
+      }
+        // switch (levelManager.currentLevel) {
+        //   case 1:
+        //     unlockAchievementNotification(2);
+        //     break;
+
+        // default:
+        //   break;
+        // }
     });
   } else {
-    // For level 0, always unlock next level and go to it
-    unlockLevel(levelManager.currentLevel + 1);
-    generateLevelButtons();
-    updateLevelButtons(levelManager.currentLevel + 1);
     goTo(levelManager.currentLevel + 1);
   }
 }
@@ -331,22 +669,35 @@ function completeLevel() {
 function goTo(level) {
   iframe.src = `./src/levels/${level}.html`;
   let log = `Go to level: ${levelManager.currentLevel}
-Current page level: ${iframe.src}`;
+Current page: ${iframe.src}`;
   dlog(log);
   updateLevelButtons(level);
 }
 
 function showState() {
   let log = `Current level: ${levelManager.currentLevel}<br>
-Current page level: ${iframe.src}`;
+Current page: ${iframe.src}`;
 
-  showDialog("Debug", log, "OK")
+  // showDialog("Debug", log, "OK")
+  showNotification("Debug", log, "", "debug", null, 10000);
 }
 
 function clickElement(e) {
   if (!menuPanel.contains(e.target) && !menuBtn.contains(e.target)) {
     closeMenu();
   }
+}
+
+function openMenu() {
+  closeAllNotifications();
+  menuPanel.classList.toggle("menu-hidden");
+  menuBtn.setAttribute("data-tooltip", menuPanel.classList.contains("menu-hidden")
+    ? "Menu"
+    : "Close Menu");
+
+  menuBtn.querySelector("img").src = menuPanel.classList.contains("menu-hidden")
+    ? "./res/images/icons/menu-icon.png"
+    : "./res/images/icons/close-icon.png";
 }
 
 function closeMenu() {
@@ -513,6 +864,8 @@ function hideDialog(button = "ok", callback = (button) => {}) {
 function refresh() {
   // goTo(levelManager.currentLevel)
   iframe.src = iframe.src;
+
+  completeAchievement(7);
 }
 
 function skip() {
@@ -520,6 +873,7 @@ function skip() {
   goTo(levelManager.currentLevel + 1);
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel + 1);
+  completeAchievement(4);
   // completeLevel();
 }
 
@@ -530,6 +884,8 @@ function showTip() {
   showDialog("Tip", currentTip, "OK", (button) => {
     // console.log("Clicked " + button + " button");
   });
+
+  completeAchievement(6);
 }
 
 function askRefresh() {
@@ -562,14 +918,7 @@ menuOptions.forEach((option, index) => {
 });
 
 menuBtn.addEventListener("click", () => {
-  menuPanel.classList.toggle("menu-hidden");
-  menuBtn.setAttribute("data-tooltip", menuPanel.classList.contains("menu-hidden")
-    ? "Menu"
-    : "Close Menu");
-
-  menuBtn.querySelector("img").src = menuPanel.classList.contains("menu-hidden")
-    ? "./res/images/icons/menu-icon.png"
-    : "./res/images/icons/close-icon.png";
+  openMenu();
 });
 
 tipButton.addEventListener("click", () => {
@@ -593,14 +942,19 @@ document.addEventListener("click", (e) => {
   clickElement(e);
 });
 
+document.querySelector("#visit-github").addEventListener("click", () => {
+  closeMenu();
+  window.open("https://github.com/ChathamHung/buttongame3", "_blank");
+});
+
 document.querySelector("#about-the-game").addEventListener("click", () => {
   closeMenu();
-  showDialog("Button Game", "Button Game 3 is made by @ChathamHung on Github, it is open source web game.", "OK");
+  showDialog("Button Game 3", `Version: ${version} ${versionType} (${updateName})`, "OK");
 });
 
 document.querySelector("#about-game-2").addEventListener("click", () => {
   closeMenu();
-  window.open("https://chathamhung.github.io/TheButtonGame2/", "_blank");
+  window.open("https://chathamhung.github.io/TheButtonGame2", "_blank");
 });
 
 document.querySelector("#about-game-1").addEventListener("click", () => {
@@ -633,7 +987,7 @@ document.querySelector("#debug-delete-data").addEventListener("click", () => {
   saveData = { unlockedLevels: [0, 1], skippedLevels: [] };
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel);
-  showDialog("Debug", "All save data deleted.", "OK");
+  showNotification("Debug", "All levels locked.", "", "debug");
   closeMenu();
 });
 
@@ -643,18 +997,19 @@ document.querySelector("#debug-unlock-all").addEventListener("click", () => {
   saveProgress();
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel);
-  showDialog("Debug", "All levels unlocked.", "OK");
+  showNotification("Debug", "All levels unlocked.", "", "debug");
   closeMenu();
 });
 
 // Debug: Unlock entered level
 document.querySelector("#debug-unlock-level").addEventListener("click", () => {
+  closeMenu();
   let value = prompt("Enter level number to unlock:", "0");
   if (!value) return;
   unlockLevel(Number(value));
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel);
-  showDialog("Debug", "Level " + value + " unlocked.", "OK");
+  showNotification("Debug", "Level " + value + " unlocked.", "", "debug");
   closeMenu();
 });
 
@@ -670,8 +1025,37 @@ document.querySelector("#debug-delete-level").addEventListener("click", () => {
   saveProgress();
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel);
-  showDialog("Debug", "Level " + value + " deleted from save.", "OK");
+  showNotification("Debug", "Level " + value + " deleted from save.", "", "debug");
   closeMenu();
+});
+
+// Debug: Unlock a achievement
+document.querySelector("#debug-unlock-achievement").addEventListener("click", () => {
+  closeMenu();
+  let value = prompt("Enter achievement id to unlock:", "1");
+  if (!value) return;
+  unlockAchievement(value);
+  showNotification("Debug", "Achievement " + value + " unlocked.", "", "debug");
+});
+
+document.querySelector("#debug-lock-achievement").addEventListener("click", () => {
+  closeMenu();
+  let value = prompt("Enter achievement id to lock:", "1");
+  if (!value) return;
+  lockAchievement(value);
+  showNotification("Debug", "Achievement " + value + " locked.", "", "debug");
+});
+
+document.querySelector("#debug-unlock-all-achievements").addEventListener("click", () => {
+  closeMenu();
+  unlockAllAchievements();
+  showNotification("Debug", "All achievements unlocked.", "", "debug");
+});
+
+document.querySelector("#debug-lock-all-achievements").addEventListener("click", () => {
+  closeMenu();
+  lockAllAchievements();
+  showNotification("Debug", "All achievements locked.", "", "debug");
 });
 
 // Settings
@@ -691,6 +1075,7 @@ document.querySelector("#reset-all-game").addEventListener("click", () => {
           (button) => {
             if (button === "ok") {
               localStorage.removeItem(SAVE_KEY);
+              localStorage.removeItem(ACHIEVEMENTS_SAVE_KEY);
               location.reload();
             }
           }

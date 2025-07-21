@@ -52,6 +52,10 @@ level.prototype.showDialog = function (title, text) {
   sendCommand("showMessage", { title: title, text: text });
 };
 
+level.prototype.showDialog = function (title, text) {
+  sendCommand("showMessage", { title: title, text: text });
+};
+
 document.addEventListener("click", (e) => {
   if (e.target.closest('.menu') === null && e.target.closest('.menu-button') === null) {
     sendCommand("closeMenu");

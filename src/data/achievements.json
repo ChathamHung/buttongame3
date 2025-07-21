@@ -1,0 +1,57 @@
+{
+  "1": {
+    "name": "Welcome!",
+    "tip": "Play Button Game 3!",
+    "icon": "Welcome.png",
+    "hide": false
+  },
+  "2": {
+    "name": "Very Basic, right?",
+    "tip": "Complete Level 1",
+    "icon": "",
+    "hide": false
+  },
+  "3": {
+    "name": "I'm realy not a robot!",
+    "tip": "Complete Level 7",
+    "icon": "",
+    "hide": false
+  },
+  "4": {
+    "name": "I can't do it!",
+    "tip": "Skipped a level",
+    "icon": "",
+    "hide": false
+  },
+  "5": {
+    "name": "I did it!.. again...",
+    "tip": "Complete a skipped level",
+    "icon": "",
+    "hide": false
+  },
+  "6": {
+    "name": "A little help",
+    "tip": "First time using tip button",
+    "icon": "",
+    "hide": false
+  },
+  "7": {
+    "name": "Refreshing",
+    "tip": "Refresh a level",
+    "icon": "",
+    "hide": false
+  },
+  "8": {
+    "name": "Top 10 easily levels",
+    "tip": "Complete Levels 1-10",
+    "icon": "",
+    "hide": false
+  },
+  "9": {
+    "name": "I got a new job!",
+    "tip": "Complete Level 10",
+    "icon": "",
+    "hide": false
+  }
+
+}

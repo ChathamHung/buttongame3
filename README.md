@@ -7,7 +7,7 @@ Button Game 3 is a web-based puzzle and quiz game made with HTML, CSS, and JavaS
 - Multiple levels with unique puzzles and quizzes
 - Interactive UI with tips, skip, and refresh options
 - Save system to track unlocked and skipped levels
-- Menu for navigating levels, settings, and about information
+- Menu for navigating levels, settings, and achievement
 - Fun challenges including quizzes, captchas, and mini-games
 
 ## Getting Started
