@@ -52,8 +52,8 @@ level.prototype.showDialog = function (title, text) {
   sendCommand("showMessage", { title: title, text: text });
 };
 
-level.prototype.showDialog = function (title, text) {
-  sendCommand("showMessage", { title: title, text: text });
+level.prototype.showNotification = function (title, text) {
+  sendCommand("showNotification", { title: title, text: text });
 };
 
 document.addEventListener("click", (e) => {

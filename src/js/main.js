@@ -12,9 +12,9 @@ const levelPage = document.querySelector(".level-page");
 const dialog = document.querySelector(".dialog");
 const notifications = document.querySelector(".notifications");
 
-const version = 0.1;
+const version = 0.11;
 const versionType = "Alpha";
-const updateName = "update 10";
+const updateName = "update 11";
 
 let currentPageIndex = 0;
 let currentTip = ``;
@@ -121,6 +121,11 @@ function showNotification(title, message, icon, type, callback = (closeType) => 
       info = "Notification";
       break;
   }
+
+  if (!icon || icon === "") {
+    icon = "";
+  }
+
   const notification = `
   <div class="notification">
     <img src="${icon}" class="notification-image" draggable="false">
@@ -139,7 +144,7 @@ function showNotification(title, message, icon, type, callback = (closeType) => 
   const notificationImage = newNotification.querySelector(".notification-image");
   const closeButton = newNotification.querySelector(".notification-close-button");
 
-  if (!icon || icon === "") {
+  if (icon === "") {
     notificationImage.remove();
   }
 
@@ -256,6 +261,7 @@ function lockAllAchievements() {
 }
 
 function isAchievementUnlocked(id) {
+  if (!id) return;
   return achievementsSaveData.unlocked.includes(Number(id));
 }
 
@@ -284,28 +290,32 @@ function generateAchievementButtons() {
   achievementPage.innerHTML = '';
   Object.keys(achievementsData).forEach(key => {
     const ach = achievementsData[key];
-    if (ach.hide) return;
+    const icon = ach.icon ? `./res/images/achievements/${ach.icon}` : "./res/images/achievement-icon.png";
     const unlocked = isAchievementUnlocked(key);
-
+    
     const button = document.createElement('button');
     button.className = 'achievement-button';
     button.setAttribute('data-achievement', key);
     if (unlocked) {
       button.classList.add('unlocked');
     }
-
+    
     const img = document.createElement('img');
     if (!ach.icon || ach.icon === "") {
-      img.src = "./res/images/achievement-icon.png";
+      img.src = icon;
     } else {
-      img.src = `./res/images/achievements/${ach.icon}`;
+      img.src = icon;
     }
     img.classList.add('achievement-image');
     img.draggable = false;
-
+    
     const nameSpan = document.createElement('span');
     nameSpan.className = 'achievement-name';
     nameSpan.textContent = ach.name;
+
+    if (ach.hide) {
+      button.classList.add("hide");
+    };
 
     button.appendChild(img);
     button.appendChild(nameSpan);
@@ -314,9 +324,9 @@ function generateAchievementButtons() {
     button.addEventListener('click', () => {
       closeMenu();
       if (unlocked) {
-        showDialog(ach.name, ach.tip, "OK");
+        showDialog(ach.name, ach.tip, "Achievement", () => {}, { icon: icon, achievementID: key });
       } else {
-        showDialog(ach.name + " (Locked)", ach.tip, "OK");
+        showDialog(ach.name + " (Locked)", ach.tip, "Achievement", () => {}, { icon: icon, achievementID: key });
       }
     });
 
@@ -597,6 +607,9 @@ window.addEventListener("message", (e) => {
     case "showMessage":
       showDialog(e.data.data.title, e.data.data.text, "OK")
       break;
+    case "showNotification":
+      showNotification(e.data.data.title, e.data.data.text)
+      break;
   }
 });
 
@@ -632,7 +645,7 @@ function completeLevel() {
   }
 
   let hasAllLevels = true;
-  for (let i = 1; i < 10; i++) {
+  for (let i = 1; i <= 11; i++) {
     if (!saveData.unlockedLevels.includes(i)) {
       hasAllLevels = false;
       break;
@@ -668,7 +681,7 @@ function completeLevel() {
 
 function goTo(level) {
   iframe.src = `./src/levels/${level}.html`;
-  let log = `Go to level: ${levelManager.currentLevel}
+  let log = `Current level: ${levelManager.currentLevel}
 Current page: ${iframe.src}`;
   dlog(log);
   updateLevelButtons(level);
@@ -777,17 +790,27 @@ function initializeMenuPages() {
 let currentOkHandler = null;
 let currentCancelHandler = null;
 
-function showDialog(title, text, buttonType = "OK", callback = (button) => {}) {
+function showDialog(title, text, buttonType = "OK", callback = (button) => { }, options = {}) {
   const dialogTitle = dialog.querySelector(".dialog-title");
   const dialogText = dialog.querySelector(".dialog-text");
   const okButton = dialog.querySelector(".ok-button");
   const cancelButton = dialog.querySelector(".cancel-button");
+  const dialogImageContainer = dialog.querySelector(".dialog-image-container");
+
+  dialogTitle.classList.remove("hide");
+  dialogText.classList.remove("hide");
+
+  okButton.classList.remove("hide");
+  okButton.classList.remove("delete");
+  cancelButton.classList.remove("hide");
   
   dialogTitle.textContent = title;
   dialogText.innerHTML = text;
   
   // Remove any existing closing class
   dialog.classList.remove("closing");
+
+  const achievementUnlocked = isAchievementUnlocked(options.achievementID);
 
   // Handle button visibility and text
   if (cancelButton && buttonType === "OK") {
@@ -809,6 +832,9 @@ function showDialog(title, text, buttonType = "OK", callback = (button) => {}) {
   } else if (buttonType === "CompleteLevel") {
     okButton.textContent = "Next Level";
     cancelButton.textContent = "Stay here";
+  } else if (buttonType === "Achievement") {
+    okButton.textContent = "OK";
+    cancelButton.textContent = "Show Tip";
   }
 
   // Show the dialog
@@ -821,19 +847,30 @@ function showDialog(title, text, buttonType = "OK", callback = (button) => {}) {
   if (currentCancelHandler) {
     cancelButton.removeEventListener("click", currentCancelHandler);
   }
-
-  if (buttonType === "Delete") {
-    okButton.classList.add("delete");
-  } else {
-    okButton.classList.remove("delete");
-  }
-
+  
   if (buttonType === "Delete") {
     cancelButton.focus();
   } else {
     okButton.focus();
   }
 
+  if (buttonType === "Achievement" && !achievementUnlocked) {
+    dialogText.classList.add("hide");
+  } else if (buttonType === "Achievement") {
+    cancelButton.classList.add("hide");
+  }
+
+  if (options.icon) {
+    dialogImageContainer.style.display = "flex";
+    dialogImageContainer.querySelector(".dialog-image").src = options.icon;
+  } else {
+    dialogImageContainer.style.display = "none";
+    dialogImageContainer.querySelector(".dialog-image").src = "";
+  }
+
+  if (buttonType === "Delete") {
+    okButton.classList.add("delete");
+  }
 
   // Create new event handlers and store references
   currentOkHandler = () => {
@@ -841,6 +878,12 @@ function showDialog(title, text, buttonType = "OK", callback = (button) => {}) {
   };
 
   currentCancelHandler = () => {
+    if (buttonType === "Achievement" && options.achievementID) {
+      dialogText.classList.remove("hide");
+      cancelButton.classList.add("hide");
+      okButton.focus();
+      return;
+    }
     hideDialog(buttonType === "YesNo" ? "no" : "cancel", callback);
   };
 
@@ -950,6 +993,18 @@ document.querySelector("#visit-github").addEventListener("click", () => {
 document.querySelector("#about-the-game").addEventListener("click", () => {
   closeMenu();
   showDialog("Button Game 3", `Version: ${version} ${versionType} (${updateName})`, "OK");
+});
+
+document.querySelector("#change-log").addEventListener("click", () => {
+  closeMenu();
+  showDialog("What's new?", `<style>
+  .whatsnew-iframe {
+    width: 500px;
+    height: 400px;
+    border: none;
+  }
+</style>
+<iframe src="./src/html/whatsnew.html" class="whatsnew-iframe"></iframe>`, "OK");
 });
 
 document.querySelector("#about-game-2").addEventListener("click", () => {

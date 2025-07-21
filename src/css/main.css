@@ -607,6 +607,23 @@ body {
   padding: 10px 10px 10px 10px;
 }
 
+.dialog .dialog-image-container {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  display: none;
+}
+
+.dialog .dialog-image-container .dialog-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 100%;
+}
+
+.dialog .dialog-image-container .dialog-image.locked {
+  filter: grayscale(80%) brightness(0.8);
+}
+
 .dialog .dialog-title {
   margin-top: 0;
   text-align: center;

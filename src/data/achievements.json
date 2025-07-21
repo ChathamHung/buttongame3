@@ -8,49 +8,49 @@
   "2": {
     "name": "Very Basic, right?",
     "tip": "Complete Level 1",
-    "icon": "",
+    "icon": "Basic.png",
     "hide": false
   },
   "3": {
-    "name": "I'm realy not a robot!",
+    "name": "I'm really not a robot!",
     "tip": "Complete Level 7",
-    "icon": "",
+    "icon": "Robot.png",
     "hide": false
   },
   "4": {
     "name": "I can't do it!",
     "tip": "Skipped a level",
-    "icon": "",
+    "icon": "Skip.png",
     "hide": false
   },
   "5": {
     "name": "I did it!.. again...",
     "tip": "Complete a skipped level",
-    "icon": "",
+    "icon": "NoSkip.png",
     "hide": false
   },
   "6": {
     "name": "A little help",
     "tip": "First time using tip button",
-    "icon": "",
+    "icon": "Tip.png",
     "hide": false
   },
   "7": {
     "name": "Refreshing",
     "tip": "Refresh a level",
-    "icon": "",
+    "icon": "Refresh.png",
     "hide": false
   },
   "8": {
     "name": "Top 10 easily levels",
     "tip": "Complete Levels 1-10",
-    "icon": "",
+    "icon": "Easily.png",
     "hide": false
   },
   "9": {
     "name": "I got a new job!",
     "tip": "Complete Level 10",
-    "icon": "",
+    "icon": "Job.png",
     "hide": false
   }
 
