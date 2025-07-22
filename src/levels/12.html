@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    .code-table {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .code-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      width: 50px;
+    }
+
+    .number {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .letter {
+      font-size: 24px;
+      color: #0066cc;
+      margin-top: 5px;
+    }
+
+    .question {
+      font-size: 24px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .input-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    #answer {
+      padding: 10px;
+      font-size: 20px;
+      width: 200px;
+      text-align: center;
+      border-radius: 10px;
+      border: solid 2px #D3D3D3FF;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    #check-button {
+      background-color: #4a90e2;
+    }
+
+    #check-button:hover {
+      background-color: #3a7bc8;
+    }
+
+    /* Added a container to help with centering */
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Code Breaker</h1>
+    <div class="question" id="question">Decode the sum: </div>
+    
+    <div class="code-table" id="codeTable"></div>
+    
+    <div class="input-area">
+      <input type="text" id="answer" autocomplete="off" placeholder="Enter your code" maxlength="4">
+      <button id="check-button">Check Answer</button>
+    </div>
+  </div>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 12;
+
+    init(levelNumber);
+
+    // Generate a random mapping of numbers (0-9) to letters
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numberToLetter = {};
+    const usedLetters = new Set();
+    
+    // Assign random unique letters to each digit
+    for (let i = 0; i <= 9; i++) {
+      let randomLetter;
+      do {
+        const randomIndex = Math.floor(Math.random() * letters.length);
+        randomLetter = letters[randomIndex];
+      } while (usedLetters.has(randomLetter));
+      
+      usedLetters.add(randomLetter);
+      numberToLetter[i] = randomLetter;
+    }
+    
+    // Create reverse mapping (letter to number)
+    const letterToNumber = {};
+    for (const [number, letter] of Object.entries(numberToLetter)) {
+      letterToNumber[letter] = parseInt(number);
+    }
+    
+    // Generate two random numbers that will sum to a 4-digit number
+    function generateNumbers() {
+      // Generate first number between 100 and 9000
+      const num1 = Math.floor(Math.random() * 8901) + 100;
+      
+      // Calculate the range for the second number to ensure 4-digit sum
+      const minNum2 = 1000 - num1 > 0 ? 1000 - num1 : 1;
+      const maxNum2 = 9999 - num1;
+      
+      // Generate second number
+      const num2 = Math.floor(Math.random() * (maxNum2 - minNum2 + 1)) + minNum2;
+      
+      // Verify the sum is exactly 4 digits
+      const sum = num1 + num2;
+      if (sum < 1000 || sum > 9999) {
+        return generateNumbers(); // Try again if not 4 digits
+      }
+      
+      return { num1, num2, sum };
+    }
+    
+    // Convert number to letter code
+    function numberToCode(num) {
+      return num.toString().split('').map(digit => numberToLetter[digit]).join('');
+    }
+    
+    // Convert letter code to number
+    function codeToNumber(code) {
+      return parseInt(code.split('').map(letter => letterToNumber[letter]).join(''));
+    }
+    
+    // Create the code table
+    const codeTable = document.getElementById('codeTable');
+    for (let i = 0; i <= 9; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'code-cell';
+      
+      const numberSpan = document.createElement('span');
+      numberSpan.className = 'number';
+      numberSpan.textContent = i;
+      
+      const letterSpan = document.createElement('span');
+      letterSpan.className = 'letter';
+      letterSpan.textContent = numberToLetter[i];
+      
+      cell.appendChild(numberSpan);
+      cell.appendChild(letterSpan);
+      codeTable.appendChild(cell);
+    }
+    
+    // Generate the problem
+    const { num1, num2, sum } = generateNumbers();
+    const code1 = numberToCode(num1);
+    const code2 = numberToCode(num2);
+    const expectedAnswer = numberToCode(sum);
+    
+    // Display the question
+    const questionElement = document.getElementById('question');
+    questionElement.innerHTML = `Decode and add: <strong>${code1} + ${code2}</strong><br>Then encode the result`;
+    
+    // Set up the check button
+    const checkButton = document.getElementById('check-button');
+    const answerInput = document.getElementById('answer');
+    
+    levelManager.updateTip(`Convert the letters to numbers using the table, add them, then convert the sum back to letters.`);
+    levelManager.updateCompleteMessage(`Great job! You've cracked the code!`);
+    
+    checkButton.addEventListener('click', checkAnswer);
+    answerInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        checkAnswer();
+      }
+    });
+    
+    function checkAnswer() {
+      const userAnswer = answerInput.value.toUpperCase();
+      
+      // Check if the answer is correct
+      if (userAnswer === expectedAnswer) {
+        levelManager.completeLevel();
+      } else {
+        levelManager.showDialog('Incorrect', 'That\'s not the right answer. Try again!');
+      }
+    }
+    
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

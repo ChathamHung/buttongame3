@@ -12,9 +12,9 @@ const levelPage = document.querySelector(".level-page");
 const dialog = document.querySelector(".dialog");
 const notifications = document.querySelector(".notifications");
 
-const version = 0.11;
+const version = 0.12;
 const versionType = "Alpha";
-const updateName = "update 11";
+const updateName = "update 12";
 
 let currentPageIndex = 0;
 let currentTip = ``;
@@ -417,17 +417,17 @@ level.prototype.setSkipEnable = function (enable) {
 }
 
 level.prototype.setSkipTime = function (time) {
-  this.skipTime = time;
-  if (!time) return;
+  // this.skipTime = time;
+  // if (!time) return;
 
-  timeout = setTimeout(function () {
-    if (this.skipTime === 0) {
-      clearTimeout(timeout);
-    }
-    levelManager.setSkipTime(0)
-    levelManager.setSkipEnable(true);
-    clearTimeout(timeout);
-  }, time * 1000);
+  // timeout = setTimeout(function () {
+  //   if (this.skipTime === 0) {
+  //     clearTimeout(timeout);
+  //   }
+  //   levelManager.setSkipTime(0)
+  //   levelManager.setSkipEnable(true);
+  //   clearTimeout(timeout);
+  // }, time * 1000);
 }
 
 level.prototype.setLevelLabelEnable = function (enable) {
@@ -658,6 +658,9 @@ window.addEventListener("message", (e) => {
     case "showNotification":
       showNotification(e.data.data.title, e.data.data.text)
       break;
+    case "completeAchievement":
+      completeAchievement(e.data.data.id)
+      break;
   }
 });
 
@@ -686,6 +689,9 @@ function completeLevel() {
       break;
     case 10:
       completeAchievement(9);
+      break;
+    case 17:
+      completeAchievement(11);
       break;
   
     default:
@@ -739,8 +745,8 @@ function showState() {
   let log = `Current level: ${levelManager.currentLevel}<br>
 Current page: ${iframe.src}`;
 
-  // showDialog("Debug", log, "OK")
-  showNotification("Debug", log, "", "debug", null, 10000);
+  showDialog("Debug", log, "OK")
+  // showNotification("Debug", log, "", "debug", null, 10000);
 }
 
 function clickElement(e) {
@@ -1045,7 +1051,7 @@ document.querySelector("#about-the-game").addEventListener("click", () => {
 
 document.querySelector("#change-log").addEventListener("click", () => {
   closeMenu();
-  showDialog("What's new?", `<style>
+  showDialog("Change log", `<style>
   .whatsnew-iframe {
     width: 500px;
     height: 400px;

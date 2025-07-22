@@ -443,8 +443,8 @@
       progressBar.style.width = '100%';
       nextButton.style.display = 'block';
       // Use new API to trigger next level
-      nextButton.onclick = () => levelManager.nextLevel();
-      levelManager.nextLevel();
+      nextButton.onclick = () => levelManager.completeLevel();
+      levelManager.completeLevel();
     }
 
     function resetChat() {

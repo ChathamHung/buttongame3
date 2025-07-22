@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    .password-container {
+      width: 80%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .password-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .password-input {
+      width: calc(100% - 25px);
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      -webkit-user-select: auto;
+      user-select: auto;
+    }
+
+    .rules-container {
+      margin-bottom: 20px;
+    }
+
+    .rule {
+      padding: 8px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .rule.valid {
+      background-color: rgba(117, 198, 79, 0.2);
+    }
+
+    .rule.invalid {
+      background-color: rgba(255, 99, 71, 0.2);
+    }
+
+    .rule-icon {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    .valid .rule-icon {
+      color: #75c64f;
+    }
+
+    .invalid .rule-icon {
+      color: tomato;
+    }
+
+    .verification-container {
+      display: none;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .error-message {
+      color: tomato;
+      margin-top: 10px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>The Password Game</h1>
+  
+  <div class="password-container">
+    <div class="password-header">
+      <h2>Create a password that follows all the rules</h2>
+      <p>Your password must meet all 20 requirements to proceed</p>
+    </div>
+    
+    <input type="text" id="passwordInput" class="password-input" placeholder="Enter your password" autocomplete="off">
+    
+    <div class="rules-container" id="rulesContainer">
+      <!-- Rules will be dynamically added here -->
+    </div>
+    
+    <div class="error-message" id="errorMessage"></div>
+    
+    <button id="submitPassword" disabled>Submit Password</button>
+  </div>
+  
+  <div class="verification-container" id="verificationContainer">
+    <h2>Verify your password</h2>
+    <p>Please re-enter your password to proceed to the next level, if you forgot then click refresh button on right top.</p>
+    <input type="text" id="verifyPasswordInput" class="password-input" placeholder="Re-enter your password" autocomplete="off">
+    <div class="error-message" id="verifyErrorMessage"></div>
+    <button id="verifyPassword">Verify Password</button>
+  </div>
+
+  <button id="nextLevel" style="display: none;">Next Level</button>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 17;
+
+    init(levelNumber);
+
+    const passwordInput = document.getElementById('passwordInput');
+    const rulesContainer = document.getElementById('rulesContainer');
+    const submitPasswordBtn = document.getElementById('submitPassword');
+    const errorMessage = document.getElementById('errorMessage');
+    const verificationContainer = document.getElementById('verificationContainer');
+    const verifyPasswordInput = document.getElementById('verifyPasswordInput');
+    const verifyPasswordBtn = document.getElementById('verifyPassword');
+    const verifyErrorMessage = document.getElementById('verifyErrorMessage');
+    const nextButton = document.getElementById('nextLevel');
+
+    let userPassword = '';
+    let allRulesValid = false;
+
+    // Define the 20 rules
+    const passwordRules = [
+      {
+        id: 1,
+        description: 'Must be at least 8 characters long',
+        validate: (password) => password.length >= 8
+      },
+      {
+        id: 2,
+        description: 'Must contain at least one uppercase letter',
+        validate: (password) => /[A-Z]/.test(password)
+      },
+      {
+        id: 3,
+        description: 'Must contain at least one lowercase letter',
+        validate: (password) => /[a-z]/.test(password)
+      },
+      {
+        id: 4,
+        description: 'Must contain at least one number',
+        validate: (password) => /[0-9]/.test(password)
+      },
+      {
+        id: 5,
+        description: 'Must contain at least one special character (!@#$%^&*)',
+        validate: (password) => /[!@#$%^&*]/.test(password)
+      },
+      {
+        id: 6,
+        description: 'Must not contain the word "password"',
+        validate: (password) => !password.toLowerCase().includes('password')
+      },
+      {
+        id: 7,
+        description: 'Must contain exactly 2 numbers',
+        validate: (password) => (password.match(/[0-9]/g) || []).length === 2
+      },
+      {
+        id: 8,
+        description: 'The sum of all numbers must be 10',
+        validate: (password) => {
+          const numbers = password.match(/[0-9]/g) || [];
+          return numbers.reduce((sum, num) => sum + parseInt(num), 0) === 10;
+        }
+      },
+      {
+        id: 9,
+        description: 'Must contain a month of the year (e.g., January, February)',
+        validate: (password) => {
+          const months = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+          return months.some(month => password.toLowerCase().includes(month));
+        }
+      },
+      {
+        id: 10,
+        description: 'Must contain a capital city (e.g., London, Paris, Tokyo)',
+        validate: (password) => {
+          const cities = ['london', 'paris', 'tokyo', 'berlin', 'rome', 'madrid', 'moscow', 'beijing', 'washington', 'ottawa', 'canberra', 'delhi'];
+          return cities.some(city => password.toLowerCase().includes(city));
+        }
+      },
+      {
+        id: 11,
+        description: 'Must contain at least one ":D"',
+        validate: (password) => password.toLowerCase().includes(':d')
+      },
+      {
+        id: 12,
+        description: 'Must have at least 3 consecutive letters in alphabetical order',
+        validate: (password) => {
+          for (let i = 0; i < password.length - 2; i++) {
+            if (
+              password[i].toLowerCase().charCodeAt(0) + 1 === password[i + 1].toLowerCase().charCodeAt(0) &&
+              password[i + 1].toLowerCase().charCodeAt(0) + 1 === password[i + 2].toLowerCase().charCodeAt(0)
+            ) {
+              return true;
+            }
+          }
+          return false;
+        }
+      },
+      {
+        id: 13,
+        description: 'Must contain a prime number',
+        validate: (password) => {
+          const primes = ['2', '3', '5', '7', '11', '13', '17', '19', '23', '29', '31', '37', '41', '43', '47', '53', '59', '61', '67', '71', '73', '79', '83', '89', '97'];
+          return primes.some(prime => password.includes(prime));
+        }
+      },
+      {
+        id: 14,
+        description: 'Must contain a Roman numeral',
+        validate: (password) => /[IVXLCDM]+/i.test(password)
+      },
+      {
+        id: 15,
+        description: 'Must contain a mathematical symbol (+, -, ×, ÷, =)',
+        validate: (password) => /[+\-×÷=]/.test(password)
+      },
+      {
+        id: 16,
+        description: 'Must contain a color (e.g., red, blue, green)',
+        validate: (password) => {
+          const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink', 'brown', 'black', 'white', 'gray', 'cyan', 'magenta'];
+          return colors.some(color => password.toLowerCase().includes(color));
+        }
+      },
+      {
+        id: 17,
+        description: 'Must contain a day of the week (e.g., Monday, Tuesday)',
+        validate: (password) => {
+          const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+          return days.some(day => password.toLowerCase().includes(day));
+        }
+      },
+      {
+        id: 18,
+        description: 'Must contain at least one "🔑"',
+        validate: (password) => password.toLowerCase().includes('🔑')
+      },
+      {
+        id: 19,
+        description: 'Must contain at least one uppercase and one lowercase of the same letter',
+        validate: (password) => {
+          for (let i = 0; i < 26; i++) {
+            const lowerChar = String.fromCharCode(97 + i); // 'a' to 'z'
+            const upperChar = String.fromCharCode(65 + i); // 'A' to 'Z'
+            if (password.includes(lowerChar) && password.includes(upperChar)) {
+              return true;
+            }
+          }
+          return false;
+        }
+      },
+      {
+        id: 20,
+        description: 'Must be exactly 30 to 40 characters long',
+        validate: (password) => password.length >= 30 && password.length <= 40
+      }
+    ];
+
+    // Create rule elements
+    passwordRules.forEach(rule => {
+      const ruleElement = document.createElement('div');
+      ruleElement.className = 'rule invalid';
+      ruleElement.id = `rule-${rule.id}`;
+      ruleElement.innerHTML = `
+        <span class="rule-icon">✗</span>
+        <span class="rule-text">${rule.description}</span>
+      `;
+      rulesContainer.appendChild(ruleElement);
+    });
+
+    // Validate password against all rules
+    function validatePassword(password) {
+      let validRulesCount = 0;
+      
+      passwordRules.forEach(rule => {
+        const ruleElement = document.getElementById(`rule-${rule.id}`);
+        const isValid = rule.validate(password);
+        
+        ruleElement.className = isValid ? 'rule valid' : 'rule invalid';
+        ruleElement.querySelector('.rule-icon').textContent = isValid ? '✓' : '✗';
+        
+        if (isValid) validRulesCount++;
+      });
+      
+      allRulesValid = validRulesCount === passwordRules.length;
+      submitPasswordBtn.disabled = !allRulesValid;
+      
+      return validRulesCount;
+    }
+
+    function checkPassword() {
+      const password = passwordInput.value;
+      const validRulesCount = validatePassword(password);
+      errorMessage.textContent = validRulesCount === passwordRules.length ? '' : `${validRulesCount}/${passwordRules.length} rules met`;
+    }
+
+    // Event listeners
+    passwordInput.addEventListener('input', checkPassword);
+    passwordInput.addEventListener('change', checkPassword);
+    passwordInput.addEventListener('onkeypress', checkPassword);
+
+    submitPasswordBtn.addEventListener('click', () => {
+      if (allRulesValid) {
+        userPassword = passwordInput.value;
+        document.querySelector('.password-container').style.display = 'none';
+        verificationContainer.style.display = 'block';
+        levelManager.updateTip();
+      }
+    });
+
+    verifyPasswordBtn.addEventListener('click', () => {
+      const verifiedPassword = verifyPasswordInput.value;
+      
+      if (verifiedPassword === userPassword) {
+        verificationContainer.style.display = 'none';
+        nextButton.style.display = 'block';
+        levelManager.completeLevel();
+      } else {
+        verifyErrorMessage.textContent = 'Passwords do not match. Try again.';
+      }
+    });
+
+    nextButton.addEventListener('click', () => {
+      levelManager.completeLevel();
+    });
+
+    // Disable right-click menu
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+
+    // Set tip and completion message
+    levelManager.updateTip('Create a password that meets all 20 rules, then re-enter it to proceed.');
+    levelManager.updateCompleteMessage('Congratulations! You\'ve mastered the password game!');
+    levelManager.setSkipEnable(true);
+  </script>
+</body>
+</html>

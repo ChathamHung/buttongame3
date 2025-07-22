@@ -287,11 +287,11 @@
         </div>
       `;
 
-      levelManager.nextLevel();
+      levelManager.completeLevel();
       
       // Add event listener for next level button
       document.getElementById('nextLevel').addEventListener('click', () => {
-        levelManager.nextLevel();
+        levelManager.completeLevel();
       });
     }
 

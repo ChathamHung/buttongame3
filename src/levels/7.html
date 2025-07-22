@@ -341,7 +341,7 @@
         </div>
         <div class="captcha-main">
           <img class="code" src="../../res/images/captcha/page-3/captcha.png" draggable="false">
-          <input type="text" class="captcha-input" placeholder="Enter the text here" maxlength="6" />
+          <input type="text" class="captcha-input" autocomplete="off" placeholder="Enter the text here" maxlength="6" />
         </div>
       </div>
 
@@ -354,7 +354,7 @@
         </div>
         <div class="captcha-main">
           <img class="code" src="../../res/images/captcha/page-4/captcha.png" draggable="false">
-          <input type="text" class="captcha-input" placeholder="Enter the text here" maxlength="8" />
+          <input type="text" class="captcha-input" autocomplete="off" placeholder="Enter the text here" maxlength="8" />
         </div>
       </div>
 
@@ -367,7 +367,7 @@
         </div>
         <div class="captcha-main">
           <img class="code" src="../../res/images/captcha/page-3/captcha.png" draggable="false">
-          <input type="text" class="captcha-input" placeholder="Enter the text here" maxlength="6" />
+          <input type="text" class="captcha-input" autocomplete="off" placeholder="Enter the text here" maxlength="6" />
         </div>
       </div>
 
@@ -378,7 +378,7 @@
           </div>
         </div>
         <div class="captcha-main">
-          <input type="text" class="captcha-input" placeholder="Enter the answer here" />
+          <input type="text" class="captcha-input" autocomplete="off" placeholder="Enter the answer here" />
         </div>
       </div>
 
@@ -390,7 +390,7 @@
           </div>
         </div>
         <div class="captcha-main">
-          <input type="text" class="captcha-input" placeholder="Enter the answer here" />
+          <input type="text" class="captcha-input" autocomplete="off" placeholder="Enter the answer here" />
         </div>
       </div>
 
@@ -401,7 +401,7 @@
           </div>
         </div>
         <div class="captcha-main">
-          <input type="number" class="captcha-input" placeholder="Enter the answer here" />
+          <input type="number" class="captcha-input" autocomplete="off" placeholder="Enter the answer here" />
         </div>
       </div>
 
@@ -413,7 +413,7 @@
           </div>
         </div>
         <div class="captcha-main">
-          <input type="number" class="captcha-input" placeholder="Enter the answer here" />
+          <input type="number" class="captcha-input" autocomplete="off" placeholder="Enter the answer here" />
         </div>
       </div>
 
@@ -425,7 +425,7 @@
           </div>
         </div>
         <div class="captcha-main">
-          <input type="number" class="captcha-input" placeholder="Enter the answer here" />
+          <input type="number" class="captcha-input" autocomplete="off" placeholder="Enter the answer here" />
         </div>
       </div>
       
@@ -437,7 +437,7 @@
           </div>
         </div>
         <div class="captcha-main">
-          <input type="number" class="captcha-input" placeholder="Enter the answer here" />
+          <input type="number" class="captcha-input" autocomplete="off" placeholder="Enter the answer here" />
         </div>
       </div>
     </div>
@@ -550,7 +550,7 @@
         nextButton.classList.remove("hide");
         captcha.querySelector('.left .checkbox').classList.add("checked");
         captcha.style.cursor = "default";
-        levelManager.nextLevel();
+        levelManager.completeLevel();
         return;
       }
 
@@ -641,7 +641,7 @@
     });
 
     nextButton.addEventListener("click", () => {
-      levelManager.nextLevel();
+      levelManager.completeLevel();
     });
 
     document.addEventListener("contextmenu", (e) => {

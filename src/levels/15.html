@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+      margin-bottom: 5px;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    /* CSS here */
+  </style>
+</head>
+<body>
+  <h1>More buttons in this time! :D</h1>
+  <div class="buttons">
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="nextLevel">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+    <button id="fakeButton">Click me!</button>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+
+    const levelManager = new level();
+    const levelNumber = 15;
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+    const fakeButtons = document.querySelectorAll("#fakeButton");
+
+    levelManager.updateTip(`<del>Try to click every buttons to go to the next level.</del><br><br>Hmm... no more tips... you need try every buttons...`);
+    levelManager.updateCompleteMessage(`How long did you use?`);
+    levelManager.setRefreshEnable(false);
+
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      levelManager.completeLevel();
+    });
+
+    fakeButtons.forEach(fakeButton => {
+      fakeButton.addEventListener("click", () => {
+        levelManager.showDialog("Incorrect", "This button is incorrect!");
+      });
+    })
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+
+    // JS here
+  </script>
+</body>
+</html>

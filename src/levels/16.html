@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    #button {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">Click 500 times button!</h1>
+  <button id="button">Click me!</button>
+  <button id="nextLevel" disabled>Next level</button>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+
+    const levelManager = new level();
+    const levelNumber = 16;
+
+    init(levelNumber); // Initialize the level
+
+    let numberOfClicked = 0;
+    const goal = 500;
+    const achievementGoal = 1000;
+
+    const title = document.querySelector("#title");
+    const button = document.querySelector("#button");
+    const nextButton = document.querySelector("#nextLevel");
+
+    levelManager.updateTip(`You need cicked ${goal} times to go to next level!`);
+    levelManager.updateCompleteMessage(`Congratulations! You have clciked ${goal} times!`);
+    levelManager.setSkipEnable(true);
+
+    function checkClick() {
+      if (numberOfClicked > 0 && numberOfClicked < goal) {
+        title.textContent = `You clicked ${numberOfClicked}/${goal} times!`;
+      } else if (numberOfClicked > goal && numberOfClicked < achievementGoal) {
+        title.textContent = `To unlock a achievement, you need click ${numberOfClicked}/${achievementGoal} times!`;
+      } else {
+        title.textContent = `You clicked ${numberOfClicked} times!`;
+      }
+
+      if (numberOfClicked >= goal) {
+        nextButton.disabled = false;
+      }
+
+      if (numberOfClicked === goal) {
+        levelManager.completeLevel();
+      }
+      
+      if (numberOfClicked === achievementGoal) {
+        levelManager.completeAchievement(10);
+      }
+    }
+
+    button.addEventListener("click", () => { // When clicked button, then go to the next level
+      numberOfClicked++;
+      checkClick();
+    });
+    
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      levelManager.completeLevel();
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+
+    // JS here
+  </script>
+</body>
+</html>

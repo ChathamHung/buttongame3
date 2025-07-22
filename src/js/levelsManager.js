@@ -15,7 +15,7 @@ function level() {
   self.tipEnable = true;
 }
 
-level.prototype.nextLevel = function () {
+level.prototype.completeLevel = function () {
   sendCommand("nextLevel");
 };
 
@@ -44,7 +44,7 @@ level.prototype.setSkipEnable = function (enable) {
   sendCommand("setSkipEnable", enable);
 };
 
-level.prototype.setSkipTime = function (time) {
+level.prototype.setSkipTime = function (time) { // Deprecation
   sendCommand("setSkipTime", time);
 };
 
@@ -54,6 +54,10 @@ level.prototype.showDialog = function (title, text) {
 
 level.prototype.showNotification = function (title, text) {
   sendCommand("showNotification", { title: title, text: text });
+};
+
+level.prototype.completeAchievement = function (id) {
+  sendCommand("completeAchievement", { id: id });
 };
 
 document.addEventListener("click", (e) => {

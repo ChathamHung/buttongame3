@@ -46,5 +46,29 @@
   "11": {
     "name": "Really no button",
     "file": "11.html"
+  },
+  "12": {
+    "name": "Code cracking",
+    "file": "12.html"
+  },
+  "13": {
+    "name": "Checking",
+    "file": "13.html"
+  },
+  "14": {
+    "name": "Puzzle",
+    "file": "14.html"
+  },
+  "15": {
+    "name": "More and more buttons",
+    "file": "15.html"
+  },
+  "16": {
+    "name": "Clicking button",
+    "file": "16.html"
+  },
+  "17": {
+    "name": "The Password Game",
+    "file": "17.html"
   }
 }

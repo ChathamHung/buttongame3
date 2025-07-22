@@ -36,6 +36,11 @@
       background-color: #60a83e;
     }
 
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
     /* CSS here */
   </style>
 </head>
@@ -48,7 +53,7 @@
     /* Please remember to remove all example comments when you used example change to a level.
     *
     * Level Manager (levelManager) has core APIs for the game, here have some basic AIPs (not all):
-    * nextLevel() - When level is completed, then run this API
+    * completeLevel() - When level is completed, then run this API
     * updateTip(text) - Set / update the tip (want to disable the tip then put: "")
     * showTip() - Show up the tip for the user (when tip is disabled, it will do nothing)
     * showDialog(title, text) - To show up a message box
@@ -68,7 +73,7 @@
     // JS here
 
     nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
-      levelManager.nextLevel();
+      levelManager.completeLevel();
     });
 
     document.addEventListener("contextmenu", (e) => { // Disable right-click menu

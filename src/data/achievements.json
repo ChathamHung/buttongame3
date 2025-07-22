@@ -52,5 +52,17 @@
     "tip": "Complete Level 10",
     "icon": "Job.png",
     "hide": false
+  },
+  "10": {
+    "name": "Clicked 1,000 times",
+    "tip": "Clicked 1,000 times in Level 16",
+    "icon": "",
+    "hide": false
+  },
+  "11": {
+    "name": "Password god",
+    "tip": "Complete Level 17",
+    "icon": "",
+    "hide": false
   }
 }

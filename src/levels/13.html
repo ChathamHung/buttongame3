@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button { /* Example button (can be change) */
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    .checkboxs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    input[type=checkbox] {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Check all box!</h1>
+  <div class="checkboxs"></div>
+  <button id="nextLevel" disabled>Next Level</button>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 13; // Change to a new number
+
+    init(levelNumber); // Initialize the level
+
+    const numberOfCheckbox = 100;
+
+    const nextButton = document.querySelector("#nextLevel");
+    const checkboxs = document.querySelector(".checkboxs")
+
+    levelManager.updateTip("");
+    levelManager.updateCompleteMessage("Check, check, check!");
+
+    for (let i = 0; i < numberOfCheckbox; i++) {
+      const newCheckbox = document.createElement("input");
+      newCheckbox.type = "checkbox";
+      checkboxs.appendChild(newCheckbox);
+    }
+
+    const allCheckbox = document.querySelectorAll("input[type=checkbox]");
+
+    function checkIsAllChecked() {
+      if (allCheckbox.length === 0) return;
+
+      let isAllChecked = true;
+      allCheckbox.forEach((checkbox) => {
+        if (!checkbox.checked) {
+          isAllChecked = false;
+        }
+      });
+      if (isAllChecked) {
+        nextButton.disabled = false;
+        levelManager.completeLevel();
+      } else {
+        nextButton.disabled = true;
+      }
+    }
+
+    allCheckbox.forEach((checkbox) => {
+      checkbox.addEventListener("change", checkIsAllChecked);
+    });
+
+    checkIsAllChecked();
+
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      levelManager.completeLevel();
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

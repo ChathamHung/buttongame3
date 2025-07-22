@@ -107,7 +107,7 @@
 
     nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
       setContextMenuDisplay(false); // Hide the custom context menu
-      levelManager.nextLevel();
+      levelManager.completeLevel();
     });
 
     document.addEventListener("contextmenu", (e) => { // Disable right-click menu
