@@ -70,5 +70,21 @@
   "17": {
     "name": "The Password Game",
     "file": "17.html"
+  },
+  "18": {
+    "name": "Typing",
+    "file": "18.html"
+  },
+  "19": {
+    "name": "Memory Game",
+    "file": "19.html"
+  },
+  "20": {
+    "name": "Timer",
+    "file": "20.html"
+  },
+  "21": {
+    "name": "Send to Boss",
+    "file": "21.html"
   }
 }

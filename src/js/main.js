@@ -12,9 +12,9 @@ const levelPage = document.querySelector(".level-page");
 const dialog = document.querySelector(".dialog");
 const notifications = document.querySelector(".notifications");
 
-const version = 0.12;
+const version = 0.13;
 const versionType = "Alpha";
-const updateName = "update 12";
+const updateName = "update 13";
 
 let currentPageIndex = 0;
 let currentTip = ``;
@@ -67,8 +67,48 @@ let allLevelsData = { // Backup of all levels data
     "file": "10.html"
   },
   "11": {
-    "name": "More hiding buttons",
+    "name": "Really no button",
     "file": "11.html"
+  },
+  "12": {
+    "name": "Code cracking",
+    "file": "12.html"
+  },
+  "13": {
+    "name": "Checking",
+    "file": "13.html"
+  },
+  "14": {
+    "name": "Puzzle",
+    "file": "14.html"
+  },
+  "15": {
+    "name": "More and more buttons",
+    "file": "15.html"
+  },
+  "16": {
+    "name": "Clicking button",
+    "file": "16.html"
+  },
+  "17": {
+    "name": "The Password Game",
+    "file": "17.html"
+  },
+  "18": {
+    "name": "Typing",
+    "file": "18.html"
+  },
+  "19": {
+    "name": "Memory Game",
+    "file": "19.html"
+  },
+  "20": {
+    "name": "Timer",
+    "file": "20.html"
+  },
+  "21": {
+    "name": "Send to Boss",
+    "file": "21.html"
   }
 };
 
@@ -125,6 +165,30 @@ let allAchievementsData = { // Backup of all achievements data
     "name": "I got a new job!",
     "tip": "Complete Level 10",
     "icon": "Job.png",
+    "hide": false
+  },
+  "10": {
+    "name": "Super Clicker",
+    "tip": "Clicked 1,000 times in Level 16",
+    "icon": "",
+    "hide": false
+  },
+  "11": {
+    "name": "God of Password Game",
+    "tip": "Complete Level 17",
+    "icon": "",
+    "hide": false
+  },
+  "12": {
+    "name": "God of Memory Match",
+    "tip": "Complete Level 14 in 15 moves or less",
+    "icon": "",
+    "hide": false
+  },
+  "13": {
+    "name": "20 basic levels",
+    "tip": "Complete Levels 1-20",
+    "icon": "",
     "hide": false
   }
 };
@@ -446,7 +510,9 @@ function dlog(text) {
 const SAVE_KEY = "buttonGame3Save";
 let saveData = {
   unlockedLevels: [0, 1],
-  skippedLevels: []
+  skippedLevels: [],
+  lastPlayedLevel: 0,
+  autoSaveEnabled: true
 };
 
 function loadSave() {
@@ -588,27 +654,43 @@ function init() {
     debugEnabled = true;
   }
 
-  // if (level) {
-  //   goTo(level);
-  // } else {
-  //   goTo(0);
-  // }
-
   if (debugEnabled) {
     document.querySelector(".debug-option").classList.remove("hide");
+  }
+
+  // Load last played level if auto-save is enabled
+  if (saveData.autoSaveEnabled && saveData.lastPlayedLevel > 0 && !level) {
+    level = saveData.lastPlayedLevel;
   }
 
   if (level) {
     goTo(level);
   }
 
+  if (saveData.autoSaveEnabled === undefined) {
+    saveData.autoSaveEnabled = true;
+  }
+
+  updateAutoSaveButton();
   switchMenuPage(0, true);
-  loadLevels(); // Load levels from JSON
-  loadAchievements(); // Load achievements from JSON
+  loadLevels();
+  loadAchievements();
 }
 
 // Example: unlock "Welcome" achievement when game starts
 // You can call unlockAchievement("1") wherever you want to unlock an achievement
+const autoSaveToggle = document.querySelector("#auto-save-toggle");
+
+function updateAutoSaveButton() {
+  autoSaveToggle.textContent = `Auto Resume Level: ${saveData.autoSaveEnabled ? 'ON' : 'OFF'}`;
+}
+
+autoSaveToggle.addEventListener('click', () => {
+  saveData.autoSaveEnabled = !saveData.autoSaveEnabled;
+  updateAutoSaveButton();
+  saveProgress();
+});
+
 init();
 unlockAchievement(1);
 
@@ -658,6 +740,12 @@ window.addEventListener("message", (e) => {
     case "showNotification":
       showNotification(e.data.data.title, e.data.data.text)
       break;
+    case "dlog":
+      if (debugEnabled) {
+        dlog(e.data.data.text)
+        showNotification("Debug", e.data.data.text, "", "debug")
+      }
+      break;
     case "completeAchievement":
       completeAchievement(e.data.data.id)
       break;
@@ -698,15 +786,25 @@ function completeLevel() {
       break;
   }
 
-  let hasAllLevels = true;
+  let hasAllLevels1to10 = true;
+  let hasAllLevels1to20 = true;
   for (let i = 1; i <= 11; i++) {
     if (!saveData.unlockedLevels.includes(i)) {
-      hasAllLevels = false;
+      hasAllLevels1to10 = false;
       break;
     }
   }
-  if (hasAllLevels) {
+  for (let i = 1; i <= 21; i++) {
+    if (!saveData.unlockedLevels.includes(i)) {
+      hasAllLevels1to20 = false;
+      break;
+    }
+  }
+  if (hasAllLevels1to10) {
     completeAchievement(8);
+  }
+  if (hasAllLevels1to20) {
+    completeAchievement(13);
   }
 
 
@@ -735,6 +833,10 @@ function completeLevel() {
 
 function goTo(level) {
   iframe.src = `./src/levels/${level}.html`;
+  if (saveData.autoSaveEnabled) {
+    saveData.lastPlayedLevel = level;
+    saveProgress();
+  }
   let log = `Current level: ${levelManager.currentLevel}
 Current page: ${iframe.src}`;
   dlog(log);
@@ -784,6 +886,7 @@ function switchMenuPage(targetIndex, force = false) {
   // Remove select class from all options
   menuOptions.forEach(option => option.classList.remove("select"));
   [...menuPages].forEach(page => {
+    // page.tabIndex = -1;
     let buttons = page.querySelectorAll("button");
     buttons.forEach(button => {
       button.disabled = true;
@@ -962,7 +1065,10 @@ function refresh() {
   // goTo(levelManager.currentLevel)
   iframe.src = iframe.src;
 
-  completeAchievement(7);
+
+  if (!isAchievementUnlocked(7)) {
+    completeAchievement(7);
+  }
 }
 
 function skip() {
@@ -1144,7 +1250,7 @@ document.querySelector("#debug-unlock-achievement").addEventListener("click", ()
   let value = prompt("Enter achievement id to unlock:", "1");
   if (!value) return;
   unlockAchievement(value);
-  showNotification("Debug", "Achievement " + value + " unlocked.", "", "debug");
+  showNotification("Debug", "Achievement " + value + " (" + achievementsData[value].name + ") unlocked.", "", "debug");
 });
 
 document.querySelector("#debug-lock-achievement").addEventListener("click", () => {
@@ -1152,7 +1258,7 @@ document.querySelector("#debug-lock-achievement").addEventListener("click", () =
   let value = prompt("Enter achievement id to lock:", "1");
   if (!value) return;
   lockAchievement(value);
-  showNotification("Debug", "Achievement " + value + " locked.", "", "debug");
+  showNotification("Debug", "Achievement " + value + " (" + achievementsData[value].name + ") locked.", "", "debug");
 });
 
 document.querySelector("#debug-unlock-all-achievements").addEventListener("click", () => {

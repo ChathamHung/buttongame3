@@ -60,6 +60,11 @@ level.prototype.completeAchievement = function (id) {
   sendCommand("completeAchievement", { id: id });
 };
 
+
+level.prototype.dlog = function (text) {
+  sendCommand("dlog", { text: text });
+};
+
 document.addEventListener("click", (e) => {
   if (e.target.closest('.menu') === null && e.target.closest('.menu-button') === null) {
     sendCommand("closeMenu");

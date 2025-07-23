@@ -466,6 +466,12 @@ body {
   cursor: not-allowed;
 }
 
+.menu-pages hr {
+  margin: 0 10px;
+  width: calc(100% - 25px);
+  border: 1px solid rgba(190, 190, 190, 0.3);
+}
+
 .menu-pages .about-logo {
   background-color: rgba(190, 190, 190, 0.1);
   border-radius: 20px;

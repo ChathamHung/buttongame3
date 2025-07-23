@@ -54,14 +54,26 @@
     "hide": false
   },
   "10": {
-    "name": "Clicked 1,000 times",
+    "name": "Super Clicker",
     "tip": "Clicked 1,000 times in Level 16",
     "icon": "",
     "hide": false
   },
   "11": {
-    "name": "Password god",
+    "name": "God of Password Game",
     "tip": "Complete Level 17",
+    "icon": "",
+    "hide": false
+  },
+  "12": {
+    "name": "God of Memory Match",
+    "tip": "Complete Level 14 in 15 moves or less",
+    "icon": "",
+    "hide": false
+  },
+  "13": {
+    "name": "20 basic levels",
+    "tip": "Complete Levels 1-20",
     "icon": "",
     "hide": false
   }

@@ -187,6 +187,11 @@
           setTimeout(() => {
             nextButton.disabled = false;
             levelManager.updateCompleteMessage(`Great memory! You've matched all the pairs! <br>You completed the game in ${moves} moves!`);
+
+            if (moves <= 15) {
+              levelManager.completeAchievement(12);
+            }
+
             levelManager.completeLevel();
           }, 500);
         }

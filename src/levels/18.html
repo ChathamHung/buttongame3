@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    .hide {
+      display: none !important;
+    }
+
+    h1 {
+      margin-bottom: 0;
+    }
+
+    h2 {
+      margin-top: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    #textbox {
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      width: 300px;
+    }
+
+    #nextLevel {
+      display: none;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">Enter words (1/20): </h1>
+  <h2 id="subtitle">cat</h2>
+  <input id="textbox" type="text" placeholder="Enter the words" autocomplete="off">
+  <button id="submit">Submit</button>
+  <button id="nextLevel">Next level</button>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 18; // Change to a new number
+
+    init(levelNumber); // Initialize the level
+
+    let currentWordIndex = 0;
+
+    const words = [
+      "cat",
+      "dog",
+      "tree",
+      "house",
+      "computer",
+      "elephant",
+      "programming",
+      "javascript",
+      "development",
+      "algorithm",
+      "synchronous",
+      "asynchronous",
+      "implementation",
+      "authentication",
+      "authorization",
+      "infrastructure",
+      "cryptocurrency",
+      "parallelization",
+      "virtualization",
+      "microarchitecture"
+    ];
+
+    const submitButton = document.querySelector("#submit");
+    const title = document.querySelector("#title");
+    const subtitle = document.querySelector("#subtitle");
+    const textbox = document.querySelector("#textbox");
+    const nextLevelButton = document.querySelector("#nextLevel");
+
+    levelManager.updateTip(""); // Set the tip (Allow HTML elements)
+    levelManager.updateCompleteMessage("Good time for typing!"); // Set the complete message (Allow HTML elements)
+
+    function submit() {
+      const userInput = textbox.value;
+      const currentWord = words[currentWordIndex];
+      if (userInput.toLowerCase() === currentWord.toLowerCase()) {
+        currentWordIndex++;
+        if (currentWordIndex >= words.length) {
+          levelManager.completeLevel();
+          submitButton.classList.add("hide");
+          nextLevelButton.style.display = "block";
+          textbox.classList.add("hide");
+          title.textContent = "You completed all words!";
+          subtitle.classList.add("hide");
+        } else {
+          title.textContent = `Enter words (${currentWordIndex + 1}/${words.length}): `
+          subtitle.textContent = words[currentWordIndex];
+          textbox.value = "";
+          textbox.focus();
+        }
+      } else {
+        levelManager.showNotification("Incorrect word", "Please try again.");
+      }
+      // levelManager.completeLevel();
+
+    }
+
+    submitButton.addEventListener("click", submit);
+    nextLevelButton.addEventListener("click", () => {
+      levelManager.completeLevel();
+    });
+    textbox.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        submit();
+      }
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

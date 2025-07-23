@@ -97,7 +97,7 @@
     const title = document.querySelector(".title");
     const customMenu = document.getElementById('customContextMenu');
 
-    levelManager.updateTip("Context menu?");
+    levelManager.updateTip("In right-click menu or long click menu (Context menu)");
     levelManager.updateCompleteMessage(`The button is in the context menu!`);
     levelManager.setRefreshEnable(false);
 
@@ -127,8 +127,29 @@
     // Custom context menu logic
     document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
-      customMenu.style.left = e.pageX + 'px';
-      customMenu.style.top = e.pageY + 'px';
+      
+      // Get window dimensions and menu size
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const menuWidth = customMenu.offsetWidth;
+      const menuHeight = customMenu.offsetHeight;
+      
+      // Calculate position, ensuring menu stays within viewport
+      let x = e.pageX;
+      let y = e.pageY;
+      
+      // Check right boundary
+      if (x + menuWidth > windowWidth) {
+        x = windowWidth - menuWidth;
+      }
+      
+      // Check bottom boundary
+      if (y + menuHeight > windowHeight) {
+        y = windowHeight - menuHeight;
+      }
+      
+      customMenu.style.left = x + 'px';
+      customMenu.style.top = y + 'px';
       setContextMenuDisplay(true);
     });
     document.addEventListener('click', function(e) {

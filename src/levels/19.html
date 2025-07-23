@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+      background-color: #1e1e2e;
+      color: #cdd6f4;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #getReadyTitle {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(137, 180, 250, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    #separator {
+      width: 80%;
+      border: none;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #89b4fa, transparent);
+      margin: 20px auto;
+    }
+
+    #codeBox {
+      margin: 30px 0;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .code-box {
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      font-size: 1.8rem;
+      background-color: #313244;
+      color: #f5c2e7;
+      border: 2px solid #89b4fa;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .code-box:focus {
+      border-color: #f5c2e7;
+      box-shadow: 0 0 15px rgba(245, 194, 231, 0.5);
+      transform: scale(1.05);
+    }
+
+    button {
+      background-color: #89b4fa;
+      color: #1e1e2e;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    button:hover {
+      background-color: #f5c2e7;
+      transform: translateY(-3px);
+      box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    #backButton {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #f38ba8;
+    }
+
+    #backButton:hover {
+      background-color: #f5c2e7;
+    }
+
+    #skipButton {
+      background-color: #f38ba8;
+      color: #1e1e2e;
+      margin-top: 15px;
+    }
+
+    #skipButton:hover {
+      background-color: #f5c2e7;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .pulse {
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Add these styles to the end of your CSS file */
+
+    #gameMode {
+      background-color: #313244;
+      color: #cdd6f4;
+      border: 2px solid #89b4fa;
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      outline: none;
+      width: 200px;
+    }
+
+    #gameMode:hover,
+    #gameMode:focus {
+      border-color: #f5c2e7;
+      box-shadow: 0 0 15px rgba(245, 194, 231, 0.3);
+    }
+
+    #customModeBox {
+      background-color: #313244;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px 0;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      border: 2px solid #89b4fa;
+      transition: all 0.3s ease;
+    }
+
+    #customModeBox label {
+      font-weight: bold;
+      margin-right: 10px;
+      color: #cdd6f4;
+    }
+
+    #customModeBox input[type="number"],
+    #customModeBox input[type="text"],
+    #customModeBox select {
+      background-color: #1e1e2e;
+      color: #f5c2e7;
+      border: 2px solid #89b4fa;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    #customModeBox input[type="number"]:focus,
+    #customModeBox input[type="text"]:focus,
+    #customModeBox select:focus {
+      border-color: #f5c2e7;
+      box-shadow: 0 0 10px rgba(245, 194, 231, 0.5);
+    }
+
+    #customModeBox input[type="number"] {
+      width: 60px;
+    }
+
+    #customModeBox input[type="text"] {
+      width: 150px;
+    }
+
+    #customModeBox select {
+      width: 250px;
+      /* Increased from 120px to accommodate longer option texts */
+      cursor: pointer;
+    }
+
+    .custom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    /* Add animation for custom mode box */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #customModeBox:not(.hidden) {
+      animation: fadeIn 0.3s ease-out;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="backButton" class="hidden">Back</button>
+  <h2 id="getReadyTitle">Get ready!</h2>
+
+  <hr id="separator">
+
+  <div id="codeBox" class="hidden"></div>
+
+  <div class="button-container">
+    <button id="startButton" class="pulse">Start</button>
+    <button id="enterButton" class="hidden">Enter</button>
+    <button id="nextButton" class="hidden">Next Level</button>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 19;
+
+    init(levelNumber); // Initialize the level
+
+    levelManager.updateTip(`You need use your memory to remember the code!`);
+    levelManager.updateCompleteMessage(`Great memory!`);
+
+    var numberOfBoxes = 8; // Set to medium mode default
+    var waitForTime = 5; // Set to medium mode default
+    let ranCode = "";
+    let enteredCode = "";
+
+    const backButton = document.getElementById("backButton");
+    const startButton = document.getElementById("startButton");
+    const nextButton = document.getElementById("nextButton");
+    const enterButton = document.getElementById("enterButton");
+    const getReadyTitle = document.getElementById("getReadyTitle");
+    const separator = document.getElementById("separator");
+    const codeBox = document.getElementById("codeBox");
+
+    // Removed customs object
+
+    function makeCode() {
+      let code = "";
+      // Get the current code type - always random in this simplified version
+      let codeType = "random";
+
+      for (let i = 0; i < numberOfBoxes; i++) {
+        // Generate digits 0-9
+        code += Math.floor(Math.random() * 10);
+      }
+      return code;
+    }
+
+    async function showCodeAnimation() {
+      for (let i = 0; i < numberOfBoxes; i++) {
+        const box = document.createElement("input");
+        box.type = "text";
+        box.className = "code-box";
+        box.disabled = true;
+        codeBox.appendChild(box);
+        box.value = "";
+      }
+
+      // Define character sets for animation
+      const digits = "0123456789";
+
+      for (let i = 0; i < numberOfBoxes; i++) {
+        const box = codeBox.children[i];
+        // Show animation with appropriate character set
+        for (let j = 0; j < 10; j++) {
+          box.value = Math.floor(Math.random() * 10);
+          await new Promise(r => setTimeout(r, 50));
+        }
+        box.value = ranCode[i];
+        // Add a small visual effect when the final number is shown
+        box.style.transform = "scale(1.1)";
+        setTimeout(() => {
+          box.style.transform = "scale(1)";
+        }, 200);
+      }
+    }
+
+    async function startGame() {
+      ranCode = makeCode();
+      enteredCode = "";
+
+      backButton.classList.add("hidden");
+      getReadyTitle.style.color = "#cdd6f4";
+      codeBox.replaceChildren();
+
+      startButton.classList.remove("pulse");
+      startButton.classList.add("hidden");
+      getReadyTitle.style.fontSize = "4rem";
+      getReadyTitle.textContent = "3";
+      await new Promise(r => setTimeout(r, 1000));
+      getReadyTitle.textContent = "2";
+      await new Promise(r => setTimeout(r, 1000));
+      getReadyTitle.textContent = "1";
+      await new Promise(r => setTimeout(r, 1000));
+
+      getReadyTitle.style.fontSize = "2.5rem";
+      getReadyTitle.textContent = "Your code is:";
+      separator.classList.remove("hidden");
+      codeBox.innerHTML = "";
+      codeBox.classList.remove("hidden");
+      await showCodeAnimation();
+
+      await new Promise(r => setTimeout(r, 1000));
+      for (let i = waitForTime; i > 0; i--) {
+        getReadyTitle.textContent = `Please remember this code, you have ${i} seconds...`;
+        await new Promise(r => setTimeout(r, 1000));
+      }
+
+      getReadyTitle.textContent = "Please enter the code:";
+      codeBox.innerHTML = "";
+      for (let i = 0; i < numberOfBoxes; i++) {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "code-box";
+        input.maxLength = 1;
+        input.addEventListener("input", (event) => moveToNext(event, i));
+        input.addEventListener("keydown", (event) => handleBackspace(event, i));
+        codeBox.appendChild(input);
+      }
+      codeBox.children[0].focus();
+      enterButton.classList.remove("hidden");
+    }
+
+    function moveToNext(event, index) {
+      if (event.target.value.length > 0 && index < numberOfBoxes - 1) {
+        codeBox.children[index + 1].focus();
+      } else if (index === numberOfBoxes - 1) {
+        checkCode();
+      }
+    }
+
+    function handleBackspace(event, index) {
+      if (event.key === "Backspace" && index > 0 && event.target.value.length === 0) {
+        codeBox.children[index - 1].focus();
+      }
+    }
+
+    function checkCode() {
+      enteredCode = "";
+      for (let input of codeBox.children) {
+        enteredCode += input.value;
+        input.disabled = true;
+      }
+
+      startButton.textContent = "Try again";
+      startButton.classList.remove("hidden");
+
+      enterButton.classList.add("hidden");
+      if (enteredCode === ranCode) {
+        getReadyTitle.textContent = "Your code is Correct!";
+        getReadyTitle.style.color = "#a6e3a1"; // Success color
+
+        nextButton.classList.remove("hidden");
+        nextButton.classList.add("pulse");
+        nextButton.focus();
+
+        levelManager.completeLevel()
+      } else {
+        getReadyTitle.textContent = `Your code is Incorrect! The correct code was ${ranCode}.`;
+        getReadyTitle.style.color = "#f38ba8"; // Error color
+        startButton.classList.add("pulse");
+        startButton.focus();
+      }
+    }
+
+    startButton.addEventListener("click", startGame);
+    enterButton.addEventListener("click", checkCode);
+    nextButton.addEventListener("click", () => {levelManager.completeLevel()});
+
+    // Add back button functionality to return to game selection
+    backButton.addEventListener("click", function () {
+      // Reset UI to initial state
+      getReadyTitle.textContent = "Ready to start!";
+      getReadyTitle.style.color = "#cdd6f4"; // Reset to default color
+      getReadyTitle.style.fontSize = "2.5rem"; // Reset font size
+
+      // Hide game elements
+      codeBox.classList.add("hidden");
+      enterButton.classList.add("hidden");
+      backButton.classList.add("hidden");
+      nextButton.classList.add("hidden");
+
+      // Show start button
+      startButton.textContent = "Start";
+      startButton.classList.remove("hidden");
+      startButton.classList.add("pulse");
+    });
+
+    startButton.focus();
+  </script>
+</body>
+
+</html>

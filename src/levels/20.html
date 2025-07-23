@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    #targetButton {
+      display: none;
+      background-color: #ff4444;
+      font-size: 24px;
+      padding: 20px 40px;
+    }
+
+    #targetButton:hover {
+      background-color: #cc3333;
+    }
+
+    #message {
+      font-size: 24px;
+      margin: 20px 0;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="message">Click Start when you're ready!</div>
+  <button id="startButton">Start</button>
+  <button id="targetButton">Click Me!</button>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 20;
+
+    init(levelNumber);
+
+    const startButton = document.querySelector("#startButton");
+    const targetButton = document.querySelector("#targetButton");
+    const messageDiv = document.querySelector("#message");
+
+    let timeoutId = null;
+    let gameActive = false;
+
+    levelManager.updateTip("Test your reaction time! Click the button when it appears.");
+    levelManager.updateCompleteMessage("Great reflexes! You completed the level!");
+
+    function resetGame() {
+      if (timeoutId) clearTimeout(timeoutId);
+      targetButton.style.display = 'none';
+      startButton.style.display = 'block';
+      messageDiv.textContent = "Click Start when you're ready!";
+      gameActive = false;
+    }
+
+    function showTargetButton() {
+      if (!gameActive) return;
+      
+      targetButton.style.display = 'block';
+      messageDiv.textContent = "Click Now!";
+      
+      // Hide button after 1 second if not clicked
+      timeoutId = setTimeout(() => {
+        if (gameActive) {
+          targetButton.style.display = 'none';
+          messageDiv.textContent = "Too slow! Click Start to try again.";
+          startButton.style.display = 'block';
+          gameActive = false;
+        }
+      }, 500);
+    }
+
+    startButton.addEventListener("click", () => {
+      gameActive = true;
+      startButton.style.display = 'none';
+      messageDiv.textContent = "Get ready...";
+      
+      // Random delay between 1 to 4 seconds
+      const delay = Math.random() * 3000 + 1000;
+      timeoutId = setTimeout(showTargetButton, delay);
+    });
+
+    targetButton.addEventListener("click", () => {
+      if (gameActive) {
+        clearTimeout(timeoutId);
+        messageDiv.textContent = "You did it!";
+        targetButton.textContent = "Next level";
+        levelManager.completeLevel();
+      }
+    });
+
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+
+    // Reset game on page load
+    resetGame();
+  </script>
+</body>
+</html>
