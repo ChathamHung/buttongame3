@@ -92,6 +92,16 @@ body {
   background-color: rgba(96, 96, 96, 0.7);
 }
 
+.level-label.enabled {
+  cursor: pointer;
+  overflow: hidden;
+  transition: background-color 0.1s ease;
+}
+
+.level-label.enabled:hover {
+  background-color: rgba(96, 96, 96, 0.7);
+}
+
 /* Custom tooltips */
 
 .topbar button[data-tooltip] {

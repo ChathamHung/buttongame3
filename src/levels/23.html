@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    .hide {
+      display: none;
+    }
+
+    .message-box {
+      padding: 30px;
+      background-color: #ececec;
+      border: 5px solid #dcdcdc;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #title {
+      margin-top: 0;
+    }
+
+    #message {
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="message-box">
+    <h1 id="title">Hello here!</h1>
+    <span id="message">
+      Click "Next" button to next level...
+    </span>
+    <div class="buttons">
+      <button id="next">Next</button>
+      <button id="button2" class="hide">Back</button>
+    </div>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 23;
+
+    init(levelNumber); // Initialize the level
+
+    const next = document.querySelector("#next");
+    const title = document.querySelector("#title");
+    const message = document.querySelector("#message");
+    const button2 = document.querySelector("#button2");
+
+    let clicked = 1;
+
+    levelManager.updateTip("");
+    levelManager.updateCompleteMessage("You beat the message box!");
+
+    function update() {
+      switch (clicked) {
+        case 2:
+          title.innerHTML = "Hahahahahahahahaha!";
+          message.innerHTML = "I will not let you easily to go to next level! :D";
+          break;
+        case 3:
+          title.innerHTML = "Play a game!";
+          message.innerHTML = "Let's play a game!";
+          next.innerHTML = "OK";
+          button2.innerHTML = "No!";
+          button2.classList.remove("hide");
+          break;
+        case 4:
+          title.innerHTML = "What is the answer?";
+          message.innerHTML = "1 + 1 = ?";
+          next.innerHTML = "2!";
+          button2.innerHTML = "IDK";
+          button2.classList.remove("hide");
+          break;
+        case 5:
+          title.innerHTML = "What is the answer?";
+          message.innerHTML = "1 ÷ 0 = ?";
+          next.innerHTML = "It's very hard!!!";
+          button2.innerHTML = "Infinity!";
+          button2.classList.remove("hide");
+          break;
+        case 6:
+          title.innerHTML = "Why?";
+          message.innerHTML = "";
+          next.innerHTML = "Nevermind, go to next question!";
+          button2.classList.add("hide");
+          break;
+        case 7:
+          title.innerHTML = "Hmmm, ";
+          message.innerHTML = "Why you always say go to next question?";
+          next.innerHTML = "Because, I want to go to next level!";
+          button2.classList.add("hide");
+          break;
+        case 8:
+          title.innerHTML = "OK...";
+          message.innerHTML = "But do you want an achievement?";
+          next.innerHTML = "No! I just want to go to next level!";
+          button2.innerHTML = "Yes!";
+          button2.classList.remove("hide");
+          break;
+        case 9:
+          title.innerHTML = "OK...";
+          message.innerHTML = "";
+          next.innerHTML = "So what next?";
+          button2.classList.add("hide");
+          break;
+        case 10:
+          title.innerHTML = "Let play more game!";
+          message.innerHTML = "";
+          next.innerHTML = "Ok...";
+          button2.classList.add("hide");
+        case 11:
+          title.innerHTML = "Click the button!";
+          message.innerHTML = "";
+          next.innerHTML = "Click me!";
+          button2.classList.add("hide");
+          break;
+        case 12:
+          title.innerHTML = "The button gone!";
+          message.innerHTML = "";
+          next.style.position = "absolute";
+          next.style.left = "150px";
+          next.style.bottom = "150px";
+          next.innerHTML = "Click me!";
+          button2.classList.add("hide");
+          break;
+        case 13:
+          title.innerHTML = "The button is going!";
+          message.innerHTML = "";
+          next.style.position = "absolute";
+          next.style.left = "100px";
+          next.style.bottom = "100px";
+          next.innerHTML = "Click me!";
+          button2.classList.add("hide");
+          break;
+        case 14:
+          title.innerHTML = "Owo";
+          message.innerHTML = "";
+          next.style.position = "absolute";
+          next.style.left = "75px";
+          next.style.bottom = "75px";
+          next.innerHTML = "Click me!";
+          button2.classList.add("hide");
+          break;
+        case 15:
+          title.innerHTML = ":O";
+          message.innerHTML = "";
+          next.style.position = "absolute";
+          next.style.left = "50px";
+          next.style.bottom = "50px";
+          next.innerHTML = "Click me!";
+          button2.classList.add("hide");
+          break;
+        case 16:
+          title.innerHTML = "😱";
+          message.innerHTML = "";
+          next.style.position = "absolute";
+          next.style.left = "25px";
+          next.style.bottom = "25px";
+          next.innerHTML = "Click me!";
+          button2.classList.add("hide");
+          break;
+        case 17:
+          title.innerHTML = "😱😱😱";
+          message.innerHTML = "";
+          next.style.position = "absolute";
+          next.style.left = "10px";
+          next.style.bottom = "10px";
+          next.innerHTML = "Click me!";
+          button2.classList.add("hide");
+          break;
+        case 18:
+          title.innerHTML = "OK, you win...";
+          message.innerHTML = "";
+          next.style.position = "static";
+          next.style.left = "auto";
+          next.style.bottom = "auto";
+          next.innerHTML = "So, can I go to next level?";
+          button2.classList.add("hide");
+          break;
+        case 19:
+          title.innerHTML = "...";
+          message.innerHTML = "You don't need complete this level...";
+          next.innerHTML = "So, how can I go to next level???";
+          button2.classList.add("hide");
+          break;
+        case 20:
+          title.innerHTML = "💡";
+          message.innerHTML = "Oh... You can skip!";
+          next.innerHTML = "No!!!";
+          button2.classList.add("hide");
+          break;
+        case 21:
+          title.innerHTML = "Skiping Time!";
+          message.innerHTML = "Now, you can click on top right button to skip this level!";
+          levelManager.setSkipEnable(true);
+          next.innerHTML = "No! I don't want to skip!!!";
+          button2.classList.add("hide");
+          break;
+        case 22:
+          title.innerHTML = "Really?";
+          message.innerHTML = "You don't want to skip???";
+          next.innerHTML = "Yes!";
+          button2.classList.add("hide");
+          break;
+        case 23:
+          title.innerHTML = "Really???";
+          message.innerHTML = "It is last chance, you can skip this level!!!";
+          next.innerHTML = "No! I don't want to skip!!!";
+          button2.classList.add("hide");
+          break;
+        case 24:
+          title.innerHTML = "OK...";
+          message.innerHTML = "No more skip now!";
+          levelManager.setSkipEnable(false);
+          next.innerHTML = "OK! So can I go to next level?";
+          button2.classList.add("hide");
+          break;
+        case 25:
+          title.innerHTML = "Hmmmmmmm...";
+          message.innerHTML = "But you can have some tip now!";
+          levelManager.updateTip();
+          next.innerHTML = "...";
+          button2.innerHTML = "Show me tip!";
+          button2.classList.remove("hide");
+          break;
+        case 26:
+          title.innerHTML = "Hahahaahahahahahahha!";
+          message.innerHTML = "";
+          levelManager.updateTip("");
+          next.innerHTML = "...";
+          button2.classList.add("hide");
+          break;
+        case 27:
+          title.innerHTML = "It's very fun!";
+          message.innerHTML = "";
+          next.innerHTML = "...";
+          button2.classList.add("hide");
+          break;
+        case 28:
+          title.innerHTML = "Ha ha ha!";
+          message.innerHTML = "";
+          next.innerHTML = "...";
+          button2.classList.add("hide");
+          break;
+        case 29:
+          title.innerHTML = "Ha ha ha ha ha ha ha!";
+          message.innerHTML = "";
+          next.innerHTML = "...";
+          button2.classList.add("hide");
+          break;
+        case 30:
+          title.innerHTML = "...";
+          message.innerHTML = "Ok, it's not fun...";
+          next.innerHTML = "...";
+          button2.classList.add("hide");
+          break;
+        case 31:
+          title.innerHTML = "So...";
+          message.innerHTML = "What do you want to do?";
+          next.innerHTML = "I WANT COMPLETE THIS LEVEL!!!";
+          button2.classList.add("hide");
+          break;
+        case 32:
+          title.innerHTML = "Ok...";
+          message.innerHTML = "Cold down...";
+          next.innerHTML = "Hahahahahahahhahahahahahahahahaha!!!";
+          button2.classList.add("hide");
+          break;
+        case 33:
+          title.innerHTML = "Ok...";
+          message.innerHTML = "It's is last game now...";
+          next.innerHTML = "Yes yes yes";
+          button2.classList.add("hide");
+          break;
+        case 34:
+          title.innerHTML = "But...";
+          message.innerHTML = "It's harder...";
+          next.innerHTML = "No no no!";
+          button2.classList.add("hide");
+          break;
+        case 35:
+          title.innerHTML = "BUT...";
+          message.innerHTML = "I forgot...";
+          next.innerHTML = "Buh...";
+          button2.classList.add("hide");
+          break;
+        case 36:
+          title.innerHTML = "BUT...";
+          message.innerHTML = "Nevermind...";
+          next.innerHTML = "...";
+          button2.classList.add("hide");
+          break;
+        case 37:
+          title.innerHTML = "BUT...";
+          message.innerHTML = "You can go to next level!";
+          next.innerHTML = "Yes!";
+          button2.classList.add("hide");
+          break;
+        case 38:
+          title.innerHTML = "WAIT...";
+          message.innerHTML = "";
+          next.innerHTML = "What!?";
+          button2.classList.add("hide");
+          break;
+        case 39:
+          title.innerHTML = "Ha ha!";
+          message.innerHTML = "It's a joke";
+          next.innerHTML = "Buh";
+          button2.classList.add("hide");
+          break;
+        case 40:
+          title.innerHTML = "Fine, here you go!";
+          message.innerHTML = "";
+          next.innerHTML = "Thanks!";
+          button2.classList.add("hide");
+          break;
+      
+        default:
+          if (clicked >= 41) {
+            levelManager.completeLevel();
+            break;
+          }
+          break;
+      }
+    }
+
+    next.addEventListener("click", () => { // When clicked button, then go to the next level
+      // levelManager.completeLevel();
+      clicked++;
+      update();
+    });
+
+    button2.addEventListener("click", () => { // When clicked button, then go to the next level
+      switch (clicked) {
+        case 3:
+          title.innerHTML = "Why?!";
+          message.innerHTML = "YOU MUST PLAY THE GAME";
+          next.innerHTML = "Play the game";
+          button2.classList.add("hide");
+          break;
+        case 4:
+          title.innerHTML = "🤔";
+          message.innerHTML = "The answer is incorrect!";
+          next.innerHTML = "Fine, go to next question!";
+          button2.classList.add("hide");
+          break;
+        case 5:
+          title.innerHTML = "You are correct!";
+          message.innerHTML = "The answer is correct!";
+          next.innerHTML = "Go to next question!";
+          button2.classList.add("hide");
+          break;
+        case 8:
+          title.innerHTML = "OK, here you go!";
+          message.innerHTML = "Here is your achievement!";
+          next.innerHTML = "Thanks";
+          button2.classList.add("hide");
+          levelManager.completeAchievement(14);
+          break;
+        case 25:
+          title.innerHTML = "Here you go!";
+          message.innerHTML = "";
+          next.innerHTML = "Buh...";
+          levelManager.showTip();
+          button2.classList.add("hide");
+          break;
+      
+        default:
+          break;
+      }
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

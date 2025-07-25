@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    .game-container {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .color-box {
+      width: 200px;
+      height: 200px;
+      border: 3px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slider-label {
+      width: 20px;
+    }
+
+    input[type="range"] {
+      width: 200px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    #feedback {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Color Matching Game</h1>
+  <p>Match the color on the right by adjusting the RGB sliders!</p>
+  
+  <div class="game-container">
+    <div class="color-box" id="userColor"></div>
+    <div class="color-box" id="targetColor"></div>
+  </div>
+
+  <p>Target Color Values - R: <span id="targetR"></span>, G: <span id="targetG"></span>, B: <span id="targetB"></span></p>
+
+  <div class="controls">
+    <div class="slider-container">
+      <span class="slider-label">R</span>
+      <input type="range" id="redSlider" min="0" max="255" value="0">
+      <span id="redValue">0</span>
+    </div>
+    <div class="slider-container">
+      <span class="slider-label">G</span>
+      <input type="range" id="greenSlider" min="0" max="255" value="0">
+      <span id="greenValue">0</span>
+    </div>
+    <div class="slider-container">
+      <span class="slider-label">B</span>
+      <input type="range" id="blueSlider" min="0" max="255" value="0">
+      <span id="blueValue">0</span>
+    </div>
+  </div>
+
+  <div id="feedback"></div>
+  <button id="checkButton">Check Match</button>
+  <button id="nextLevel" style="display: none;">Next Level</button>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 27;
+    init(levelNumber);
+
+    const userColor = document.getElementById('userColor');
+    const targetColor = document.getElementById('targetColor');
+    const redSlider = document.getElementById('redSlider');
+    const greenSlider = document.getElementById('greenSlider');
+    const blueSlider = document.getElementById('blueSlider');
+    const redValue = document.getElementById('redValue');
+    const greenValue = document.getElementById('greenValue');
+    const blueValue = document.getElementById('blueValue');
+    const checkButton = document.getElementById('checkButton');
+    const nextButton = document.getElementById('nextLevel');
+    const feedback = document.getElementById('feedback');
+
+    // Generate random target color
+    const targetR = Math.floor(Math.random() * 256);
+    const targetG = Math.floor(Math.random() * 256);
+    const targetB = Math.floor(Math.random() * 256);
+    targetColor.style.backgroundColor = `rgb(${targetR},${targetG},${targetB})`;
+
+    // Display target values
+    document.getElementById('targetR').textContent = targetR;
+    document.getElementById('targetG').textContent = targetG;
+    document.getElementById('targetB').textContent = targetB;
+
+    function updateUserColor() {
+      const r = redSlider.value;
+      const g = greenSlider.value;
+      const b = blueSlider.value;
+      userColor.style.backgroundColor = `rgb(${r},${g},${b})`;
+      redValue.textContent = r;
+      greenValue.textContent = g;
+      blueValue.textContent = b;
+
+      // Update feedback
+      const rDiff = Math.abs(r - targetR);
+      const gDiff = Math.abs(g - targetG);
+      const bDiff = Math.abs(b - targetB);
+      const avgDiff = (rDiff + gDiff + bDiff) / 3;
+      
+      if (avgDiff <= 30) {
+        feedback.textContent = "Very close! You're almost there!";
+        feedback.style.color = "#4CAF50";
+      } else if (avgDiff <= 60) {
+        feedback.textContent = "Getting closer! Keep adjusting!";
+        feedback.style.color = "#FFA726";
+      } else {
+        feedback.textContent = "Keep trying! Adjust the sliders to match the target color.";
+        feedback.style.color = "#666";
+      }
+    }
+
+    redSlider.addEventListener('input', updateUserColor);
+    greenSlider.addEventListener('input', updateUserColor);
+    blueSlider.addEventListener('input', updateUserColor);
+
+    checkButton.addEventListener('click', () => {
+      const r = parseInt(redSlider.value);
+      const g = parseInt(greenSlider.value);
+      const b = parseInt(blueSlider.value);
+      
+      // Check if colors match within a tolerance
+      const tolerance = 30;
+      const isMatch = 
+        Math.abs(r - targetR) <= tolerance &&
+        Math.abs(g - targetG) <= tolerance &&
+        Math.abs(b - targetB) <= tolerance;
+
+      if (isMatch) {
+        levelManager.completeLevel();
+        checkButton.style.display = 'none';
+        nextButton.style.display = 'block';
+      } else {
+        levelManager.showDialog('Keep Trying!', 'Adjust the sliders to get closer to the target values!');
+      }
+    });
+
+    nextButton.addEventListener('click', () => {
+      levelManager.completeLevel();
+    });
+
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+
+    levelManager.updateTip('Match the target color by adjusting the RGB sliders. The target values are shown to help you!');
+    levelManager.updateCompleteMessage('Great job matching the colors!');
+    levelManager.setSkipEnable(true);
+  </script>
+</body>
+</html>

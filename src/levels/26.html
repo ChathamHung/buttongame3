@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      -webkit-user-select: none;
+      user-select: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0078d7;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    .update-container {
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      margin: 40px auto;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .progress-container {
+      width: 90%;
+      max-width: 400px;
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.3);
+      height: 4px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: white;
+      transition: width 0.5s ease;
+    }
+
+    .percentage {
+      font-size: 34px;
+      margin: 20px 0;
+    }
+
+    .message {
+      font-size: 16px;
+      margin: 10px 0;
+      opacity: 0.9;
+    }
+
+    .warning {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-top: 40px;
+    }
+
+    #nextLevel {
+      display: none;
+      margin-top: 30px;
+      padding: 8px 20px;
+      font-size: 16px;
+      background-color: transparent;
+      color: white;
+      border: 2px solid white;
+      cursor: pointer;
+    }
+
+    #nextLevel:hover {
+      background-color: #ffffff7d;
+    }
+  </style>
+</head>
+<body>
+  <div class="update-container">
+    <div class="spinner"></div>
+    <div class="percentage">0% complete</div>
+    <div class="progress-container">
+      <div class="progress-bar"></div>
+    </div>
+    <div class="message">Working on updates</div>
+    <div class="warning">Please do not turn off your computer</div>
+    <button id="nextLevel">Restart Now</button>
+  </div>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 26;
+    init(levelNumber);
+
+    levelManager.updateTip("");
+    levelManager.updateCompleteMessage(`Update completed successfully!`);
+
+    const progressBar = document.querySelector('.progress-bar');
+    const percentageText = document.querySelector('.percentage');
+    const messageText = document.querySelector('.message');
+    const nextButton = document.querySelector('#nextLevel');
+    const spinner = document.querySelector('.spinner');
+
+    const updateMessages = [
+      'Getting things ready...',
+      'Installing important security updates',
+      'Configuring system components',
+      'Optimizing system performance',
+      'Downloading additional features',
+      'Applying system changes',
+      'Almost there...',
+      'Finalizing updates'
+    ];
+
+    let progress = 0;
+    let messageIndex = 0;
+
+    function updateProgress() {
+      if (progress >= 100) {
+        levelManager.completeLevel();
+        spinner.style.display = 'none';
+        messageText.textContent = 'Update completed successfully';
+        nextButton.style.display = 'inline-block';
+        return;
+      }
+
+      // Random progress increment between 1-3%
+      const increment = Math.random() * 2 + 1;
+      progress = Math.min(100, progress + increment);
+      
+      progressBar.style.width = `${progress}%`;
+      percentageText.textContent = `${Math.floor(progress)}% complete`;
+
+      // Change message every ~20%
+      if (Math.floor(progress / 20) > messageIndex && messageIndex < updateMessages.length) {
+        messageText.textContent = updateMessages[messageIndex];
+        messageIndex++;
+      }
+
+      // Random delay between updates (2-5 seconds)
+      const delay = Math.random() * 1000;
+      setTimeout(updateProgress, delay);
+    }
+
+    // Start after a short delay
+    setTimeout(updateProgress, 1000);
+
+    // Next level button handler
+    nextButton.addEventListener('click', () => {
+      levelManager.completeLevel();
+    });
+
+    // Disable right-click
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

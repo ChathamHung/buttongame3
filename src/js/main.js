@@ -12,9 +12,9 @@ const levelPage = document.querySelector(".level-page");
 const dialog = document.querySelector(".dialog");
 const notifications = document.querySelector(".notifications");
 
-const version = 0.13;
+const version = 0.14;
 const versionType = "Alpha";
-const updateName = "update 13";
+const updateName = "update 14";
 
 let currentPageIndex = 0;
 let currentTip = ``;
@@ -670,8 +670,11 @@ function init() {
   if (saveData.autoSaveEnabled === undefined) {
     saveData.autoSaveEnabled = true;
   }
+  if (saveData.levelLabelEnabled === undefined) {
+    saveData.levelLabelEnabled = false;
+  }
 
-  updateAutoSaveButton();
+  updateSettings();
   switchMenuPage(0, true);
   loadLevels();
   loadAchievements();
@@ -680,14 +683,28 @@ function init() {
 // Example: unlock "Welcome" achievement when game starts
 // You can call unlockAchievement("1") wherever you want to unlock an achievement
 const autoSaveToggle = document.querySelector("#auto-save-toggle");
+const levelLabelToggle = document.querySelector("#level-label-toggle");
 
-function updateAutoSaveButton() {
+function updateSettings() {
   autoSaveToggle.textContent = `Auto Resume Level: ${saveData.autoSaveEnabled ? 'ON' : 'OFF'}`;
+  levelLabelToggle.textContent = `Clickable Level Labels: ${saveData.levelLabelEnabled ? 'ON' : 'OFF'}`;
+
+  if (saveData.levelLabelEnabled) {
+    levelLabel.classList.add('enabled');
+  } else {
+    levelLabel.classList.remove('enabled');
+  }
 }
 
 autoSaveToggle.addEventListener('click', () => {
   saveData.autoSaveEnabled = !saveData.autoSaveEnabled;
-  updateAutoSaveButton();
+  updateSettings();
+  saveProgress();
+});
+
+levelLabelToggle.addEventListener('click', () => {
+  saveData.levelLabelEnabled = !saveData.levelLabelEnabled;
+  updateSettings();
   saveProgress();
 });
 
@@ -781,6 +798,9 @@ function completeLevel() {
     case 17:
       completeAchievement(11);
       break;
+    case 26:
+      completeAchievement(15);
+      break;
   
     default:
       break;
@@ -852,7 +872,7 @@ Current page: ${iframe.src}`;
 }
 
 function clickElement(e) {
-  if (!menuPanel.contains(e.target) && !menuBtn.contains(e.target)) {
+  if (!menuPanel.contains(e.target) && !menuBtn.contains(e.target) && !levelLabel.contains(e.target)) {
     closeMenu();
   }
 }
@@ -1175,6 +1195,13 @@ document.querySelector("#about-game-2").addEventListener("click", () => {
 document.querySelector("#about-game-1").addEventListener("click", () => {
   closeMenu();
   showDialog("The Button Game 1", "The Button Game 1 is made by @ChathamHung, <br>but it is using PowerPoint to maked.", "OK");
+});
+
+levelLabel.addEventListener("click", () => {
+  if (saveData.levelLabelEnabled) {
+    openMenu();
+    switchMenuPage(0);
+  }
 });
 
 iframe.addEventListener("load", () => {

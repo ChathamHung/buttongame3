@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #nextLevel {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    #nextLevel:hover {
+      background-color: #60a83e;
+    }
+
+    .ad {
+      position: absolute;
+      padding: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      z-index: 100;
+      cursor: move;
+    }
+
+    .ad.pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .ad-close {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 24px;
+      color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+    }
+
+    .ad-close:hover {
+      transform: scale(1.2);
+    }
+
+    .ad-content {
+      text-align: center;
+      margin: 10px 0;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 99;
+      display: none;
+    }
+
+    .side-ad {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 160px;
+      height: 600px;
+      background: linear-gradient(180deg, #2d3436, #636e72);
+      color: white;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      z-index: 98;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .side-ad.left { left: 0; }
+    .side-ad.right { right: 0; }
+  </style>
+</head>
+<body>
+  <div id="overlay"></div>
+  <div class="side-ad left">🎮<br>PLAY<br>NOW!<br>⭐<br>FREE<br>GAMES</div>
+  <div class="side-ad right">💰<br>WIN<br>BIG!<br>🎲<br>CASINO<br>GAMES</div>
+  <h1>Click the Button!</h1>
+  <button id="nextLevel">Click me!</button>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 22;
+
+    init(levelNumber);
+
+    const nextButton = document.querySelector("#nextLevel");
+    let adCount = 0;
+    let clickCount = 0;
+
+    levelManager.updateTip("Try to click the button... if you can!");
+    levelManager.updateCompleteMessage("Congratulations! You survived the ad apocalypse!");
+
+    const adStyles = [
+      {
+        background: 'linear-gradient(45deg, #ff6b6b, #ffd93d)',
+        border: '3px solid #ff4757',
+        borderRadius: '10px',
+        minWidth: '250px',
+        maxWidth: '350px',
+        buttonStyle: 'background: #4834d4; border-radius: 25px; padding: 12px 25px; font-size: 18px;',
+        pulse: true
+      },
+      {
+        background: 'linear-gradient(135deg, #00b894, #00cec9)',
+        border: '4px dashed #ff9f43',
+        borderRadius: '20px',
+        minWidth: '300px',
+        maxWidth: '400px',
+        buttonStyle: 'background: #e17055; border-radius: 5px; padding: 15px 30px; font-size: 20px;',
+        pulse: false
+      },
+      {
+        background: 'linear-gradient(90deg, #6c5ce7, #a55eea)',
+        border: '5px double #fdcb6e',
+        borderRadius: '0',
+        minWidth: '200px',
+        maxWidth: '300px',
+        buttonStyle: 'background: #00b894; border-radius: 50px; padding: 10px 20px; font-size: 16px;',
+        pulse: true
+      },
+      {
+        background: 'linear-gradient(180deg, #e84393, #fd79a8)',
+        border: '6px ridge #0984e3',
+        borderRadius: '15px',
+        minWidth: '280px',
+        maxWidth: '380px',
+        buttonStyle: 'background: #6c5ce7; border-radius: 8px; padding: 14px 28px; font-size: 19px;',
+        pulse: false
+      }
+    ];
+
+    function createAd() {
+      const ad = document.createElement('div');
+      ad.className = 'ad';
+      
+      const topbarHeight = 60;
+      const minY = topbarHeight;
+      const maxY = window.innerHeight - 200;
+      
+      ad.style.left = Math.random() * (window.innerWidth - 300) + 'px';
+      ad.style.top = Math.random() * (maxY - minY) + minY + 'px';
+      
+      const style = adStyles[Math.floor(Math.random() * adStyles.length)];
+      Object.assign(ad.style, {
+        background: style.background,
+        border: style.border,
+        borderRadius: style.borderRadius,
+        minWidth: style.minWidth,
+        maxWidth: style.maxWidth
+      });
+
+      if (style.pulse) {
+        ad.classList.add('pulse');
+      }
+      
+      const closeBtn = document.createElement('span');
+      closeBtn.className = 'ad-close';
+      closeBtn.textContent = '×';
+      
+      const content = document.createElement('div');
+      content.className = 'ad-content';
+      
+      const adTypes = [
+        '🔥 HOT SINGLES IN YOUR AREA! 🔥',
+        '🎉 CONGRATULATIONS! YOU WON! 🎉',
+        '⚠️ YOUR COMPUTER MAY BE AT RISK! ⚠️',
+        '🎁 CLAIM YOUR FREE PRIZE NOW! 🎁',
+        '💾 DOWNLOAD MORE RAM TODAY! 💾',
+        '💰 BECOME A MILLIONAIRE NOW! 💰',
+        '🎮 FREE V-BUCKS GENERATOR! 🎮',
+        '🌟 YOU ARE THE 1,000,000th VISITOR! 🌟'
+      ];
+      
+      content.innerHTML = `
+        <h3 style="font-size: ${Math.floor(Math.random() * 6) + 18}px; margin: 5px 0;">${adTypes[Math.floor(Math.random() * adTypes.length)]}</h3>
+        <p style="font-size: 16px; margin: 10px 0;">Click here to learn more!</p>
+        <button style="${style.buttonStyle}; color: white; border: none; cursor: pointer; margin-top: 10px; transition: transform 0.2s, background 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">CLICK NOW!</button>`;
+      
+      ad.appendChild(closeBtn);
+      ad.appendChild(content);
+      document.body.appendChild(ad);
+      
+      let isDragging = false;
+      let startX;
+      let startY;
+      let startLeft;
+      let startTop;
+
+      function handleMouseDown(e) {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = parseInt(ad.style.left);
+        startTop = parseInt(ad.style.top);
+        ad.style.zIndex = 1000; // Bring to front while dragging
+      }
+
+      function handleMouseMove(e) {
+        if (!isDragging) return;
+
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const newTop = startTop + dy;
+
+        // Prevent dragging into topbar area
+        if (newTop >= topbarHeight) {
+          ad.style.left = (startLeft + dx) + 'px';
+          ad.style.top = newTop + 'px';
+        }
+      }
+
+      function handleMouseUp() {
+        isDragging = false;
+        ad.style.zIndex = 100;
+      }
+
+      ad.addEventListener('mousedown', handleMouseDown);
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      
+      closeBtn.onclick = function(e) {
+        e.stopPropagation();
+        ad.remove();
+        adCount--;
+        if (adCount === 0) {
+          document.getElementById('overlay').style.display = 'none';
+        }
+      };
+      
+      ad.ondragstart = function() {
+        return false;
+      };
+      
+      adCount++;
+    }
+
+    // Spawn initial ads
+    for(let i = 0; i < 4; i++) {
+      createAd();
+    }
+
+    nextButton.addEventListener("click", () => {
+      clickCount++;
+      if (clickCount >= 3) {
+        levelManager.completeLevel();
+      } else {
+        document.getElementById('overlay').style.display = 'block';
+        for(let i = 0; i < 3; i++) {
+          createAd();
+        }
+      }
+    });
+
+    // Spawn new ad every 5 seconds
+    setInterval(() => {
+      if (adCount < 10) {
+        createAd();
+      }
+    }, 5000);
+
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

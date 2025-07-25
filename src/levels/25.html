@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    input {
+      padding: 10px;
+      width: 200px;
+      font-size: 16px;
+      text-align: center;
+      border-radius: 10px;
+      border: solid 2px #D3D3D3FF;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    #image {
+      width: 200px;
+      height: 200px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Scan the QR code for a code: </h1>
+  <img src="" id="image" alt="QR code" draggable="false">
+  <input type="text" id="codeInput" placeholder="Enter the code here" autocomplete="off">
+  <button id="nextLevel" disabled>Next Level</button>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 25;
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+    const qrCode = document.querySelector("#image");
+    const codeInput = document.querySelector("#codeInput");
+
+    levelManager.updateTip("");
+    levelManager.updateCompleteMessage(`Try to play Button Game 3 on your phone!`);
+    levelManager.setSkipEnable(true);
+
+    function generateCode() {
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const year = today.getFullYear();
+
+      const code1 = day + month + year;
+      const code2 = code1 * day;
+      const code3 = code2 * month
+
+      return code3;
+    }
+
+    const qrLink = "https://chathamhung.github.io/buttongame3/src/html/qr25.html";
+
+    qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrLink}`;
+
+    function check() {
+      if (codeInput.value == generateCode()) {
+        nextButton.disabled = false;
+        levelManager.completeLevel();
+      }
+    }
+
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      levelManager.completeLevel();
+    });
+
+    codeInput.addEventListener("input", (e) => {
+      check();
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

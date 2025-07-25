@@ -86,5 +86,29 @@
   "21": {
     "name": "Send to Boss",
     "file": "21.html"
+  },
+  "22": {
+    "name": "Advertisements",
+    "file": "22.html"
+  },
+  "23": {
+    "name": "A Message",
+    "file": "23.html"
+  },
+  "24": {
+    "name": "Google",
+    "file": "24.html"
+  },
+  "25": {
+    "name": "QR code",
+    "file": "25.html"
+  },
+  "26": {
+    "name": "Update",
+    "file": "26.html"
+  },
+  "27": {
+    "name": "Color Matching",
+    "file": "27.html"
   }
 }

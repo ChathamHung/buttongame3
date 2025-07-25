@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none;
+      user-select: none;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin-top: 60px;
+      padding: 20px;
+      background: #fff;
+    }
+
+    .search-container {
+      max-width: 600px;
+      margin: 100px auto 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .logo {
+      font-size: 50px;
+      margin-bottom: 20px;
+      color: #4285f4;
+      font-weight: bold;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: 1px solid #dfe1e5;
+      border-radius: 24px;
+      outline: none;
+      margin-bottom: 20px;
+    }
+
+    .search-box:hover,
+    .search-box:focus {
+      box-shadow: 0 1px 6px rgba(32,33,36,.28);
+      border-color: rgba(223,225,229,0);
+    }
+
+    .search-button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 4px;
+      background: #f8f9fa;
+      color: #3c4043;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .search-button:hover {
+      box-shadow: 0 1px 1px rgba(0,0,0,.1);
+      border: 1px solid #dadce0;
+      color: #202124;
+    }
+
+    .search-results {
+      max-width: 600px;
+      margin: 20px auto;
+      text-align: left;
+    }
+
+    .result {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .result:hover {
+      background: #f8f9fa;
+    }
+
+    .result h3 {
+      color: #1a0dab;
+      margin-bottom: 5px;
+    }
+
+    .result .url {
+      color: #006621;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .result .description {
+      color: #545454;
+      font-size: 14px;
+    }
+
+    .ad {
+      position: fixed;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+      cursor: move;
+      max-width: 300px;
+      border-radius: 8px;
+    }
+
+    .ad-close {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #666;
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      z-index: 2000;
+      text-align: center;
+      display: none;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1999;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="search-container">
+    <div class="logo">Google</div>
+    <input type="text" class="search-box" placeholder="Search for 'next level'...">
+    <div>
+      <button class="search-button">Google Search</button>
+      <button class="search-button">I'm Feeling Lucky</button>
+    </div>
+  </div>
+
+  <div class="search-results"></div>
+  <div class="overlay"></div>
+  <div class="popup">
+    <h2>🎉 Congratulations! 🎉</h2>
+    <p>You've won a FREE iPhone 15 Pro Max!</p>
+    <button style="margin-top: 15px; padding: 10px 20px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer;">Claim Now!</button>
+  </div>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 24;
+    init(levelNumber);
+
+    const searchBox = document.querySelector('.search-box');
+    const searchButtons = document.querySelectorAll('.search-button');
+    const searchResults = document.querySelector('.search-results');
+    const overlay = document.querySelector('.overlay');
+    const popup = document.querySelector('.popup');
+
+    levelManager.updateTip("Search for 'next level' to proceed...");
+    levelManager.updateCompleteMessage("Congratulations! You've found the next level!");
+
+    let searchCount = 0;
+    let adCount = 0;
+    const maxAds = 8;
+
+    const fakeResults = [
+      {
+        title: "Next Level Gaming - Best Online Games",
+        url: "www.nextlevelgaming.com",
+        description: "Play the latest and most exciting online games. Level up your gaming experience with our premium selection of games."
+      },
+      {
+        title: "Level Up Your Life - Personal Development",
+        url: "www.leveluplife.com",
+        description: "Transform your life and reach the next level of personal growth with our expert guidance and proven strategies."
+      },
+      {
+        title: "Next Level Fitness - Get Fit Today",
+        url: "www.nextlevelfitness.com",
+        description: "Achieve your fitness goals and take your workout to the next level with our comprehensive training programs."
+      },
+      {
+        title: "Next Level Tech - Innovation and Future",
+        url: "www.nextleveltech.com",
+        description: "Explore cutting-edge technology and future innovations. Stay ahead with our insights into the tech world."
+      },
+      {
+        title: "Next Level Art - Creative Expressions",
+        url: "www.nextlevelart.com",
+        description: "Discover unique artistic creations and expressions. Unleash your creativity with our inspiring art collection."
+      },
+      {
+        title: "Next Level Music - Sounds of Tomorrow",
+        url: "www.nextlevelmusic.com",
+        description: "Experience the future of sound with our curated collection of innovative music and artists."
+      },
+      {
+        title: "Next Level Food - Culinary Adventures",
+        url: "www.nextlevelfood.com",
+        description: "Embark on a gastronomic journey with our recipes and reviews of the world's most exciting cuisines."
+      },
+      {
+        title: "Next Level Travel - Explore Beyond Limits",
+        url: "www.nextleveltravel.com",
+        description: "Plan your next adventure with our guides to exotic destinations and unique travel experiences."
+      },
+      {
+        title: "Next Level Education - Learn and Grow",
+        url: "www.nextleveled.com",
+        description: "Advance your knowledge and skills with our comprehensive educational resources and online courses."
+      },
+      {
+        title: "Next Level Design - Aesthetics and Function",
+        url: "www.nextleveldesign.com",
+        description: "Transform your spaces with our modern design principles and innovative solutions for every environment."
+      }
+    ];
+
+    function createAd() {
+      if (adCount >= maxAds) return;
+
+      const ad = document.createElement('div');
+      ad.className = 'ad';
+      
+      ad.style.left = Math.random() * (window.innerWidth - 300) + 'px';
+      ad.style.top = Math.random() * (window.innerHeight - 200) + 60 + 'px';
+
+      const closeBtn = document.createElement('span');
+      closeBtn.className = 'ad-close';
+      closeBtn.textContent = '×';
+
+      const adContent = [
+        { title: "🎮 FREE ROBUX!", desc: "Get unlimited Robux now!" },
+        { title: "💰 MAKE MONEY FAST!", desc: "Earn $1000 daily from home!" },
+        { title: "🎯 YOU'RE THE WINNER!", desc: "Claim your prize now!" },
+        { title: "⚠️ VIRUS DETECTED!", desc: "Your computer is at risk!" },
+        { title: "🎁 FREE GIFT CARD!", desc: "Amazon gift cards giveaway!" }
+      ];
+
+      const content = adContent[Math.floor(Math.random() * adContent.length)];
+      ad.innerHTML = `
+        <span class="ad-close">×</span>
+        <h3 style="margin-bottom: 10px; color: #ff4444;">${content.title}</h3>
+        <p style="margin-bottom: 15px;">${content.desc}</p>
+        <button style="background: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">
+          Click Here!
+        </button>
+      `;
+
+      let isDragging = false;
+      let currentX;
+      let currentY;
+      let initialX;
+      let initialY;
+
+      function dragStart(e) {
+        initialX = e.clientX - ad.offsetLeft;
+        initialY = e.clientY - ad.offsetTop;
+        if (e.target === ad || e.target.parentNode === ad) {
+          isDragging = true;
+        }
+      }
+
+      function dragEnd() {
+        isDragging = false;
+      }
+
+      function drag(e) {
+        if (isDragging) {
+          e.preventDefault();
+          currentX = e.clientX - initialX;
+          currentY = e.clientY - initialY;
+          
+          if (currentY >= 60) { // Prevent dragging into topbar
+            ad.style.left = currentX + 'px';
+            ad.style.top = currentY + 'px';
+          }
+        }
+      }
+
+      ad.addEventListener('mousedown', dragStart);
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('mouseup', dragEnd);
+
+      ad.querySelector('.ad-close').addEventListener('click', (e) => {
+        e.stopPropagation();
+        ad.remove();
+        adCount--;
+      });
+
+      document.body.appendChild(ad);
+      adCount++;
+    }
+
+    function showPopup() {
+      overlay.style.display = 'block';
+      popup.style.display = 'block';
+      createAd();
+      createAd();
+    }
+
+    function search() {
+      const query = searchBox.value.toLowerCase();
+      searchResults.innerHTML = '';
+      searchCount++;
+
+      if (query.includes('next') && query.includes('level')) {
+        // Show the real result after a few searches
+        if (searchCount >= 3) {
+          const result = document.createElement('div');
+          result.className = 'result';
+          result.innerHTML = `
+            <h3>Next Level - Continue Your Journey</h3>
+            <div class="url">game://next-level/continue</div>
+            <div class="description">Click here to proceed to the next level of your journey.</div>
+          `;
+          result.addEventListener('click', () => levelManager.completeLevel());
+          searchResults.appendChild(result);
+        }
+      }
+
+      // Add fake results
+      fakeResults.forEach(result => {
+        const div = document.createElement('div');
+        div.className = 'result';
+        div.innerHTML = `
+          <h3>${result.title}</h3>
+          <div class="url">${result.url}</div>
+          <div class="description">${result.description}</div>
+        `;
+        div.addEventListener('click', showPopup);
+        searchResults.appendChild(div);
+      });
+
+      // Create new ads on search
+      createAd();
+    }
+
+    searchButtons.forEach(button => {
+      button.addEventListener('click', search);
+    });
+
+    searchBox.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') search();
+    });
+
+    // Initial ads
+    for (let i = 0; i < 3; i++) {
+      createAd();
+    }
+
+    // Close popup when clicking overlay
+    overlay.addEventListener('click', () => {
+      overlay.style.display = 'none';
+      popup.style.display = 'none';
+    });
+
+    // Prevent right-click
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+
+    // Create new ad every 8 seconds
+    setInterval(() => {
+      if (adCount < maxAds) createAd();
+    }, 8000);
+  </script>
+</body>
+</html>

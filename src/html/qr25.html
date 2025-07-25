@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Button Game 3 - Level 25</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="icon" href="../../res/images/favicon.ico" type="image/x-icon">
+  <style>
+    .main {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    .topbar {
+      margin-top: -60px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    #code {
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="left">
+      <div class="title" title="Back to the game">Button Game 3</div>
+    </div>
+    <div class="right"></div>
+  </div>
+  <div class="main">
+    <h1 id="title-game">Click the button for the code: </h1>
+    <span id="code"></span>
+    <button id="codeButton">Click for the code</button>
+  </div>
+  <script>
+    const title = document.querySelector(".title");
+    const titleGame = document.querySelector("#title-game");
+    const codeButton = document.querySelector("#codeButton");
+    const codeArea = document.querySelector("#code");
+
+    title.addEventListener("click", () => {
+      document.location.href = "../../index.html";
+    });
+
+    function generateCode() {
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const year = today.getFullYear();
+
+      const code1 = day + month + year;
+      const code2 = code1 * day;
+      const code3 = code2 * month
+
+      return code3;
+    }
+
+    codeButton.addEventListener("click", () => {
+      const code = generateCode();
+      titleGame.textContent = "Here is the code: "
+      codeArea.textContent = code;
+      codeButton.style.display = "none";
+    });
+  </script>
+</body>
+</html>

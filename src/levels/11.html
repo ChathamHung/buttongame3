@@ -97,9 +97,10 @@
     const title = document.querySelector(".title");
     const customMenu = document.getElementById('customContextMenu');
 
-    levelManager.updateTip("In right-click menu or long click menu (Context menu)");
+    levelManager.updateTip("Right-click (or long press on mobile) in white area <strong>(NOT IN THE TOPBAR MENU!)</strong>");
     levelManager.updateCompleteMessage(`The button is in the context menu!`);
     levelManager.setRefreshEnable(false);
+    levelManager.setSkipEnable(true);
 
     title.addEventListener("click", () => {
       levelManager.showDialog("Haha!", "Not in here! :D");

@@ -76,5 +76,17 @@
     "tip": "Complete Levels 1-20",
     "icon": "",
     "hide": false
+  },
+  "14": {
+    "name": "Message",
+    "tip": "A chat from Level 23",
+    "icon": "",
+    "hide": false
+  },
+  "15": {
+    "name": "A update",
+    "tip": "Complete Level 26",
+    "icon": "",
+    "hide": false
   }
 }
