@@ -56,37 +56,43 @@
   "10": {
     "name": "Super Clicker",
     "tip": "Clicked 1,000 times in Level 16",
-    "icon": "",
+    "icon": "Clicker.png",
     "hide": false
   },
   "11": {
     "name": "God of Password Game",
     "tip": "Complete Level 17",
-    "icon": "",
+    "icon": "Password.png",
     "hide": false
   },
   "12": {
     "name": "God of Memory Match",
     "tip": "Complete Level 14 in 15 moves or less",
-    "icon": "",
+    "icon": "Match.png",
     "hide": false
   },
   "13": {
     "name": "20 basic levels",
     "tip": "Complete Levels 1-20",
-    "icon": "",
+    "icon": "20Basic.png",
     "hide": false
   },
   "14": {
     "name": "Message",
     "tip": "A chat from Level 23",
-    "icon": "",
+    "icon": "Message.png",
     "hide": false
   },
   "15": {
     "name": "A update",
     "tip": "Complete Level 26",
-    "icon": "",
+    "icon": "Update.png",
+    "hide": false
+  },
+  "16": {
+    "name": "Chooses you 🫵",
+    "tip": "Click \"chooses you 🫵\" in Level 29",
+    "icon": "ChoosesYOU.png",
     "hide": false
   }
 }

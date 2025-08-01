@@ -191,8 +191,8 @@
       },
       {
         id: 6,
-        description: 'Must not contain the word "password"',
-        validate: (password) => !password.toLowerCase().includes('password')
+        description: 'Must contain the word "password"',
+        validate: (password) => password.toLowerCase().includes('password')
       },
       {
         id: 7,

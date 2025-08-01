@@ -52,8 +52,12 @@ level.prototype.showDialog = function (title, text) {
   sendCommand("showMessage", { title: title, text: text });
 };
 
-level.prototype.showNotification = function (title, text) {
-  sendCommand("showNotification", { title: title, text: text });
+level.prototype.refresh = function () {
+  sendCommand("refresh");
+};
+
+level.prototype.showNotification = function (title, text, icon) {
+  sendCommand("showNotification", { title: title, text: text, icon: icon });
 };
 
 level.prototype.completeAchievement = function (id) {

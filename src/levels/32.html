@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .morse-display {
+      font-family: monospace;
+      font-size: 24px;
+      margin: 10px 0;
+      min-height: 30px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .message-display {
+      font-size: 18px;
+      margin: 10px 0;
+      min-height: 24px;
+      text-align: center;
+    }
+
+    .target-word {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    .morse-buttons {
+      display: flex;
+      gap: 15px;
+      margin: 15px 0;
+    }
+
+    .morse-button {
+      padding: 15px 30px;
+      border-radius: 10px;
+      background-color: #4a90e2;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.1s ease;
+    }
+
+    .morse-button:hover {
+      background-color: #3a80d2;
+    }
+
+    .morse-button:active {
+      transform: scale(0.95);
+    }
+
+    .control-button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+      margin-top: 10px;
+    }
+
+    .control-button:hover {
+      background-color: #60a83e;
+    }
+
+    .control-button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    .morse-reference {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+      max-width: 400px;
+      font-size: 14px;
+    }
+
+    .morse-reference h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .morse-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .morse-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Morse Code Decoder</h1>
+  
+  <div class="game-container">
+    <div class="target-word" id="targetWord">Decode: ?????</div>
+    <div class="morse-display" id="morseDisplay"></div>
+    <div class="message-display" id="messageDisplay">Press dot (.) or dash (-) to input Morse code</div>
+    
+    <div class="morse-buttons">
+      <button class="morse-button" id="dotButton">Dot (.)</button>
+      <button class="morse-button" id="dashButton">Dash (-)</button>
+    </div>
+    
+    <div class="control-buttons">
+      <button class="control-button" id="spaceButton">Space</button>
+      <button class="control-button" id="backspaceButton">Backspace</button>
+      <button class="control-button" id="submitButton">Submit</button>
+      <button class="control-button" id="resetButton">Reset</button>
+    </div>
+    
+    <div class="morse-reference">
+      <h3>Morse Code Reference</h3>
+      <div class="morse-grid">
+        <div class="morse-item">A: .-</div>
+        <div class="morse-item">B: -...</div>
+        <div class="morse-item">C: -.-.</div>
+        <div class="morse-item">D: -..</div>
+        <div class="morse-item">E: .</div>
+        <div class="morse-item">F: ..-.</div>
+        <div class="morse-item">G: --.</div>
+        <div class="morse-item">H: ....</div>
+        <div class="morse-item">I: ..</div>
+        <div class="morse-item">J: .---</div>
+        <div class="morse-item">K: -.-</div>
+        <div class="morse-item">L: .-..</div>
+        <div class="morse-item">M: --</div>
+        <div class="morse-item">N: -.</div>
+        <div class="morse-item">O: ---</div>
+        <div class="morse-item">P: .--.</div>
+        <div class="morse-item">Q: --.-</div>
+        <div class="morse-item">R: .-.</div>
+        <div class="morse-item">S: ...</div>
+        <div class="morse-item">T: -</div>
+        <div class="morse-item">U: ..-</div>
+        <div class="morse-item">V: ...-</div>
+        <div class="morse-item">W: .--</div>
+        <div class="morse-item">X: -..-</div>
+        <div class="morse-item">Y: -.--</div>
+        <div class="morse-item">Z: --..</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 32;
+    init(levelNumber);
+
+    // Game elements
+    const morseDisplay = document.getElementById('morseDisplay');
+    const messageDisplay = document.getElementById('messageDisplay');
+    const targetWordDisplay = document.getElementById('targetWord');
+    const dotButton = document.getElementById('dotButton');
+    const dashButton = document.getElementById('dashButton');
+    const spaceButton = document.getElementById('spaceButton');
+    const backspaceButton = document.getElementById('backspaceButton');
+    const submitButton = document.getElementById('submitButton');
+    const resetButton = document.getElementById('resetButton');
+
+    // Morse code dictionary
+    const morseCode = {
+      '.-': 'A', '-...': 'B', '-.-.': 'C', '-..': 'D', '.': 'E',
+      '..-.': 'F', '--.': 'G', '....': 'H', '..': 'I', '.---': 'J',
+      '-.-': 'K', '.-..': 'L', '--': 'M', '-.': 'N', '---': 'O',
+      '.--.': 'P', '--.-': 'Q', '.-.': 'R', '...': 'S', '-': 'T',
+      '..-': 'U', '...-': 'V', '.--': 'W', '-..-': 'X', '-.--': 'Y',
+      '--..': 'Z'
+    };
+
+    // Game variables
+    let currentMorse = [];
+    let currentWord = '';
+    let targetWord = '';
+    let gameCompleted = false;
+
+    // List of possible words to decode
+    const wordList = [
+      'MORSE', 'CODE', 'SIGNAL', 'BUTTON', 'GAME', 'LEVEL', 
+      'RADIO', 'DASH', 'DOT', 'TELEGRAPH', 'MESSAGE'
+    ];
+
+    // Set game messages
+    levelManager.updateTip("Use dots (.) and dashes (-) to decode the Morse code message. Use space to separate letters.");
+    levelManager.updateCompleteMessage("Congratulations! You've successfully decoded the message!");
+
+    // Initialize the game
+    function initGame() {
+      // Select a random word from the list
+      targetWord = wordList[Math.floor(Math.random() * wordList.length)];
+      targetWordDisplay.textContent = `Decode: ${targetWord}`;
+      
+      // Reset game state
+      currentMorse = [];
+      currentWord = '';
+      gameCompleted = false;
+      updateDisplay();
+    }
+
+    // Update the display with current morse code and decoded message
+    function updateDisplay() {
+      morseDisplay.textContent = currentMorse.join(' ');
+      
+      // Decode and display the current word
+      let decodedWord = '';
+      for (let i = 0; i < currentMorse.length; i++) {
+        const letter = morseCode[currentMorse[i]] || '?';
+        decodedWord += letter;
+      }
+      
+      messageDisplay.textContent = decodedWord;
+      
+      // Check if the word is correct
+      if (decodedWord === targetWord && !gameCompleted) {
+        gameCompleted = true;
+        messageDisplay.textContent = `Correct! You decoded: ${decodedWord}`;
+        setTimeout(() => {
+          levelManager.completeLevel();
+        }, 1500);
+      }
+    }
+
+    // Event listeners for buttons
+    dotButton.addEventListener('click', () => {
+      if (gameCompleted) return;
+      
+      // Add dot to the current morse character
+      if (currentMorse.length === 0) {
+        currentMorse.push('.');
+      } else {
+        currentMorse[currentMorse.length - 1] += '.';
+      }
+      
+      updateDisplay();
+    });
+
+    dashButton.addEventListener('click', () => {
+      if (gameCompleted) return;
+      
+      // Add dash to the current morse character
+      if (currentMorse.length === 0) {
+        currentMorse.push('-');
+      } else {
+        currentMorse[currentMorse.length - 1] += '-';
+      }
+      
+      updateDisplay();
+    });
+
+    spaceButton.addEventListener('click', () => {
+      if (gameCompleted) return;
+      
+      // Add a new empty character
+      currentMorse.push('');
+      updateDisplay();
+    });
+
+    backspaceButton.addEventListener('click', () => {
+      if (gameCompleted) return;
+      
+      // Remove the last character or part of it
+      if (currentMorse.length > 0) {
+        const lastIndex = currentMorse.length - 1;
+        if (currentMorse[lastIndex].length > 0) {
+          // Remove the last dot or dash from the current character
+          currentMorse[lastIndex] = currentMorse[lastIndex].slice(0, -1);
+          if (currentMorse[lastIndex] === '') {
+            // If the character is now empty, remove it
+            currentMorse.pop();
+          }
+        } else {
+          // Remove the empty character
+          currentMorse.pop();
+        }
+      }
+      
+      updateDisplay();
+    });
+
+    submitButton.addEventListener('click', () => {
+      if (gameCompleted) {
+        levelManager.completeLevel();
+      };
+      
+      // Check if the decoded word matches the target word
+      let decodedWord = '';
+      for (let i = 0; i < currentMorse.length; i++) {
+        const letter = morseCode[currentMorse[i]] || '?';
+        decodedWord += letter;
+      }
+      
+      if (decodedWord === targetWord) {
+        gameCompleted = true;
+        messageDisplay.textContent = `Correct! You decoded: ${decodedWord}`;
+        setTimeout(() => {
+          levelManager.completeLevel();
+        }, 1500);
+      } else {
+        messageDisplay.textContent = `Try again! Your decoded message: ${decodedWord}`;
+      }
+    });
+
+    resetButton.addEventListener('click', () => {
+      if (gameCompleted) return;
+      
+      // Reset the current input
+      currentMorse = [];
+      updateDisplay();
+      messageDisplay.textContent = "Press dot (.) or dash (-) to input Morse code";
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (gameCompleted) return;
+      
+      switch (e.key) {
+        case '.': // Dot
+          dotButton.click();
+          break;
+        case '-': // Dash
+          dashButton.click();
+          break;
+        case ' ': // Space
+          e.preventDefault(); // Prevent page scrolling
+          spaceButton.click();
+          break;
+        case 'Backspace': // Backspace
+          backspaceButton.click();
+          break;
+        case 'Enter': // Submit
+          submitButton.click();
+          break;
+      }
+    });
+
+    // Prevent right-click menu
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+
+    // Initialize the game
+    initGame();
+  </script>
+</body>
+</html>

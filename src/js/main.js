@@ -12,9 +12,9 @@ const levelPage = document.querySelector(".level-page");
 const dialog = document.querySelector(".dialog");
 const notifications = document.querySelector(".notifications");
 
-const version = 0.14;
-const versionType = "Alpha";
-const updateName = "update 14";
+const version = 0.15;
+const versionType = "Beta";
+const updateName = "update 15";
 
 let currentPageIndex = 0;
 let currentTip = ``;
@@ -267,12 +267,21 @@ function showNotification(title, message, icon, type, callback = (closeType) => 
   function hideNotification(closeType) {
     if (closed) return;
     closed = true;
-    newNotification.classList.add("hide-anim");
-    if (timeoutId) clearTimeout(timeoutId);
-    newNotification.addEventListener("animationend", () => {
+    
+    if (saveData.menuAnimationsEnabled === false) {
+      // If animations disabled, remove immediately
       newNotification.remove();
+      if (timeoutId) clearTimeout(timeoutId);
       callback(closeType);
-    }, { once: true });
+    } else {
+      // Use animation if enabled
+      newNotification.classList.add("hide-anim");
+      if (timeoutId) clearTimeout(timeoutId);
+      newNotification.addEventListener("animationend", () => {
+        newNotification.remove();
+        callback(closeType);
+      }, { once: true });
+    }
   }
 
   // Automatically remove notification after timeout
@@ -512,7 +521,12 @@ let saveData = {
   unlockedLevels: [0, 1],
   skippedLevels: [],
   lastPlayedLevel: 0,
-  autoSaveEnabled: true
+  autoSaveEnabled: true,
+  levelLabelEnabled: false,
+  menuAnimationsEnabled: true,
+  menuBlurEnabled: true,
+  bottomSafeZoneEnabled: false,
+  showLockedEnabled: false
 };
 
 function loadSave() {
@@ -643,12 +657,16 @@ function updateLevelButtons(currentLevel) {
   });
 }
 
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 function init() {
   loadSave();
   loadAchievementsSave();
   let urlParams = new URLSearchParams(window.location.search);
   let level = parseInt(urlParams.get('level'));
-  // let unlock = parseInt(urlParams.get('unlock'));
+  let unlockto = parseInt(urlParams.get('unlockto'));
 
   if (urlParams.get('debug') === "true") {
     debugEnabled = true;
@@ -673,6 +691,17 @@ function init() {
   if (saveData.levelLabelEnabled === undefined) {
     saveData.levelLabelEnabled = false;
   }
+  if (saveData.bottomSafeZoneEnabled === undefined) {
+    saveData.bottomSafeZoneEnabled = isMobileDevice();
+  }
+
+  if (unlockto) {
+    for (let i = 0; i <= unlockto; i++) {
+      unlockLevel(i);
+    }
+    urlParams.delete('unlockto');
+    window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
+  }
 
   updateSettings();
   switchMenuPage(0, true);
@@ -683,32 +712,149 @@ function init() {
 // Example: unlock "Welcome" achievement when game starts
 // You can call unlockAchievement("1") wherever you want to unlock an achievement
 const autoSaveToggle = document.querySelector("#auto-save-toggle");
+const autoSaveCheckbox = document.querySelector("#auto-save-checkbox");
 const levelLabelToggle = document.querySelector("#level-label-toggle");
+const levelLabelCheckbox = document.querySelector("#level-label-checkbox");
+const menuAnimationsToggle = document.querySelector("#menu-animations-toggle");
+const menuAnimationsCheckbox = document.querySelector("#menu-animations-checkbox");
+const menuBlurToggle = document.querySelector("#menu-blur-toggle");
+const menuBlurCheckbox = document.querySelector("#menu-blur-checkbox");
+const bottomSafeZoneToggle = document.querySelector("#bottom-safezone-toggle");
+const bottomSafeZoneCheckbox = document.querySelector("#bottom-safezone-checkbox");
+const showLockedToggle = document.querySelector("#show-locked-toggle");
+const showLockedCheckbox = document.querySelector("#show-locked-checkbox");
 
 function updateSettings() {
-  autoSaveToggle.textContent = `Auto Resume Level: ${saveData.autoSaveEnabled ? 'ON' : 'OFF'}`;
-  levelLabelToggle.textContent = `Clickable Level Labels: ${saveData.levelLabelEnabled ? 'ON' : 'OFF'}`;
+  autoSaveCheckbox.checked = !!saveData.autoSaveEnabled;
+  levelLabelCheckbox.checked = !!saveData.levelLabelEnabled;
+  menuAnimationsCheckbox.checked = saveData.menuAnimationsEnabled !== false;
+  menuBlurCheckbox.checked = saveData.menuBlurEnabled !== false;
+  bottomSafeZoneCheckbox.checked = !!saveData.bottomSafeZoneEnabled;
+  showLockedCheckbox.checked = saveData.showLockedEnabled;
+  // Optionally update text or style if needed
 
   if (saveData.levelLabelEnabled) {
     levelLabel.classList.add('enabled');
   } else {
     levelLabel.classList.remove('enabled');
   }
+  if (saveData.menuAnimationsEnabled === false) {
+    document.body.classList.add('no-animations');
+  } else {
+    document.body.classList.remove('no-animations');
+  }
+  if (saveData.menuBlurEnabled === false) {
+    document.body.classList.add('no-menu-blur');
+  } else {
+    document.body.classList.remove('no-menu-blur');
+  }
+  if (saveData.bottomSafeZoneEnabled) {
+    document.body.classList.add('bottom-safezone');
+  } else {
+    document.body.classList.remove('bottom-safezone');
+  }
+  if (saveData.showLockedEnabled) {
+    document.body.classList.add('show-locked-levels');
+  } else {
+    document.body.classList.remove('show-locked-levels');
+  }
 }
 
-autoSaveToggle.addEventListener('click', () => {
+autoSaveToggle.addEventListener('click', (e) => {
+  // Prevent double toggling if clicking the switch directly
+  if (e.target.classList.contains('switch-input')) return;
   saveData.autoSaveEnabled = !saveData.autoSaveEnabled;
   updateSettings();
   saveProgress();
 });
-
-levelLabelToggle.addEventListener('click', () => {
-  saveData.levelLabelEnabled = !saveData.levelLabelEnabled;
+autoSaveCheckbox.addEventListener('change', () => {
+  saveData.autoSaveEnabled = autoSaveCheckbox.checked;
   updateSettings();
   saveProgress();
 });
 
-init();
+levelLabelToggle.addEventListener('click', (e) => {
+  if (e.target.classList.contains('switch-input')) return;
+  saveData.levelLabelEnabled = !saveData.levelLabelEnabled;
+  updateSettings();
+  saveProgress();
+});
+levelLabelCheckbox.addEventListener('change', () => {
+  saveData.levelLabelEnabled = levelLabelCheckbox.checked;
+  updateSettings();
+  saveProgress();
+});
+
+menuAnimationsToggle.addEventListener('click', (e) => {
+  if (e.target.classList.contains('switch-input')) return;
+  saveData.menuAnimationsEnabled = !saveData.menuAnimationsEnabled;
+  updateSettings();
+  saveProgress();
+
+  // showDialog(
+  //   "Setting Changed",
+  //   "The page needs to be refreshed for animation changes to take all effect. <br>Would you like to refresh now?",
+  //   "YesNo",
+  //   (button) => {
+  //     if (button === "yes") {
+  //       location.reload();
+  //     }
+  //   }
+  // );
+});
+menuAnimationsCheckbox.addEventListener('change', () => {
+  saveData.menuAnimationsEnabled = menuAnimationsCheckbox.checked;
+  updateSettings();
+  saveProgress();
+
+  // showDialog(
+  //   "Setting Changed",
+  //   "The page needs to be refreshed for animation changes to take all effect. <br>Would you like to refresh now?",
+  //   "YesNo",
+  //   (button) => {
+  //     if (button === "yes") {
+  //       location.reload();
+  //     }
+  //   }
+  // );
+});
+
+menuBlurToggle.addEventListener('click', (e) => {
+  if (e.target.classList.contains('switch-input')) return;
+  saveData.menuBlurEnabled = !saveData.menuBlurEnabled;
+  updateSettings();
+  saveProgress();
+});
+menuBlurCheckbox.addEventListener('change', () => {
+  saveData.menuBlurEnabled = menuBlurCheckbox.checked;
+  updateSettings();
+  saveProgress();
+});
+
+bottomSafeZoneToggle.addEventListener('click', (e) => {
+  if (e.target.classList.contains('switch-input')) return;
+  saveData.bottomSafeZoneEnabled = !saveData.bottomSafeZoneEnabled;
+  updateSettings();
+  saveProgress();
+});
+bottomSafeZoneCheckbox.addEventListener('change', () => {
+  saveData.bottomSafeZoneEnabled = bottomSafeZoneCheckbox.checked;
+  updateSettings();
+  saveProgress();
+});
+
+showLockedToggle.addEventListener('click', (e) => {
+  if (e.target.classList.contains('switch-input')) return;
+  saveData.showLockedEnabled = !saveData.showLockedEnabled;
+  updateSettings();
+  saveProgress();
+});
+showLockedCheckbox.addEventListener('change', () => {
+  saveData.showLockedEnabled = showLockedCheckbox.checked;
+  updateSettings();
+  saveProgress();
+});
+
 unlockAchievement(1);
 
 window.addEventListener("message", (e) => {
@@ -752,25 +898,37 @@ window.addEventListener("message", (e) => {
       levelManager.setSkipTime(e.data.data);
       break;
     case "showMessage":
-      showDialog(e.data.data.title, e.data.data.text, "OK")
+      showDialog(e.data.data.title, e.data.data.text, "OK");
       break;
     case "showNotification":
-      showNotification(e.data.data.title, e.data.data.text)
+      showNotification(e.data.data.title, e.data.data.text, e.data.data.icon);
+      break;
+    case "refresh":
+      refresh();
       break;
     case "dlog":
       if (debugEnabled) {
-        dlog(e.data.data.text)
-        showNotification("Debug", e.data.data.text, "", "debug")
+        dlog(e.data.data.text);
+        showNotification("Debug", e.data.data.text, "", "debug");
       }
       break;
     case "completeAchievement":
-      completeAchievement(e.data.data.id)
+      completeAchievement(e.data.data.id);
       break;
   }
 });
 
 function levelChanged() {
   // showDialog("Level", "Level changed", "OK");
+}
+
+function goToNextLevel(currentLevel) {
+  // dlog("currentLevel: " + currentLevel + " levelsData.length: " + Object.keys(levelsData).length);
+  if (currentLevel + 1 >= Object.keys(levelsData).length) {
+    goTo("NoMore");
+  } else {
+    goTo(currentLevel + 1);
+  }
 }
 
 function completeLevel() {
@@ -835,7 +993,7 @@ function completeLevel() {
     }
     showDialog("Level Complete", completeMessage, "CompleteLevel", (button) => {
       if (button === "ok") {
-        goTo(levelManager.currentLevel + 1);
+        goToNextLevel(levelManager.currentLevel);
       }
         // switch (levelManager.currentLevel) {
         //   case 1:
@@ -847,7 +1005,7 @@ function completeLevel() {
         // }
     });
   } else {
-    goTo(levelManager.currentLevel + 1);
+    goToNextLevel(levelManager.currentLevel);
   }
 }
 
@@ -947,6 +1105,11 @@ function switchMenuPage(targetIndex, force = false) {
 // Initialize menu pages
 function initializeMenuPages() {
   menuPages.forEach((page, index) => {
+    // if (saveData.menuAnimationsEnabled) {
+    //   page.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+    // } else {
+    //   page.style.transition = "none";
+    // }
     page.style.transition = "opacity 0.3s ease, transform 0.3s ease";
     if (index === 0) {
       // Show first page by default
@@ -1093,7 +1256,7 @@ function refresh() {
 
 function skip() {
   markSkipped(levelManager.currentLevel);
-  goTo(levelManager.currentLevel + 1);
+  goToNextLevel(levelManager.currentLevel);
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel + 1);
   completeAchievement(4);
@@ -1211,7 +1374,6 @@ iframe.addEventListener("load", () => {
 // Deebug
 
 document.querySelector("#debug-print-state").addEventListener("click", () => {
-  closeMenu();
   showState();
 });
 
@@ -1230,7 +1392,6 @@ document.querySelector("#debug-delete-data").addEventListener("click", () => {
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel);
   showNotification("Debug", "All levels locked.", "", "debug");
-  closeMenu();
 });
 
 // Debug: Unlock all levels
@@ -1240,7 +1401,6 @@ document.querySelector("#debug-unlock-all").addEventListener("click", () => {
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel);
   showNotification("Debug", "All levels unlocked.", "", "debug");
-  closeMenu();
 });
 
 // Debug: Unlock entered level
@@ -1252,7 +1412,6 @@ document.querySelector("#debug-unlock-level").addEventListener("click", () => {
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel);
   showNotification("Debug", "Level " + value + " unlocked.", "", "debug");
-  closeMenu();
 });
 
 // Debug: Delete entered level
@@ -1268,12 +1427,10 @@ document.querySelector("#debug-delete-level").addEventListener("click", () => {
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel);
   showNotification("Debug", "Level " + value + " deleted from save.", "", "debug");
-  closeMenu();
 });
 
 // Debug: Unlock a achievement
 document.querySelector("#debug-unlock-achievement").addEventListener("click", () => {
-  closeMenu();
   let value = prompt("Enter achievement id to unlock:", "1");
   if (!value) return;
   unlockAchievement(value);
@@ -1281,7 +1438,6 @@ document.querySelector("#debug-unlock-achievement").addEventListener("click", ()
 });
 
 document.querySelector("#debug-lock-achievement").addEventListener("click", () => {
-  closeMenu();
   let value = prompt("Enter achievement id to lock:", "1");
   if (!value) return;
   lockAchievement(value);
@@ -1289,13 +1445,11 @@ document.querySelector("#debug-lock-achievement").addEventListener("click", () =
 });
 
 document.querySelector("#debug-unlock-all-achievements").addEventListener("click", () => {
-  closeMenu();
   unlockAllAchievements();
   showNotification("Debug", "All achievements unlocked.", "", "debug");
 });
 
 document.querySelector("#debug-lock-all-achievements").addEventListener("click", () => {
-  closeMenu();
   lockAllAchievements();
   showNotification("Debug", "All achievements locked.", "", "debug");
 });

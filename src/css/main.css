@@ -17,7 +17,7 @@ body {
 /* Topbar */
 
 .topbar {
-  position: absolute;
+  position: fixed;
   margin: 0;
   padding: 10px;
   height: 40px;
@@ -62,11 +62,17 @@ body {
   align-items: center;
   padding: 0;
   flex-shrink: 0;
-  transition: background-color 0.1s ease;
+  transition: background-color 0.1s ease, transform 0.1s ease;
+  transform: scale(1);
 }
 
 .topbar button:hover {
   background-color: rgba(96, 96, 96, 0.7);
+  transform: scale(1.1);
+}
+
+.topbar button:active {
+  transform: scale(0.9);
 }
 
 .topbar button img {
@@ -270,7 +276,7 @@ body {
 /* Menu */
 
 .menu {
-  position: absolute;
+  position: fixed;
   top: 60px;
   left: 10px;
   width: 315px;
@@ -321,7 +327,7 @@ body {
   height: 30px;
   width: 30px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease;
   overflow: hidden;
 }
 
@@ -338,6 +344,7 @@ body {
 
 .menu-options button:hover {
   background-color: rgba(190, 190, 190, 0.3);
+  transform: scale(1.1);
 }
 
 .menu-options button.select {
@@ -347,6 +354,11 @@ body {
 .menu-options button.select:hover {
   background-color: rgba(190, 190, 190, 0.6);
 }
+
+.menu-options button:active {
+  transform: scale(0.9);
+}
+
 
 .menu-pages {
   flex: 1;
@@ -422,12 +434,14 @@ body {
   font-size: 16px;
   padding: 5px 15px;
   height: 40px;
+  min-height: 40px;
   text-align: left;
   flex-wrap: nowrap;
   border-radius: 20px;
-  transition: background-color 0.1s ease;
+  transition: background-color 0.1s ease, transform 0.1s ease;
   -webkit-user-select: none !important; /* Safari */
   user-select: none !important;
+  transform: scale(0.97);
 }
 
 .menu-pages button.current {
@@ -438,11 +452,13 @@ body {
 
 .menu-pages button:hover {
   background-color: rgba(190, 190, 190, 0.3);
+  transform: scale(1);
 }
 
 .menu-pages button:focus {
   background-color: rgba(190, 190, 190, 0.4);
   outline: none;
+  transform: scale(1);
 }
 
 .menu-pages button:focus:hover {
@@ -470,10 +486,25 @@ body {
   background-color: rgba(255, 213, 0, 0.6);
 }
 
+.menu-pages button:active {
+  background-color: rgba(190, 190, 190, 0.4);
+  transform: scale(0.95);
+}
+
 .menu-pages button.locked {
   background-color: transparent !important;
   color: rgb(189, 189, 189);
   cursor: not-allowed;
+  transform: scale(0.97);
+  display: none;
+}
+
+body.show-locked-levels .menu-pages button.locked {
+  display: block;
+}
+
+.menu-pages button.locked:active {
+  transform: scale(0.97);
 }
 
 .menu-pages hr {
@@ -533,6 +564,65 @@ body {
   cursor: pointer;
   -webkit-user-select: none !important; /* Safari */
   user-select: none !important;
+}
+
+.toggle-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-label {
+  flex: 1;
+  text-align: left;
+}
+
+.switch-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.switch-input {
+  opacity: 0;
+  width: 40px;
+  height: 24px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.switch-slider {
+  width: 40px;
+  height: 24px;
+  background: #bbb;
+  border-radius: 24px;
+  position: relative;
+  transition: background 0.2s;
+  display: inline-block;
+}
+
+.switch-slider:before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.switch-input:checked + .switch-slider {
+  background: #4caf50;
+}
+
+.switch-input:checked + .switch-slider:before {
+  transform: translateX(16px);
 }
 
 /* Main screen */
@@ -670,9 +760,10 @@ body {
   border-radius: 20px;
   outline: none;
   flex: 1;
-  transition: background-color 0.1s ease;
+  transition: background-color 0.1s ease, transform 0.1s ease;
   -webkit-user-select: none !important; /* Safari */
   user-select: none !important;
+  transform: scale(1);
 }
 
 .dialog .dialog-button:hover {
@@ -687,6 +778,11 @@ body {
 .dialog .dialog-button:focus:hover {
   background-color: rgba(190, 190, 190, 0.6);
 }
+
+.dialog .dialog-button:active {
+  transform: scale(0.9);
+}
+
 
 .dialog .dialog-button.delete {
   color: red;
@@ -824,4 +920,51 @@ body {
   .notifications .notification {
     border-radius: 12px;
   }
+}
+
+body.no-animations .topbar,
+body.no-animations .topbar button,
+body.no-animations .topbar .title,
+body.no-animations .level-label.enabled,
+body.no-animations .menu,
+body.no-animations .menu-option,
+body.no-animations .menu-options button,
+body.no-animations .menu-pages button,
+body.no-animations .dialog,
+body.no-animations .dialog .dialog-button,
+body.no-animations .notifications .notification {
+  transition: none !important;
+  animation: none !important;
+}
+body.no-animations .dialog[open],
+body.no-animations .dialog.closing {
+  animation: none !important;
+}
+body.no-animations .menu-pages button {
+  transform: scale(1);
+}
+
+body.no-menu-blur .topbar,
+body.no-menu-blur .topbar button,
+body.no-menu-blur .topbar .title,
+body.no-menu-blur .level-label.enabled,
+body.no-menu-blur .menu,
+body.no-menu-blur .menu-option,
+body.no-menu-blur .menu-options button,
+body.no-menu-blur .menu-pages button,
+body.no-menu-blur .dialog,
+body.no-menu-blur .dialog::backdrop,
+body.no-menu-blur .dialog .dialog-button,
+body.no-menu-blur .notifications .notification, 
+body.no-menu-blur .left button, 
+body.no-menu-blur .right button, 
+body.no-menu-blur .left div, 
+body.no-menu-blur .right div {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.bottom-safezone .menu {
+  height: calc(100vh - 200px) !important;
+  margin-bottom: 50px !important;
 }

@@ -110,5 +110,29 @@
   "27": {
     "name": "Color Matching",
     "file": "27.html"
+  },
+  "28": {
+    "name": "Email Scam",
+    "file": "28.html"
+  },
+  "29": {
+    "name": "Terms of Use",
+    "file": "29.html"
+  },
+  "30": {
+    "name": "RNG Game",
+    "file": "30.html"
+  },
+  "31": {
+    "name": "Simon Says",
+    "file": "31.html"
+  },
+  "32": {
+    "name": "Morse Code",
+    "file": "32.html"
+  },
+  "33": {
+    "name": "Clicking Moveing Button",
+    "file": "33.html"
   }
 }

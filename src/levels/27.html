@@ -89,7 +89,7 @@
     <div class="color-box" id="targetColor"></div>
   </div>
 
-  <p>Target Color Values - R: <span id="targetR"></span>, G: <span id="targetG"></span>, B: <span id="targetB"></span></p>
+  <!-- <p>Target Color Values - R: <span id="targetR"></span>, G: <span id="targetG"></span>, B: <span id="targetB"></span></p> -->
 
   <div class="controls">
     <div class="slider-container">
@@ -138,9 +138,9 @@
     targetColor.style.backgroundColor = `rgb(${targetR},${targetG},${targetB})`;
 
     // Display target values
-    document.getElementById('targetR').textContent = targetR;
-    document.getElementById('targetG').textContent = targetG;
-    document.getElementById('targetB').textContent = targetB;
+    // document.getElementById('targetR').textContent = targetR;
+    // document.getElementById('targetG').textContent = targetG;
+    // document.getElementById('targetB').textContent = targetB;
 
     function updateUserColor() {
       const r = redSlider.value;

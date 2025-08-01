@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px;
+      margin-bottom: 100px;
+
+      /* display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px); */
+    }
+
+    button { /* Example button (can be change) */
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    #acceptTerms {
+      margin-top: 10px;
+      height: 15px;
+      width: 15px;
+    }
+
+    #nextLevel {
+      margin-top: 10px;
+    }
+
+    #achievement {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1><strong>Button Game 3 – Terms of Use</strong></h1>
+  <p><em>(Also known as “That Thing You Didn’t Read But Technically Agreed To”)</em></p>
+  <p><strong>Last Updated: Some time after lunch, but before we started watching cat videos.</strong></p>
+  <p>Welcome to <strong>Button Game 3</strong> — the third installment in the critically unknown series of button-based
+    entertainment. Before you start mashing buttons like your life depends on it, we require you to read, ignore, skim, or
+    at least scroll past these utterly pointless Terms of Use.</p>
+  <p>By continuing past this screen, blinking twice, or being alive in general, you agree to absolutely everything written
+    below — even the parts we made up while half-asleep.</p>
+  <hr>
+  <h2>1. <strong>Button Behavior Policy</strong></h2>
+  <p>You agree that:</p>
+  <ul>
+    <li>Buttons may be clicked, tapped, smashed, or whispered to.</li>
+    <li>You will not insult, harass, or throw verbal abuse at buttons, regardless of how “suspiciously smug” they may
+      look.</li>
+    <li>You will not attempt to use voice commands like “Button, make me a sandwich” — it won’t work and only causes
+      confusion.</li>
+  </ul>
+  <p>Any violations may result in the button retaliating by doing… literally nothing, because it's a button.</p>
+  <hr>
+  <h2>2. <strong>Ownership &amp; Intellectual Property</strong></h2>
+  <p>All pixels, sounds, and imaginary goats in Button Game 3 are owned by us. Probably.</p>
+  <p>You are granted a <strong>non-exclusive, non-transferable, non-sensical</strong> license to play this game until:</p>
+  <ul>
+    <li>You get bored.</li>
+    <li>The universe collapses.</li>
+    <li>Your device is swallowed by a black hole.</li>
+    <li>We decide to replace the game with a weather simulator that only works on Tuesdays.</li>
+  </ul>
+  <hr>
+  <h2>3. <strong>Soul Clause</strong></h2>
+  <p>By launching this game, you agree to lend us your soul for strictly decorative purposes.
+    Don’t worry — we won’t sell it. We just keep it on a shelf next to the other ones.
+    You can reclaim it by beating Level ∞ (good luck with that).</p>
+  <hr>
+  <h2>4. <strong>User Responsibilities</strong></h2>
+  <p>As a player of Button Game 3, you must:</p>
+  <ul>
+    <li>Take full responsibility for any emotional attachment formed with buttons.</li>
+    <li>Refrain from button-hoarding.</li>
+    <li>Alert your local authorities if your buttons begin whispering to you.</li>
+    <li>Keep your finger-lifting muscles in peak condition at all times.</li>
+  </ul>
+  <hr>
+  <h2>5. <strong>In-Game Purchases (That Don't Exist)</strong></h2>
+  <p>While Button Game 3 proudly contains <strong>no microtransactions</strong>, we do accept the following currencies:
+  </p>
+  <ul>
+    <li>Imagination</li>
+    <li>The sound of applause</li>
+    <li>Handwritten compliments</li>
+    <li>Souls (again, decorative only)</li>
+  </ul>
+  <p>You may also voluntarily donate snacks. The dev team likes snacks.</p>
+  <hr>
+  <h2>6. <strong>Bugs, Glitches, and Other Magical Features</strong></h2>
+  <p>You acknowledge that:</p>
+  <ul>
+    <li>Bugs are features.</li>
+    <li>Glitches are Easter eggs.</li>
+    <li>Crashes are a sign of emotional vulnerability.</li>
+    <li>The game may randomly explode, reset, or become sentient. That’s not a bug — that’s art.</li>
+  </ul>
+  <p>We will absolutely not fix anything unless it breaks our lunch.</p>
+  <hr>
+  <h2>7. <strong>Modding &amp; Cheating</strong></h2>
+  <p>Modding is allowed as long as it involves:</p>
+  <ul>
+    <li>Replacing buttons with tacos</li>
+    <li>Making the game play elevator music backwards</li>
+    <li>Adding hats to literally everything</li>
+  </ul>
+  <p>However, we prohibit cheating unless it makes us laugh.</p>
+  <hr>
+  <h2>8. <strong>Account System (There Isn’t One)</strong></h2>
+  <p>We considered implementing a login system, but then we remembered: <strong>this is Button Game 3</strong>.
+    If we wanted passwords, we’d go to the DMV.</p>
+  <hr>
+  <h2>9. <strong>Support &amp; Contact</strong></h2>
+  <p>If you experience any issues, please contact our customer service hotline by:</p>
+  <ul>
+    <li>Screaming into the void</li>
+    <li>Writing your complaint on a potato and mailing it to the moon</li>
+    <li>Praying to the Great Button Overlord</li>
+  </ul>
+  <p>We guarantee a 0% response rate within 3–5 business eternities.</p>
+  <hr>
+  <h2>10. <strong>Governing Law</strong></h2>
+  <p>These Terms are governed by the laws of <strong>Buttonlandia</strong>, a proud sovereign nation founded in 2024 by
+    three hamsters and a broken calculator. Legal disputes must be settled via rock-paper-scissors or a dramatic staring
+    contest.</p>
+  <hr>
+  <h2>11. <strong>Termination</strong></h2>
+  <p>This agreement ends when:</p>
+  <ul>
+    <li>You uninstall the game</li>
+    <li>You complete the game 100% (impossible)</li>
+    <li>A pigeon delivers your resignation letter to our office window</li>
+  </ul>
+  <p>Upon termination, all rights revert to nobody and nothing matters.</p>
+  <hr>
+  <h2>12. <strong>Final Clause That Sounds Important</strong></h2>
+  <p>If any part of these Terms is found to be unenforceable, irrelevant, or written under the influence of sleep
+    deprivation, the rest shall continue to be equally meaningless.</p>
+  <hr>
+  <p><strong>Thank you for playing Button Game 3.</strong>
+    Now go. Press buttons. Make chaos. Regret nothing.
+    And remember: <strong>the button <a id="achievement">chooses you 🫵</a>.</strong></p>
+  <hr>
+  <input type="checkbox" id="acceptTerms">
+  <label for="acceptTerms">I <strong>don't</strong> accept the Terms of Use</label>
+  <br>
+  <button id="nextLevel" disabled>Next</button>
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 29;
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+    const achievement = document.querySelector("#achievement");
+    const acceptTerms = document.querySelector("#acceptTerms");
+
+    levelManager.updateTip(`Read it!`);
+    levelManager.updateCompleteMessage(`Congratulations! You read it... or you are not.`);
+    levelManager.setRefreshEnable(false);
+
+
+    acceptTerms.addEventListener("change", () => {
+      if (acceptTerms.checked) {
+        nextButton.disabled = false;
+      } else {
+        nextButton.disabled = true;
+      }
+    });
+
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      levelManager.completeLevel();
+    });
+    
+    achievement.addEventListener("click", () => {
+      levelManager.completeAchievement(16);
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

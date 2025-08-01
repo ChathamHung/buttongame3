@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .buttons-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .simon-button {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      border: solid 2px black;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      transition: all 0.1s ease;
+    }
+
+    .simon-button.red {
+      background-color: #ff0000;
+    }
+
+    .simon-button.green {
+      background-color: #55ff55;
+    }
+
+    .simon-button.blue {
+      background-color: #5555ff;
+    }
+
+    .simon-button.yellow {
+      background-color: #ffff55;
+    }
+
+    .simon-button.active {
+      filter: brightness(1.5);
+      border: solid 5px rgb(0, 100, 255);
+      transform: scale(0.9);
+    }
+
+    .simon-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .status {
+      font-size: 18px;
+      margin-bottom: 10px;
+      height: 24px;
+    }
+
+    .control-button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    .control-button:hover {
+      background-color: #60a83e;
+    }
+
+    .control-button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simon Says</h1>
+  
+  <div class="game-container">
+    <div class="status" id="status">Click the button to start the game!</div>
+    
+    <div class="buttons-grid">
+      <button class="simon-button red" id="red"></button>
+      <button class="simon-button green" id="green"></button>
+      <button class="simon-button blue" id="blue"></button>
+      <button class="simon-button yellow" id="yellow"></button>
+    </div>
+    
+    <button class="control-button" id="startButton">Start Game</button>
+  </div>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 31;
+    init(levelNumber);
+
+    // Game elements
+    const statusDisplay = document.getElementById('status');
+    const startButton = document.getElementById('startButton');
+    const buttons = {
+      red: document.getElementById('red'),
+      green: document.getElementById('green'),
+      blue: document.getElementById('blue'),
+      yellow: document.getElementById('yellow')
+    };
+
+    // Game variables
+    const colors = ['red', 'green', 'blue', 'yellow'];
+    let sequence = [];
+    let playerSequence = [];
+    let round = 0;
+    let isPlaying = false;
+    
+    // Set game messages
+    levelManager.updateTip("Watch the sequence of colors, then repeat it in the same order.");
+    levelManager.updateCompleteMessage("Congratulations! Your memory is impressive!");
+
+    // Initialize buttons
+    Object.keys(buttons).forEach(color => {
+      buttons[color].addEventListener('click', () => buttonClick(color));
+      buttons[color].disabled = true;
+    });
+
+    // Start button event
+    startButton.addEventListener('click', () => {
+      if (round === 0) {
+        startGame();
+      } else if (isPlaying) {
+        // Do nothing during sequence playback
+      } else if (round >= 5) {
+        // Game completed
+        levelManager.completeLevel();
+      }
+    });
+
+    // Start the game
+    function startGame() {
+      sequence = [];
+      playerSequence = [];
+      round = 0;
+      statusDisplay.textContent = 'Watch carefully...';
+      startButton.disabled = true;
+      nextRound();
+    }
+
+    // Add a new step to the sequence and play it
+    function nextRound() {
+      round++;
+      disableButtons(true);
+      
+      // Add a random color to the sequence
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      sequence.push(randomColor);
+      
+      // Show round number
+      statusDisplay.textContent = `Round ${round} of 5`;
+      
+      // Play the sequence after a short delay
+      setTimeout(() => playSequence(), 1000);
+    }
+
+    // Play the current sequence
+    function playSequence() {
+      isPlaying = true;
+      let i = 0;
+      
+      const intervalId = setInterval(() => {
+        if (i >= sequence.length) {
+          clearInterval(intervalId);
+          isPlaying = false;
+          playerTurn();
+          return;
+        }
+        
+        const color = sequence[i];
+        flashButton(color);
+        i++;
+      }, 800);
+    }
+
+    // Player's turn to repeat the sequence
+    function playerTurn() {
+      statusDisplay.textContent = 'Your turn! Repeat the sequence.';
+      playerSequence = [];
+      disableButtons(false);
+    }
+
+    // Handle button clicks during player's turn
+    function buttonClick(color) {
+      if (isPlaying) return;
+      
+      flashButton(color);
+      playerSequence.push(color);
+      
+      // Check if the player's sequence matches so far
+      const index = playerSequence.length - 1;
+      if (playerSequence[index] !== sequence[index]) {
+        // Wrong sequence
+        gameOver();
+        return;
+      }
+      
+      // Check if the player completed the current sequence
+      if (playerSequence.length === sequence.length) {
+        disableButtons(true);
+        if (round >= 5) {
+          // Player won after 5 rounds
+          setTimeout(() => {
+            statusDisplay.textContent = 'You win! Great memory!';
+            startButton.textContent = 'Next Level';
+            startButton.disabled = false;
+            levelManager.completeLevel();
+          }, 1000);
+        } else {
+          // Move to next round
+          setTimeout(() => nextRound(), 1000);
+        }
+      }
+    }
+
+    // Visual feedback when a button is pressed
+    function flashButton(color) {
+      buttons[color].classList.add('active');
+      
+      // Play sound based on color (optional)
+      // playSound(color);
+      
+      setTimeout(() => {
+        buttons[color].classList.remove('active');
+      }, 300);
+    }
+
+    // Enable or disable all buttons
+    function disableButtons(disabled) {
+      Object.keys(buttons).forEach(color => {
+        buttons[color].disabled = disabled;
+      });
+    }
+
+    // Game over handling
+    function gameOver() {
+      statusDisplay.textContent = 'Wrong sequence! Try again.';
+      disableButtons(true);
+      startButton.textContent = 'Restart';
+      startButton.disabled = false;
+      round = 0;
+    }
+
+    // Prevent right-click menu
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

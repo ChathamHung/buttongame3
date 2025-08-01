@@ -6,12 +6,19 @@
   <title>Button Game 3</title>
   <link rel="stylesheet" href="./src/css/main.css">
   <link rel="icon" href="./res/images/favicon.ico" type="image/x-icon">
+  <meta name="description" content="Button Game 3 is a web-based puzzle and quiz game made with HTML, CSS, and JavaScript. Players progress through creative levels by solving challenges, finding hidden buttons, answering questions, and more.">
+  <meta name="robots" content="index,follow">
+  <meta property="og:title" content="Button Game 3" />
+  <meta property="og:description" content="Button Game 3 is a web-based puzzle and quiz game made with HTML, CSS, and JavaScript. Players progress through creative levels by solving challenges, finding hidden buttons, answering questions, and more." />
+  <meta property="og:image" content="./res/images/Button Game 3.png" />
+  <meta property="og:url" content="https://chathamhung.github.io/buttongame3" />
+  <meta property="og:type" content="website" />
 </head>
 <body>
   <div class="topbar">
     <div class="left">
-      <div class="title" title="Reload the game">Button Game 3</div>
-      <div class="level-label">Level 1</div>
+      <div class="title" title="Refresh the game">Button Game 3</div>
+      <div class="level-label hide">Level 0</div>
       <button class="menu-button" data-tooltip="Menu" id="menu-toggle-btn">
         <img src="./res/images/icons/menu-icon.png" draggable="false">
       </button>
@@ -20,10 +27,10 @@
       <button class="skip-button hide" data-tooltip="Skip">
         <img src="./res/images/icons/skip-icon.png" draggable="false">
       </button>
-      <button class="refresh-button" data-tooltip="Refresh">
+      <button class="refresh-button hide" data-tooltip="Refresh">
         <img src="./res/images/icons/refresh-icon.png" draggable="false">
       </button>
-      <button class="tip-button" data-tooltip="Tip">
+      <button class="tip-button hide" data-tooltip="Tip">
         <img src="./res/images/icons/tip-icon.png" draggable="false">
       </button>
     </div>
@@ -54,8 +61,49 @@
       </div>
       <div class="settings-page" tabindex="-1">
         <button id="fulllscreen-toggle">Toggle Fullscreen</button>
-        <button id="auto-save-toggle" title="Automatically start from the last level you were playing when you reopen the game.">Auto Resume Level: ON</button>
-        <button id="level-label-toggle" title="When enabled, you can click on level labels to quickly open the level page.">Clickable Level Labels: OFF</button>
+        <hr>
+        <button id="auto-save-toggle" class="toggle-btn" title="Automatically start from the last level you were playing when you reopen the game.">
+          <span class="toggle-label">Auto Resume Level</span>
+          <span class="switch-container">
+            <input type="checkbox" id="auto-save-checkbox" class="switch-input" />
+            <span class="switch-slider"></span>
+          </span>
+        </button>
+        <button id="level-label-toggle" class="toggle-btn" title="When enabled, you can click on level labels to quickly open the level page.">
+          <span class="toggle-label">Clickable Level Labels</span>
+          <span class="switch-container">
+            <input type="checkbox" id="level-label-checkbox" class="switch-input" />
+            <span class="switch-slider"></span>
+          </span>
+        </button>
+        <button id="menu-animations-toggle" class="toggle-btn" title="Enable or disable menu, topbar, and dialog animations.">
+          <span class="toggle-label">Enable menu animations</span>
+          <span class="switch-container">
+            <input type="checkbox" id="menu-animations-checkbox" class="switch-input" checked />
+            <span class="switch-slider"></span>
+          </span>
+        </button>
+        <button id="menu-blur-toggle" class="toggle-btn" title="Enable or disable blur effect on the menu background.">
+          <span class="toggle-label">Enable menu blur</span>
+          <span class="switch-container">
+            <input type="checkbox" id="menu-blur-checkbox" class="switch-input" checked />
+            <span class="switch-slider"></span>
+          </span>
+        </button>
+        <button id="bottom-safezone-toggle" class="toggle-btn" title="Add a safe zone at the bottom of the menu to avoid browser bars on mobile.">
+          <span class="toggle-label">Enable bottom safe zone</span>
+          <span class="switch-container">
+            <input type="checkbox" id="bottom-safezone-checkbox" class="switch-input" />
+            <span class="switch-slider"></span>
+          </span>
+        </button>
+        <button id="show-locked-toggle" class="toggle-btn" title="Show or hide locked levels in the level menu.">
+          <span class="toggle-label">Show locked levels (Spoilers)</span>
+          <span class="switch-container">
+            <input type="checkbox" id="show-locked-checkbox" class="switch-input" />
+            <span class="switch-slider"></span>
+          </span>
+        </button>
         <hr>
         <button id="reset-all-game">Reset all game</button>
       </div>

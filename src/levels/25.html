@@ -77,7 +77,7 @@
     const codeInput = document.querySelector("#codeInput");
 
     levelManager.updateTip("");
-    levelManager.updateCompleteMessage(`Try to play Button Game 3 on your phone!`);
+    levelManager.updateCompleteMessage(`Next time, try to play Button Game 3 on your phone!`);
     levelManager.setSkipEnable(true);
 
     function generateCode() {
@@ -93,9 +93,10 @@
       return code3;
     }
 
-    const qrLink = "https://chathamhung.github.io/buttongame3/src/html/qr25.html";
+    // const qrLink = "https://chathamhung.github.io/buttongame3/src/html/qr25.html";
 
-    qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrLink}`;
+    // qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrLink}`;
+    qrCode.src = `../../res/images/qr25.png`;
 
     function check() {
       if (codeInput.value == generateCode()) {
