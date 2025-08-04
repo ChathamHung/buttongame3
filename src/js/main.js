@@ -21,7 +21,7 @@ let currentTip = ``;
 let debugEnabled = false;
 let levelsData = {};
 
-let allLevelsData = { // Backup of all levels data
+let allLevelsData = {
   "0": {
     "name": "Welcome",
     "file": "0.html"
@@ -109,10 +109,58 @@ let allLevelsData = { // Backup of all levels data
   "21": {
     "name": "Send to Boss",
     "file": "21.html"
+  },
+  "22": {
+    "name": "Advertisements",
+    "file": "22.html"
+  },
+  "23": {
+    "name": "A Message",
+    "file": "23.html"
+  },
+  "24": {
+    "name": "Google",
+    "file": "24.html"
+  },
+  "25": {
+    "name": "QR code",
+    "file": "25.html"
+  },
+  "26": {
+    "name": "Update",
+    "file": "26.html"
+  },
+  "27": {
+    "name": "Color Matching",
+    "file": "27.html"
+  },
+  "28": {
+    "name": "Email Scam",
+    "file": "28.html"
+  },
+  "29": {
+    "name": "Terms of Use",
+    "file": "29.html"
+  },
+  "30": {
+    "name": "RNG Game",
+    "file": "30.html"
+  },
+  "31": {
+    "name": "Simon Says",
+    "file": "31.html"
+  },
+  "32": {
+    "name": "Morse Code",
+    "file": "32.html"
+  },
+  "33": {
+    "name": "Clicking Moveing Button",
+    "file": "33.html"
   }
 };
 
-let allAchievementsData = { // Backup of all achievements data
+let allAchievementsData = {
   "1": {
     "name": "Welcome!",
     "tip": "Play Button Game 3!",
@@ -170,25 +218,43 @@ let allAchievementsData = { // Backup of all achievements data
   "10": {
     "name": "Super Clicker",
     "tip": "Clicked 1,000 times in Level 16",
-    "icon": "",
+    "icon": "Clicker.png",
     "hide": false
   },
   "11": {
     "name": "God of Password Game",
     "tip": "Complete Level 17",
-    "icon": "",
+    "icon": "Password.png",
     "hide": false
   },
   "12": {
     "name": "God of Memory Match",
     "tip": "Complete Level 14 in 15 moves or less",
-    "icon": "",
+    "icon": "Match.png",
     "hide": false
   },
   "13": {
     "name": "20 basic levels",
     "tip": "Complete Levels 1-20",
-    "icon": "",
+    "icon": "20Basic.png",
+    "hide": false
+  },
+  "14": {
+    "name": "Message",
+    "tip": "A chat from Level 23",
+    "icon": "Message.png",
+    "hide": false
+  },
+  "15": {
+    "name": "A update",
+    "tip": "Complete Level 26",
+    "icon": "Update.png",
+    "hide": false
+  },
+  "16": {
+    "name": "Chooses you 🫵",
+    "tip": "Click \"chooses you 🫵\" in Level 29",
+    "icon": "ChoosesYOU.png",
     "hide": false
   }
 };

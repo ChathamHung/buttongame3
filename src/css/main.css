@@ -784,7 +784,7 @@ body.show-locked-levels .menu-pages button.locked {
 }
 
 
-.dialog .dialog-button.delete {
+.dialog .dialog-button.delete, .menu-pages .delete {
   color: red;
 }
 
