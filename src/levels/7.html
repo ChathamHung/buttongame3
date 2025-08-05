@@ -479,6 +479,7 @@
 
     levelManager.updateTip("");
     levelManager.updateCompleteMessage(`You are not a robot!`);
+    levelManager.setSkipEnable(true);
 
     captchaImages.forEach((image) => {
       image.addEventListener("click", () => {
