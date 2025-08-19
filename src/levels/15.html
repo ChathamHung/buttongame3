@@ -107,6 +107,7 @@
 
     levelManager.updateTip(`<del>Try to click every buttons to go to the next level.</del><br><br>Hmm... no more tips... you need try every buttons...`);
     levelManager.updateCompleteMessage(`How long did you use?`);
+    levelManager.setSkipEnable(true);
     levelManager.setRefreshEnable(false);
 
     nextButton.addEventListener("click", () => { // When clicked button, then go to the next level

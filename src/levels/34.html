@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    .emoji-container {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 2px;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    .emoji {
+      font-size: 32px;
+      cursor: pointer;
+      padding: 2px;
+      text-align: center;
+      border-radius: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .emoji:hover {
+      transform: scale(1.1);
+      background-color: #f0f0f0;
+    }
+
+    .correct {
+      background-color: #75c64f;
+      color: white;
+      animation: pulse 0.5s;
+    }
+
+    .correct:hover {
+      background-color: #5a9e3a;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Find the Different Emoji</h1>
+  <div class="emoji-container" id="emojiContainer"></div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 34;
+
+    init(levelNumber); // Initialize the level
+
+    levelManager.updateTip(`Look carefully! One emoji is different from the others.`);
+    levelManager.updateCompleteMessage(`Great eye! You found the different emoji!`);
+    levelManager.setRefreshEnable(false);
+    levelManager.setSkipEnable(true);
+
+    // Emoji game logic
+    const emojiContainer = document.getElementById('emojiContainer');
+    
+    // Generate random position for the different emoji (0-99)
+    const differentPosition = Math.floor(Math.random() * 100);
+    
+    // Choose two different emojis
+    const commonEmoji = '😺';
+    const differentEmoji = '😸';
+    
+    // Create 100 emojis
+    for (let i = 0; i < 100; i++) {
+      const emojiDiv = document.createElement('div');
+      emojiDiv.className = 'emoji';
+      
+      // Set the emoji content - different at the special position
+      emojiDiv.textContent = i === differentPosition ? differentEmoji : commonEmoji;
+      
+      // Add click event listener
+      emojiDiv.addEventListener('click', function() {
+        if (i === differentPosition) {
+          // Correct emoji clicked
+          this.classList.add('correct');
+          
+          // Wait a moment to show the visual feedback before completing the level
+          setTimeout(() => {
+            levelManager.completeLevel();
+          }, 500);
+        } else {
+          // Wrong emoji clicked - add subtle shake animation
+          this.style.animation = 'shake 0.5s';
+          setTimeout(() => {
+            this.style.animation = '';
+          }, 500);
+        }
+      });
+      
+      emojiContainer.appendChild(emojiDiv);
+    }
+
+    // Add shake animation for incorrect selections
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

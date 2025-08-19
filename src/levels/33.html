@@ -55,9 +55,11 @@
 
     const nextButton = document.querySelector("#nextLevel");
     const title = document.querySelector("#title");
+    levelManager.setSkipEnable(true);
 
     levelManager.updateTip("");
-    levelManager.updateCompleteMessage("Congratulations! You caught the button!");
+    levelManager.updateCompleteMessage("Congratulations! You clicked 50 times on the button!");
+    levelManager.setRefreshEnable(true);
     levelManager.setSkipEnable(true);
 
     const goal = 50;

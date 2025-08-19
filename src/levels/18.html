@@ -112,8 +112,9 @@
     const textbox = document.querySelector("#textbox");
     const nextLevelButton = document.querySelector("#nextLevel");
 
-    levelManager.updateTip(""); // Set the tip (Allow HTML elements)
-    levelManager.updateCompleteMessage("Good time for typing!"); // Set the complete message (Allow HTML elements)
+    levelManager.updateTip("");
+    levelManager.updateCompleteMessage("Good time for typing!");
+    levelManager.setSkipEnable(true);
 
     function submit() {
       const userInput = textbox.value;

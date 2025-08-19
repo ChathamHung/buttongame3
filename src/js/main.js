@@ -157,6 +157,14 @@ let allLevelsData = {
   "33": {
     "name": "Clicking Moveing Button",
     "file": "33.html"
+  },
+  "34": {
+    "name": "Find Emoji",
+    "file": "34.html"
+  },
+  "35": {
+    "name": "Error 404",
+    "file": "35.html"
   }
 };
 
@@ -608,6 +616,12 @@ function loadSave() {
 
 function saveProgress() {
   localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+  saveAchievementsProgress();
+}
+
+function saveEverything() {
+  saveProgress();
+  saveAchievementsProgress();
 }
 
 function unlockLevel(level) {
@@ -768,11 +782,12 @@ function init() {
     urlParams.delete('unlockto');
     window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
   }
-
+  
   updateSettings();
   switchMenuPage(0, true);
   loadLevels();
   loadAchievements();
+  saveEverything();
 }
 
 // Example: unlock "Welcome" achievement when game starts
@@ -920,8 +935,6 @@ showLockedCheckbox.addEventListener('change', () => {
   updateSettings();
   saveProgress();
 });
-
-unlockAchievement(1);
 
 window.addEventListener("message", (e) => {
   if (!e.data) return;
@@ -1563,3 +1576,5 @@ document.addEventListener('contextmenu', (e) => {
 });
 
 init();
+
+unlockAchievement(1);

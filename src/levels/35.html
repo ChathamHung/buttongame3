@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none;
+      /* Safari */
+      user-select: none;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 50px);
+    }
+
+    .error-404 {
+      text-align: center;
+    }
+
+    .topbar {
+      top: 0;
+    }
+
+    .error-message {
+      font-size: 18px;
+      margin-top: 0;
+    }
+
+    #nextLevel {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main">
+    <h1 class="error-404">Error 404</h1>
+    <p class="error-message">The page you are looking for could not be found<a id="nextLevel">?</a></p>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 35;
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+
+    levelManager.updateTip(`Oh, the page is not found... Try to click "?"...`);
+    levelManager.updateCompleteMessage(`The question mark can be click!`);
+    levelManager.setRefreshEnable(false);
+    
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      levelManager.completeLevel();
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

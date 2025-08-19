@@ -134,5 +134,13 @@
   "33": {
     "name": "Clicking Moveing Button",
     "file": "33.html"
+  },
+  "34": {
+    "name": "Find Emoji",
+    "file": "34.html"
+  },
+  "35": {
+    "name": "Error 404",
+    "file": "35.html"
   }
 }

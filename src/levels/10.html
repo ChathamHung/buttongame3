@@ -190,6 +190,8 @@
     // Set up tip and complete message using new APIs
     levelManager.updateTip(`You have a interview with the interviewer, <br>and you need to try to successfully the interview.`);
     levelManager.updateCompleteMessage(`Congratulations! You've successfully have your new job!`);
+    levelManager.setSkipEnable(true);
+
     // Chat elements
     const chatMessages = document.getElementById('chat-messages');
     const typingIndicator = document.getElementById('typing-indicator');

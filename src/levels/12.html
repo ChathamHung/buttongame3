@@ -214,6 +214,7 @@
     
     levelManager.updateTip(`Convert the letters to numbers using the table, add them, then convert the sum back to letters.`);
     levelManager.updateCompleteMessage(`Great job! You've cracked the code!`);
+    levelManager.setSkipEnable(true);
     
     checkButton.addEventListener('click', checkAnswer);
     answerInput.addEventListener('keypress', (e) => {
