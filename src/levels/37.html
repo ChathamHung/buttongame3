@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button { /* Example button (can be change) */
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    .math-container {
+      text-align: center;
+      background-color: #f9f9f9;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+      max-width: 400px;
+    }
+
+    .equation {
+      font-size: 36px;
+      font-weight: bold;
+      color: #333;
+      margin: 20px 0;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      border: 2px solid #e0e0e0;
+    }
+
+    .input-container {
+      margin: 20px 0;
+    }
+
+    input[type="number"] {
+      font-size: 24px;
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      text-align: center;
+      width: 150px;
+      margin: 0 10px;
+    }
+
+    input[type="number"]:focus {
+      border-color: #75c64f;
+      outline: none;
+    }
+
+    .submit-btn {
+      margin-left: 10px;
+    }
+
+    .feedback {
+      font-size: 18px;
+      margin: 15px 0;
+      font-weight: bold;
+    }
+
+    .correct {
+      color: #4CAF50;
+    }
+
+    .incorrect {
+      color: #f44336;
+    }
+
+    .score {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Math Challenge</h1>
+  
+  <div class="math-container">
+    <div class="score" id="score">Score: 0/3</div>
+    <div class="equation" id="equation">Loading...</div>
+    
+    <div class="input-container">
+      <input type="number" id="answerInput" placeholder="Your answer">
+      <button class="submit-btn" id="submitBtn">Submit</button>
+    </div>
+    
+    <div class="feedback" id="feedback"></div>
+    
+    <button id="nextLevel" style="display: none;">Next Level</button>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 37;
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+    const equationDiv = document.querySelector("#equation");
+    const answerInput = document.querySelector("#answerInput");
+    const submitBtn = document.querySelector("#submitBtn");
+    const feedbackDiv = document.querySelector("#feedback");
+    const scoreDiv = document.querySelector("#score");
+
+    let currentEquation = {};
+    let score = 0;
+    let totalQuestions = 3;
+    let questionsAnswered = 0;
+
+    levelManager.updateTip(`Solve ${totalQuestions} math problems correctly to proceed!`);
+    levelManager.updateCompleteMessage(`Excellent math skills! 🧮`);
+
+    // Generate random math equation
+    function generateEquation() {
+      const operations = ['+', '-', '*'];
+      const operation = operations[Math.floor(Math.random() * operations.length)];
+      
+      let num1, num2, answer;
+      
+      switch(operation) {
+        case '+':
+          num1 = Math.floor(Math.random() * 50) + 1;
+          num2 = Math.floor(Math.random() * 50) + 1;
+          answer = num1 + num2;
+          break;
+        case '-':
+          num1 = Math.floor(Math.random() * 50) + 25; // Ensure positive result
+          num2 = Math.floor(Math.random() * 25) + 1;
+          answer = num1 - num2;
+          break;
+        case '*':
+          num1 = Math.floor(Math.random() * 12) + 1;
+          num2 = Math.floor(Math.random() * 12) + 1;
+          answer = num1 * num2;
+          break;
+      }
+      
+      return {
+        equation: `${num1} ${operation} ${num2} = ?`,
+        answer: answer
+      };
+    }
+
+    // Display new equation
+    function showNewEquation() {
+      currentEquation = generateEquation();
+      equationDiv.textContent = currentEquation.equation;
+      answerInput.value = '';
+      answerInput.disabled = false;
+      submitBtn.disabled = false;
+      answerInput.focus();
+      feedbackDiv.textContent = '';
+    }
+
+    // Check answer
+    function checkAnswer() {
+      answerInput.disabled = true;
+      submitBtn.disabled = true;
+
+      const userAnswer = parseInt(answerInput.value);
+      
+      if (isNaN(userAnswer)) {
+        feedbackDiv.textContent = "Please enter a valid number!";
+        feedbackDiv.className = "feedback incorrect";
+        answerInput.disabled = false;
+        submitBtn.disabled = false;
+        answerInput.focus();
+        return;
+      }
+      
+      questionsAnswered++;
+      
+      if (userAnswer === currentEquation.answer) {
+        score++;
+        feedbackDiv.textContent = "Correct! 🎉";
+        feedbackDiv.className = "feedback correct";
+      } else {
+        feedbackDiv.textContent = `Incorrect. The answer was ${currentEquation.answer}`;
+        feedbackDiv.className = "feedback incorrect";
+      }
+      
+      scoreDiv.textContent = `Score: ${score}/${totalQuestions}`;
+      
+      // Check if game is complete
+      if (questionsAnswered >= totalQuestions) {
+        setTimeout(() => {
+          if (score >= totalQuestions) {
+            feedbackDiv.textContent = "Perfect score! You can proceed! 🏆";
+            feedbackDiv.className = "feedback correct";
+            nextButton.style.display = 'inline-block';
+            submitBtn.disabled = true;
+            answerInput.disabled = true;
+            levelManager.completeLevel();
+          } else {
+            feedbackDiv.textContent = `Game Over! You got ${score}/${totalQuestions} correct. Try again!`;
+            feedbackDiv.className = "feedback incorrect";
+            setTimeout(resetGame, 2000);
+          }
+        }, 1500);
+      } else {
+        // Show next equation after delay
+        setTimeout(showNewEquation, 1500);
+      }
+    }
+
+    // Reset game
+    function resetGame() {
+      score = 0;
+      questionsAnswered = 0;
+      scoreDiv.textContent = `Score: ${score}/${totalQuestions}`;
+      nextButton.style.display = 'none';
+      submitBtn.disabled = false;
+      answerInput.disabled = false;
+      showNewEquation();
+    }
+
+    // Event listeners
+    submitBtn.addEventListener("click", checkAnswer);
+    
+    answerInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        checkAnswer();
+      }
+    });
+
+    nextButton.addEventListener("click", () => {
+      levelManager.completeLevel();
+    });
+
+    // Initialize first equation
+    showNewEquation();
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

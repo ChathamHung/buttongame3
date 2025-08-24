@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f0f2f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* Social Media Interface Styles */
+    .social-header {
+      background: #1877f2;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      letter-spacing: -1px;
+      margin-left: 280px;
+    }
+
+    .search-bar {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 20px;
+      padding: 8px 15px;
+      margin: 0 10px;
+      color: white;
+      width: 300px;
+      outline: none;
+    }
+
+    .search-bar::placeholder {
+      color: rgba(255,255,255,0.8);
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-right: 100px;
+    }
+
+    .user-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: #42b883;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    .main-content {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .post {
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .post-header {
+      padding: 15px 20px 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .post-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .post-info h3 {
+      margin: 0;
+      font-size: 16px;
+      color: #1c1e21;
+    }
+
+    .post-info .time {
+      color: #65676b;
+      font-size: 12px;
+      margin: 0;
+    }
+
+    .post-content {
+      padding: 0 20px 15px;
+      color: #1c1e21;
+      line-height: 1.4;
+    }
+
+    .post-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 48px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .post-image:hover {
+      transform: scale(1.02);
+    }
+
+    .post-actions {
+      border-top: 1px solid #e4e6ea;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #65676b;
+      font-weight: 600;
+      transition: background-color 0.2s;
+      font-size: 14px;
+    }
+
+    .action-btn:hover {
+      background: #f0f2f5;
+    }
+
+    .action-btn.liked {
+      color: #1877f2;
+    }
+
+    .comments-section {
+      border-top: 1px solid #e4e6ea;
+      padding: 15px 20px;
+      background: #f8f9fa;
+    }
+
+    .comment {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .comment-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .comment-content {
+      background: #e4e6ea;
+      border-radius: 16px;
+      padding: 8px 12px;
+      flex: 1;
+    }
+
+    .comment-author {
+      font-weight: bold;
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .comment-text {
+      font-size: 14px;
+      color: #1c1e21;
+    }
+
+    .special-comment {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .special-comment:hover {
+      transform: scale(1.02);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .next-level-btn {
+      background: linear-gradient(to bottom, #75c64f, #60a83e);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 15px;
+      transition: background 0.2s;
+    }
+
+    .next-level-btn:hover {
+      background: linear-gradient(to bottom, #60a83e, #4e8b32);
+    }
+
+    @media screen and (max-width: 930px) {
+      .social-header {
+        padding-top: 60px;
+      }
+
+      .logo {
+        margin-left: 0;
+      }
+
+      .user-menu {
+        margin-right: 0;
+      }
+    }
+
+    @media screen and (max-width: 420px) {
+      .search-bar {
+        display: none;
+      }
+    }
+
+    @media screen and (max-width: 220px) {
+      .user-menu {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Social Media Header -->
+  <div class="social-header">
+    <div class="logo">FaceGame</div>
+    <input type="text" class="search-bar" placeholder="Search FaceGame">
+    <div class="user-menu">
+      <div class="user-avatar">P</div>
+    </div>
+  </div>
+
+  <!-- Main Feed Content -->
+  <div class="main-content">
+    <!-- Post 1: Game Challenge -->
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar" style="background: #e74c3c;">GC</div>
+        <div class="post-info">
+          <h3>Game Challenge Official</h3>
+          <p class="time">2 minutes ago</p>
+        </div>
+      </div>
+      <div class="post-content">
+        Welcome to our social media challenge! Find the secret way to continue the game. It might be hidden in the most unexpected places... 🤔
+      </div>
+      <div class="post-actions">
+        <button class="action-btn" onclick="likePost(this)">👍 Like</button>
+        <button class="action-btn" onclick="sharePost()">↗️ Share</button>
+        <button class="action-btn" onclick="toggleComments('comments1')">💬 Comment</button>
+      </div>
+      <div class="comments-section" id="comments1" style="display: none;">
+        <div class="comment">
+          <div class="comment-avatar" style="background: #3498db;">JS</div>
+          <div class="comment-content">
+            <div class="comment-author">John Smith</div>
+            <div class="comment-text">This looks interesting! But where's the button? 🤨</div>
+          </div>
+        </div>
+        <div class="comment">
+          <div class="comment-avatar" style="background: #9b59b6;">AL</div>
+          <div class="comment-content">
+            <div class="comment-author">Alice Lee</div>
+            <div class="comment-text">Maybe we need to look more carefully at the posts...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post 2: Meme Post -->
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar" style="background: #f39c12;">MM</div>
+        <div class="post-info">
+          <h3>Meme Master</h3>
+          <p class="time">15 minutes ago</p>
+        </div>
+      </div>
+      <div class="post-content">
+        When you're looking for the next level button but it's probably right in front of you 😂
+      </div>
+      <div class="post-image" onclick="clickImage()">
+        🎮🔍
+      </div>
+      <div class="post-actions">
+        <button class="action-btn" onclick="likePost(this)">👍 Like</button>
+        <button class="action-btn" onclick="sharePost()">↗️ Share</button>
+        <button class="action-btn" onclick="toggleComments('comments2')">💬 Comment</button>
+      </div>
+      <div class="comments-section" id="comments2" style="display: none;">
+        <div class="comment">
+          <div class="comment-avatar" style="background: #e67e22;">BW</div>
+          <div class="comment-content">
+            <div class="comment-author">Bob Wilson</div>
+            <div class="comment-text">LOL so true! Sometimes the answer is obvious 😄</div>
+          </div>
+        </div>
+        <div class="comment special-comment" onclick="foundSecret()">
+          <div class="comment-avatar" style="background: #27ae60;">GD</div>
+          <div class="comment-content">
+            <div class="comment-author">Game Developer</div>
+            <div class="comment-text">🎯 Click here to continue to the next level! 🎯</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post 3: Random Post -->
+    <div class="post">
+      <div class="post-header">
+        <div class="post-avatar" style="background: #8e44ad;">RF</div>
+        <div class="post-info">
+          <h3>Random Facts</h3>
+          <p class="time">1 hour ago</p>
+        </div>
+      </div>
+      <div class="post-content">
+        Did you know? The average person spends 2.5 hours on social media daily. But right now, you should be looking for a way to advance in this game! 🧐
+      </div>
+      <div class="post-actions">
+        <button class="action-btn" onclick="likePost(this)">👍 Like</button>
+        <button class="action-btn" onclick="sharePost()">↗️ Share</button>
+        <button class="action-btn" onclick="toggleComments('comments3')">💬 Comment</button>
+      </div>
+      <div class="comments-section" id="comments3" style="display: none;">
+        <div class="comment">
+          <div class="comment-avatar" style="background: #34495e;">TH</div>
+          <div class="comment-content">
+            <div class="comment-author">Tech Hunter</div>
+            <div class="comment-text">Interesting fact! Social media is everywhere these days.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 40;
+
+    init(levelNumber); // Initialize the level
+
+    let secretFound = false;
+    let likesCount = 0;
+
+    levelManager.updateTip(`Navigate through this social media feed and find the secret way to continue! Try interacting with posts, comments, and look for hidden clues.`);
+    levelManager.updateCompleteMessage(`Great job! You found the secret in the social media comments! 📱`);
+
+    // Like post functionality
+    window.likePost = function(button) {
+      if (!button.classList.contains('liked')) {
+        button.classList.add('liked');
+        button.innerHTML = '👍 Liked';
+        likesCount++;
+        
+        if (likesCount >= 3) {
+          // Give a hint after liking multiple posts
+          setTimeout(() => {
+            levelManager.showDialog("Hint", "Try looking in the comments for something special! 💡");
+          }, 500);
+        }
+      }
+    };
+
+    // Share post functionality
+    window.sharePost = function() {
+      const shareMessages = [
+        "Sharing won't help you advance! 😅",
+        "Nice try, but the secret isn't in sharing!",
+        "Keep exploring the feed for the real answer!",
+        "Hint: Check the comments more carefully! 🔍"
+      ];
+      
+      const randomMessage = shareMessages[Math.floor(Math.random() * shareMessages.length)];
+      
+      // Show temporary notification
+      showNotification(randomMessage);
+    };
+
+    // Toggle comments visibility
+    window.toggleComments = function(commentsId) {
+      const comments = document.getElementById(commentsId);
+      if (comments.style.display === 'none') {
+        comments.style.display = 'block';
+      } else {
+        comments.style.display = 'none';
+      }
+    };
+
+    // Click image functionality
+    window.clickImage = function() {
+      showNotification("The image is just a meme! Look elsewhere for the secret! 🖼️");
+    };
+
+    // Found secret function
+    window.foundSecret = function() {
+      levelManager.completeLevel();
+    };
+
+    // Show notification helper function
+    function showNotification(message) {
+      // const notification = document.createElement('div');
+      // notification.style.cssText = `
+      //   position: fixed;
+      //   top: 80px;
+      //   right: 20px;
+      //   background: rgba(0,0,0,0.8);
+      //   color: white;
+      //   padding: 15px 20px;
+      //   border-radius: 8px;
+      //   z-index: 1000;
+      //   font-size: 14px;
+      //   max-width: 300px;
+      //   animation: slideInRight 0.3s ease-out;
+      // `;
+      // notification.textContent = message;
+      // document.body.appendChild(notification);
+      
+      // setTimeout(() => {
+      //   notification.style.animation = 'slideInRight 0.3s ease-out reverse';
+      //   setTimeout(() => {
+      //     notification.remove();
+      //   }, 300);
+      // }, 3000);
+      levelManager.showNotification("Notification", message)
+    }
+
+    // Add slideInRight animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(100%);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

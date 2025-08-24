@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button { /* Example button (can be change) */
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    .slider {
+      width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">Slider to 0</h1>
+
+  <input type="range" id="slider" class="slider" min="0.0" max="100.0" value="50.0" step="0.1">
+
+  <p id="sliderValue">Drag the slider to start!</p>
+
+  <button id="nextLevel" disabled>OK</button>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 36;
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+    const slider = document.querySelector("#slider");
+    const sliderValue = document.querySelector("#sliderValue");
+    const title = document.querySelector("#title");
+
+    const randomValue = Number((Math.random() * 100).toFixed(1));
+    const randomValue2 = Number((Math.random() * 100).toFixed(1));
+
+    slider.value = randomValue2;  
+
+    slider.addEventListener("input", (e) => {
+      sliderValue.textContent = e.target.value;
+      if (e.target.value == randomValue) {
+        nextButton.disabled = false;
+      } else {
+        nextButton.disabled = true;
+      }
+    });
+
+    levelManager.updateTip("");
+    levelManager.updateCompleteMessage("Do you have use keyboard? 🤔🤔🤔");
+    levelManager.setSkipEnable(true);
+
+    title.textContent = `Slider to ${randomValue}`;
+
+    nextButton.addEventListener("click", () => { // When clicked button, then go to the next level
+      levelManager.completeLevel();
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>

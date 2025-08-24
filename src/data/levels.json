@@ -142,5 +142,25 @@
   "35": {
     "name": "Error 404",
     "file": "35.html"
+  },
+  "36": {
+    "name": "Slider bar",
+    "file": "36.html"
+  },
+  "37": {
+    "name": "Math Challenge",
+    "file": "37.html"
+  },
+  "38": {
+    "name": "Drag & Drop Puzzle",
+    "file": "38.html"
+  },
+  "39": {
+    "name": "Fake Virus Warning",
+    "file": "39.html"
+  },
+  "40": {
+    "name": "Social Media Feed",
+    "file": "40.html"
   }
 }

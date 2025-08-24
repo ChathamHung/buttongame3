@@ -12,9 +12,9 @@ const levelPage = document.querySelector(".level-page");
 const dialog = document.querySelector(".dialog");
 const notifications = document.querySelector(".notifications");
 
-const version = 0.15;
+const version = 0.17;
 const versionType = "Beta";
-const updateName = "update 15";
+const updateName = "update 17";
 
 let currentPageIndex = 0;
 let currentTip = ``;
@@ -22,255 +22,275 @@ let debugEnabled = false;
 let levelsData = {};
 
 let allLevelsData = {
-  "0": {
-    "name": "Welcome",
-    "file": "0.html"
+  0: {
+    name: "Welcome",
+    file: "0.html",
   },
-  "1": {
-    "name": "Basic",
-    "file": "1.html"
+  1: {
+    name: "Basic",
+    file: "1.html",
   },
-  "2": {
-    "name": "More Buttons",
-    "file": "2.html"
+  2: {
+    name: "More Buttons",
+    file: "2.html",
   },
-  "3": {
-    "name": "Hiding Button",
-    "file": "3.html"
+  3: {
+    name: "Hiding Button",
+    file: "3.html",
   },
-  "4": {
-    "name": "Emojis",
-    "file": "4.html"
+  4: {
+    name: "Emojis",
+    file: "4.html",
   },
-  "5": {
-    "name": "No button",
-    "file": "5.html"
+  5: {
+    name: "No button",
+    file: "5.html",
   },
-  "6": {
-    "name": "Some questions",
-    "file": "6.html"
+  6: {
+    name: "Some questions",
+    file: "6.html",
   },
-  "7": {
-    "name": "Captcha",
-    "file": "7.html"
+  7: {
+    name: "Captcha",
+    file: "7.html",
   },
-  "8": {
-    "name": "Catch Button",
-    "file": "8.html"
+  8: {
+    name: "Catch Button",
+    file: "8.html",
   },
-  "9": {
-    "name": "More questions",
-    "file": "9.html"
+  9: {
+    name: "More questions",
+    file: "9.html",
   },
-  "10": {
-    "name": "Chatting",
-    "file": "10.html"
+  10: {
+    name: "Chatting",
+    file: "10.html",
   },
-  "11": {
-    "name": "Really no button",
-    "file": "11.html"
+  11: {
+    name: "Really no button",
+    file: "11.html",
   },
-  "12": {
-    "name": "Code cracking",
-    "file": "12.html"
+  12: {
+    name: "Code cracking",
+    file: "12.html",
   },
-  "13": {
-    "name": "Checking",
-    "file": "13.html"
+  13: {
+    name: "Checking",
+    file: "13.html",
   },
-  "14": {
-    "name": "Puzzle",
-    "file": "14.html"
+  14: {
+    name: "Puzzle",
+    file: "14.html",
   },
-  "15": {
-    "name": "More and more buttons",
-    "file": "15.html"
+  15: {
+    name: "More and more buttons",
+    file: "15.html",
   },
-  "16": {
-    "name": "Clicking button",
-    "file": "16.html"
+  16: {
+    name: "Clicking button",
+    file: "16.html",
   },
-  "17": {
-    "name": "The Password Game",
-    "file": "17.html"
+  17: {
+    name: "The Password Game",
+    file: "17.html",
   },
-  "18": {
-    "name": "Typing",
-    "file": "18.html"
+  18: {
+    name: "Typing",
+    file: "18.html",
   },
-  "19": {
-    "name": "Memory Game",
-    "file": "19.html"
+  19: {
+    name: "Memory Game",
+    file: "19.html",
   },
-  "20": {
-    "name": "Timer",
-    "file": "20.html"
+  20: {
+    name: "Timer",
+    file: "20.html",
   },
-  "21": {
-    "name": "Send to Boss",
-    "file": "21.html"
+  21: {
+    name: "Send to Boss",
+    file: "21.html",
   },
-  "22": {
-    "name": "Advertisements",
-    "file": "22.html"
+  22: {
+    name: "Advertisements",
+    file: "22.html",
   },
-  "23": {
-    "name": "A Message",
-    "file": "23.html"
+  23: {
+    name: "A Message",
+    file: "23.html",
   },
-  "24": {
-    "name": "Google",
-    "file": "24.html"
+  24: {
+    name: "Google",
+    file: "24.html",
   },
-  "25": {
-    "name": "QR code",
-    "file": "25.html"
+  25: {
+    name: "QR code",
+    file: "25.html",
   },
-  "26": {
-    "name": "Update",
-    "file": "26.html"
+  26: {
+    name: "Update",
+    file: "26.html",
   },
-  "27": {
-    "name": "Color Matching",
-    "file": "27.html"
+  27: {
+    name: "Color Matching",
+    file: "27.html",
   },
-  "28": {
-    "name": "Email Scam",
-    "file": "28.html"
+  28: {
+    name: "Email Scam",
+    file: "28.html",
   },
-  "29": {
-    "name": "Terms of Use",
-    "file": "29.html"
+  29: {
+    name: "Terms of Use",
+    file: "29.html",
   },
-  "30": {
-    "name": "RNG Game",
-    "file": "30.html"
+  30: {
+    name: "RNG Game",
+    file: "30.html",
   },
-  "31": {
-    "name": "Simon Says",
-    "file": "31.html"
+  31: {
+    name: "Simon Says",
+    file: "31.html",
   },
-  "32": {
-    "name": "Morse Code",
-    "file": "32.html"
+  32: {
+    name: "Morse Code",
+    file: "32.html",
   },
-  "33": {
-    "name": "Clicking Moveing Button",
-    "file": "33.html"
+  33: {
+    name: "Clicking Moveing Button",
+    file: "33.html",
   },
-  "34": {
-    "name": "Find Emoji",
-    "file": "34.html"
+  34: {
+    name: "Find Emoji",
+    file: "34.html",
   },
-  "35": {
-    "name": "Error 404",
-    "file": "35.html"
-  }
+  35: {
+    name: "Error 404",
+    file: "35.html",
+  },
+  36: {
+    name: "Slider bar",
+    file: "36.html",
+  },
+  37: {
+    name: "Math Challenge",
+    file: "37.html",
+  },
+  38: {
+    name: "Drag & Drop Puzzle",
+    file: "38.html",
+  },
+  39: {
+    name: "Fake Virus Warning",
+    file: "39.html",
+  },
+  40: {
+    name: "Social Media Feed",
+    file: "40.html",
+  },
 };
 
 let allAchievementsData = {
-  "1": {
-    "name": "Welcome!",
-    "tip": "Play Button Game 3!",
-    "icon": "Welcome.png",
-    "hide": false
+  1: {
+    name: "Welcome!",
+    tip: "Play Button Game 3!",
+    icon: "Welcome.png",
+    hide: false,
   },
-  "2": {
-    "name": "Very Basic, right?",
-    "tip": "Complete Level 1",
-    "icon": "Basic.png",
-    "hide": false
+  2: {
+    name: "Very Basic, right?",
+    tip: "Complete Level 1",
+    icon: "Basic.png",
+    hide: false,
   },
-  "3": {
-    "name": "I'm really not a robot!",
-    "tip": "Complete Level 7",
-    "icon": "Robot.png",
-    "hide": false
+  3: {
+    name: "I'm really not a robot!",
+    tip: "Complete Level 7",
+    icon: "Robot.png",
+    hide: false,
   },
-  "4": {
-    "name": "I can't do it!",
-    "tip": "Skipped a level",
-    "icon": "Skip.png",
-    "hide": false
+  4: {
+    name: "I can't do it!",
+    tip: "Skipped a level",
+    icon: "Skip.png",
+    hide: false,
   },
-  "5": {
-    "name": "I did it!.. again...",
-    "tip": "Complete a skipped level",
-    "icon": "NoSkip.png",
-    "hide": false
+  5: {
+    name: "I did it!.. again...",
+    tip: "Complete a skipped level",
+    icon: "NoSkip.png",
+    hide: false,
   },
-  "6": {
-    "name": "A little help",
-    "tip": "First time using tip button",
-    "icon": "Tip.png",
-    "hide": false
+  6: {
+    name: "A little help",
+    tip: "First time using tip button",
+    icon: "Tip.png",
+    hide: false,
   },
-  "7": {
-    "name": "Refreshing",
-    "tip": "Refresh a level",
-    "icon": "Refresh.png",
-    "hide": false
+  7: {
+    name: "Refreshing",
+    tip: "Refresh a level",
+    icon: "Refresh.png",
+    hide: false,
   },
-  "8": {
-    "name": "Top 10 easily levels",
-    "tip": "Complete Levels 1-10",
-    "icon": "Easily.png",
-    "hide": false
+  8: {
+    name: "Top 10 easily levels",
+    tip: "Complete Levels 1-10",
+    icon: "Easily.png",
+    hide: false,
   },
-  "9": {
-    "name": "I got a new job!",
-    "tip": "Complete Level 10",
-    "icon": "Job.png",
-    "hide": false
+  9: {
+    name: "I got a new job!",
+    tip: "Complete Level 10",
+    icon: "Job.png",
+    hide: false,
   },
-  "10": {
-    "name": "Super Clicker",
-    "tip": "Clicked 1,000 times in Level 16",
-    "icon": "Clicker.png",
-    "hide": false
+  10: {
+    name: "Super Clicker",
+    tip: "Clicked 1,000 times in Level 16",
+    icon: "Clicker.png",
+    hide: false,
   },
-  "11": {
-    "name": "God of Password Game",
-    "tip": "Complete Level 17",
-    "icon": "Password.png",
-    "hide": false
+  11: {
+    name: "God of Password Game",
+    tip: "Complete Level 17",
+    icon: "Password.png",
+    hide: false,
   },
-  "12": {
-    "name": "God of Memory Match",
-    "tip": "Complete Level 14 in 15 moves or less",
-    "icon": "Match.png",
-    "hide": false
+  12: {
+    name: "God of Memory Match",
+    tip: "Complete Level 14 in 15 moves or less",
+    icon: "Match.png",
+    hide: false,
   },
-  "13": {
-    "name": "20 basic levels",
-    "tip": "Complete Levels 1-20",
-    "icon": "20Basic.png",
-    "hide": false
+  13: {
+    name: "20 basic levels",
+    tip: "Complete Levels 1-20",
+    icon: "20Basic.png",
+    hide: false,
   },
-  "14": {
-    "name": "Message",
-    "tip": "A chat from Level 23",
-    "icon": "Message.png",
-    "hide": false
+  14: {
+    name: "Message",
+    tip: "A chat from Level 23",
+    icon: "Message.png",
+    hide: false,
   },
-  "15": {
-    "name": "A update",
-    "tip": "Complete Level 26",
-    "icon": "Update.png",
-    "hide": false
+  15: {
+    name: "A update",
+    tip: "Complete Level 26",
+    icon: "Update.png",
+    hide: false,
   },
-  "16": {
-    "name": "Chooses you 🫵",
-    "tip": "Click \"chooses you 🫵\" in Level 29",
-    "icon": "ChoosesYOU.png",
-    "hide": false
-  }
+  16: {
+    name: "Chooses you 🫵",
+    tip: 'Click "CHOOSES YOU 🫵" in Level 29',
+    icon: "ChoosesYOU.png",
+    hide: false,
+  },
 };
 
 // Achievements save system
 const ACHIEVEMENTS_SAVE_KEY = "buttonGame3Achievements";
 let achievementsSaveData = {
-  unlocked: []
+  unlocked: [],
 };
 
 function loadAchievementsSave() {
@@ -285,10 +305,20 @@ function loadAchievementsSave() {
 }
 
 function saveAchievementsProgress() {
-  localStorage.setItem(ACHIEVEMENTS_SAVE_KEY, JSON.stringify(achievementsSaveData));
+  localStorage.setItem(
+    ACHIEVEMENTS_SAVE_KEY,
+    JSON.stringify(achievementsSaveData),
+  );
 }
 
-function showNotification(title, message, icon, type, callback = (closeType) => {}, timeout = 5000) {
+function showNotification(
+  title,
+  message,
+  icon,
+  type,
+  callback = (closeType) => {},
+  timeout = 5000,
+) {
   let info = "";
   switch (type) {
     case "unlockAchievement":
@@ -327,8 +357,12 @@ function showNotification(title, message, icon, type, callback = (closeType) => 
   `;
   notifications.insertAdjacentHTML("beforeend", notification);
   const newNotification = notifications.lastElementChild;
-  const notificationImage = newNotification.querySelector(".notification-image");
-  const closeButton = newNotification.querySelector(".notification-close-button");
+  const notificationImage = newNotification.querySelector(
+    ".notification-image",
+  );
+  const closeButton = newNotification.querySelector(
+    ".notification-close-button",
+  );
 
   if (icon === "") {
     notificationImage.remove();
@@ -341,7 +375,7 @@ function showNotification(title, message, icon, type, callback = (closeType) => 
   function hideNotification(closeType) {
     if (closed) return;
     closed = true;
-    
+
     if (saveData.menuAnimationsEnabled === false) {
       // If animations disabled, remove immediately
       newNotification.remove();
@@ -351,10 +385,14 @@ function showNotification(title, message, icon, type, callback = (closeType) => 
       // Use animation if enabled
       newNotification.classList.add("hide-anim");
       if (timeoutId) clearTimeout(timeoutId);
-      newNotification.addEventListener("animationend", () => {
-        newNotification.remove();
-        callback(closeType);
-      }, { once: true });
+      newNotification.addEventListener(
+        "animationend",
+        () => {
+          newNotification.remove();
+          callback(closeType);
+        },
+        { once: true },
+      );
     }
   }
 
@@ -377,11 +415,15 @@ function showNotification(title, message, icon, type, callback = (closeType) => 
 
 function closeAllNotifications() {
   const allNotifications = notifications.querySelectorAll(".notification");
-  allNotifications.forEach(notification => {
+  allNotifications.forEach((notification) => {
     notification.classList.add("hide-anim");
-    notification.addEventListener("animationend", () => {
-      notification.remove();
-    }, { once: true });
+    notification.addEventListener(
+      "animationend",
+      () => {
+        notification.remove();
+      },
+      { once: true },
+    );
   });
 }
 
@@ -401,7 +443,7 @@ function closeAllNotifications() {
 //     notification.classList.remove("hide-anim");
 //     notification.classList.remove("hidden");
 //     // notification.addEventListener("animationend", () => {
-      
+
 //     // }, { once: true });
 //   });
 // }
@@ -410,13 +452,22 @@ function showAchievementNotification(achievementId) {
   const achievement = achievementsData[achievementId];
   if (!achievement) return;
 
-  const icon = achievement.icon ? `./res/images/achievements/${achievement.icon}` : "./res/images/achievement-icon.png";
-  showNotification(achievement.name, achievement.tip, icon, "unlockAchievement", (closeType) => {
-    if (closeType === "click") {
-      openMenu();
-      switchMenuPage(1); // Switch to achievements page
-    }
-  }, 10000);
+  const icon = achievement.icon
+    ? `./res/images/achievements/${achievement.icon}`
+    : "./res/images/achievement-icon.png";
+  showNotification(
+    achievement.name,
+    achievement.tip,
+    icon,
+    "unlockAchievement",
+    (closeType) => {
+      if (closeType === "click") {
+        openMenu();
+        switchMenuPage(1); // Switch to achievements page
+      }
+    },
+    10000,
+  );
 }
 
 function unlockAchievementNotification(id) {
@@ -470,7 +521,7 @@ let achievementsData = {};
 
 async function loadAchievements() {
   try {
-    const response = await fetch('./src/data/achievements.json');
+    const response = await fetch("./src/data/achievements.json");
     achievementsData = await response.json();
     generateAchievementButtons();
   } catch (error) {
@@ -482,46 +533,54 @@ async function loadAchievements() {
 // Generate achievement buttons
 const achievementPage = document.querySelector(".achievement-page");
 function generateAchievementButtons() {
-  achievementPage.innerHTML = '';
-  Object.keys(achievementsData).forEach(key => {
+  achievementPage.innerHTML = "";
+  Object.keys(achievementsData).forEach((key) => {
     const ach = achievementsData[key];
-    const icon = ach.icon ? `./res/images/achievements/${ach.icon}` : "./res/images/achievement-icon.png";
+    const icon = ach.icon
+      ? `./res/images/achievements/${ach.icon}`
+      : "./res/images/achievement-icon.png";
     const unlocked = isAchievementUnlocked(key);
-    
-    const button = document.createElement('button');
-    button.className = 'achievement-button';
-    button.setAttribute('data-achievement', key);
+
+    const button = document.createElement("button");
+    button.className = "achievement-button";
+    button.setAttribute("data-achievement", key);
     if (unlocked) {
-      button.classList.add('unlocked');
+      button.classList.add("unlocked");
     }
-    
-    const img = document.createElement('img');
+
+    const img = document.createElement("img");
     if (!ach.icon || ach.icon === "") {
       img.src = icon;
     } else {
       img.src = icon;
     }
-    img.classList.add('achievement-image');
+    img.classList.add("achievement-image");
     img.draggable = false;
-    
-    const nameSpan = document.createElement('span');
-    nameSpan.className = 'achievement-name';
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "achievement-name";
     nameSpan.textContent = ach.name;
 
     if (ach.hide) {
       button.classList.add("hide");
-    };
+    }
 
     button.appendChild(img);
     button.appendChild(nameSpan);
 
     // Show tip on click
-    button.addEventListener('click', () => {
+    button.addEventListener("click", () => {
       closeMenu();
       if (unlocked) {
-        showDialog(ach.name, ach.tip, "Achievement", () => {}, { icon: icon, achievementID: key });
+        showDialog(ach.name, ach.tip, "Achievement", () => {}, {
+          icon: icon,
+          achievementID: key,
+        });
       } else {
-        showDialog(ach.name + " (Locked)", ach.tip, "Achievement", () => {}, { icon: icon, achievementID: key });
+        showDialog(ach.name + " (Locked)", ach.tip, "Achievement", () => {}, {
+          icon: icon,
+          achievementID: key,
+        });
       }
     });
 
@@ -546,27 +605,26 @@ level.prototype.levelInit = function (level) {
   levelManager.setSkipEnable(false);
   levelLabel.textContent = "Level " + level;
   updateLevelButtons(level);
-}
+};
 
 level.prototype.setRefreshEnable = function (enable) {
   this.refreshEnable = enable;
   refreshButton.classList.toggle("hide", !enable);
-}
+};
 
 level.prototype.setTipEnable = function (enable) {
   this.tipEnable = enable;
   tipButton.classList.toggle("hide", !enable);
-}
+};
 
 level.prototype.setSkipEnable = function (enable) {
   this.skipEnable = enable;
   skipButton.classList.toggle("hide", !enable);
-}
+};
 
 level.prototype.setSkipTime = function (time) {
   // this.skipTime = time;
   // if (!time) return;
-
   // timeout = setTimeout(function () {
   //   if (this.skipTime === 0) {
   //     clearTimeout(timeout);
@@ -575,11 +633,11 @@ level.prototype.setSkipTime = function (time) {
   //   levelManager.setSkipEnable(true);
   //   clearTimeout(timeout);
   // }, time * 1000);
-}
+};
 
 level.prototype.setLevelLabelEnable = function (enable) {
   levelLabel.classList.toggle("hide", !enable);
-}
+};
 
 const levelManager = new level();
 
@@ -600,7 +658,7 @@ let saveData = {
   menuAnimationsEnabled: true,
   menuBlurEnabled: true,
   bottomSafeZoneEnabled: false,
-  showLockedEnabled: false
+  showLockedEnabled: false,
 };
 
 function loadSave() {
@@ -650,11 +708,11 @@ function unmarkSkipped(level) {
 // Function to load levels from JSON
 async function loadLevels() {
   try {
-    const response = await fetch('./src/data/levels.json');
+    const response = await fetch("./src/data/levels.json");
     levelsData = await response.json();
     generateLevelButtons();
   } catch (error) {
-    console.error('Error loading levels:', error);
+    console.error("Error loading levels:", error);
     // Fallback to default levels if JSON loading fails
     levelsData = allLevelsData;
     generateLevelButtons();
@@ -664,39 +722,39 @@ async function loadLevels() {
 // Function to generate level buttons dynamically
 function generateLevelButtons() {
   // Clear existing buttons
-  levelPage.innerHTML = '';
-  
+  levelPage.innerHTML = "";
+
   // Create buttons for each level
-  Object.keys(levelsData).forEach(levelKey => {
+  Object.keys(levelsData).forEach((levelKey) => {
     const levelNum = parseInt(levelKey);
     const levelInfo = levelsData[levelKey];
 
     const locked = !saveData.unlockedLevels.includes(levelNum);
     const skiped = saveData.skippedLevels.includes(levelNum);
-    
-    const button = document.createElement('button');
+
+    const button = document.createElement("button");
     button.textContent = "Level " + levelKey + ": " + levelInfo.name;
-    button.setAttribute('data-level', levelNum);
-    
+    button.setAttribute("data-level", levelNum);
+
     // Add current class if it's the current level
     if (levelNum === levelManager.currentLevel) {
-      button.classList.add('current');
+      button.classList.add("current");
     }
-    
+
     if (locked) {
-      button.classList.add('locked');
+      button.classList.add("locked");
       // button.classList.add('hide');
       // button.textContent = "Level " + levelKey + ": ???";
     } // else {
-      // button.textContent = "Level " + levelKey + ": " + levelInfo.name;
+    // button.textContent = "Level " + levelKey + ": " + levelInfo.name;
     // }
-    
+
     if (skiped) {
-      button.classList.add('skiped');
+      button.classList.add("skiped");
     }
-    
+
     // Add click event listener
-    button.addEventListener('click', () => {
+    button.addEventListener("click", () => {
       if (locked) return;
       if (levelNum === levelManager.currentLevel) {
         closeMenu();
@@ -706,21 +764,21 @@ function generateLevelButtons() {
       updateLevelButtons(levelNum);
       closeMenu();
     });
-    
+
     levelPage.appendChild(button);
   });
 }
 
 // Function to update level buttons current state
 function updateLevelButtons(currentLevel) {
-  const levelButtons = levelPage.querySelectorAll('button');
-  levelButtons.forEach(button => {
-    button.classList.remove('current');
-    if (parseInt(button.getAttribute('data-level')) === currentLevel) {
-      button.classList.add('current');
+  const levelButtons = levelPage.querySelectorAll("button");
+  levelButtons.forEach((button) => {
+    button.classList.remove("current");
+    if (parseInt(button.getAttribute("data-level")) === currentLevel) {
+      button.classList.add("current");
     }
 
-    if (button.classList.contains('locked')) {
+    if (button.classList.contains("locked")) {
       // button.textContent = "Level " + levelKey + ": ???";
       button.disabled = true; // Disable locked buttons
     } else {
@@ -728,27 +786,29 @@ function updateLevelButtons(currentLevel) {
       button.disabled = false; // Enable unlocked buttons
     }
     // Update skiped class
-    const levelNum = parseInt(button.getAttribute('data-level'));
+    const levelNum = parseInt(button.getAttribute("data-level"));
     if (saveData.skippedLevels.includes(levelNum)) {
-      button.classList.add('skiped');
+      button.classList.add("skiped");
     } else {
-      button.classList.remove('skiped');
+      button.classList.remove("skiped");
     }
   });
 }
 
 function isMobileDevice() {
-  return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  );
 }
 
 function init() {
   loadSave();
   loadAchievementsSave();
   let urlParams = new URLSearchParams(window.location.search);
-  let level = parseInt(urlParams.get('level'));
-  let unlockto = parseInt(urlParams.get('unlockto'));
+  let level = parseInt(urlParams.get("level"));
+  let unlockto = parseInt(urlParams.get("unlockto"));
 
-  if (urlParams.get('debug') === "true") {
+  if (urlParams.get("debug") === "true") {
     debugEnabled = true;
   }
 
@@ -779,10 +839,14 @@ function init() {
     for (let i = 0; i <= unlockto; i++) {
       unlockLevel(i);
     }
-    urlParams.delete('unlockto');
-    window.history.replaceState({}, '', `${location.pathname}?${urlParams.toString()}`);
+    urlParams.delete("unlockto");
+    window.history.replaceState(
+      {},
+      "",
+      `${location.pathname}?${urlParams.toString()}`,
+    );
   }
-  
+
   updateSettings();
   switchMenuPage(0, true);
   loadLevels();
@@ -797,11 +861,15 @@ const autoSaveCheckbox = document.querySelector("#auto-save-checkbox");
 const levelLabelToggle = document.querySelector("#level-label-toggle");
 const levelLabelCheckbox = document.querySelector("#level-label-checkbox");
 const menuAnimationsToggle = document.querySelector("#menu-animations-toggle");
-const menuAnimationsCheckbox = document.querySelector("#menu-animations-checkbox");
+const menuAnimationsCheckbox = document.querySelector(
+  "#menu-animations-checkbox",
+);
 const menuBlurToggle = document.querySelector("#menu-blur-toggle");
 const menuBlurCheckbox = document.querySelector("#menu-blur-checkbox");
 const bottomSafeZoneToggle = document.querySelector("#bottom-safezone-toggle");
-const bottomSafeZoneCheckbox = document.querySelector("#bottom-safezone-checkbox");
+const bottomSafeZoneCheckbox = document.querySelector(
+  "#bottom-safezone-checkbox",
+);
 const showLockedToggle = document.querySelector("#show-locked-toggle");
 const showLockedCheckbox = document.querySelector("#show-locked-checkbox");
 
@@ -815,59 +883,59 @@ function updateSettings() {
   // Optionally update text or style if needed
 
   if (saveData.levelLabelEnabled) {
-    levelLabel.classList.add('enabled');
+    levelLabel.classList.add("enabled");
   } else {
-    levelLabel.classList.remove('enabled');
+    levelLabel.classList.remove("enabled");
   }
   if (saveData.menuAnimationsEnabled === false) {
-    document.body.classList.add('no-animations');
+    document.body.classList.add("no-animations");
   } else {
-    document.body.classList.remove('no-animations');
+    document.body.classList.remove("no-animations");
   }
   if (saveData.menuBlurEnabled === false) {
-    document.body.classList.add('no-menu-blur');
+    document.body.classList.add("no-menu-blur");
   } else {
-    document.body.classList.remove('no-menu-blur');
+    document.body.classList.remove("no-menu-blur");
   }
   if (saveData.bottomSafeZoneEnabled) {
-    document.body.classList.add('bottom-safezone');
+    document.body.classList.add("bottom-safezone");
   } else {
-    document.body.classList.remove('bottom-safezone');
+    document.body.classList.remove("bottom-safezone");
   }
   if (saveData.showLockedEnabled) {
-    document.body.classList.add('show-locked-levels');
+    document.body.classList.add("show-locked-levels");
   } else {
-    document.body.classList.remove('show-locked-levels');
+    document.body.classList.remove("show-locked-levels");
   }
 }
 
-autoSaveToggle.addEventListener('click', (e) => {
+autoSaveToggle.addEventListener("click", (e) => {
   // Prevent double toggling if clicking the switch directly
-  if (e.target.classList.contains('switch-input')) return;
+  if (e.target.classList.contains("switch-input")) return;
   saveData.autoSaveEnabled = !saveData.autoSaveEnabled;
   updateSettings();
   saveProgress();
 });
-autoSaveCheckbox.addEventListener('change', () => {
+autoSaveCheckbox.addEventListener("change", () => {
   saveData.autoSaveEnabled = autoSaveCheckbox.checked;
   updateSettings();
   saveProgress();
 });
 
-levelLabelToggle.addEventListener('click', (e) => {
-  if (e.target.classList.contains('switch-input')) return;
+levelLabelToggle.addEventListener("click", (e) => {
+  if (e.target.classList.contains("switch-input")) return;
   saveData.levelLabelEnabled = !saveData.levelLabelEnabled;
   updateSettings();
   saveProgress();
 });
-levelLabelCheckbox.addEventListener('change', () => {
+levelLabelCheckbox.addEventListener("change", () => {
   saveData.levelLabelEnabled = levelLabelCheckbox.checked;
   updateSettings();
   saveProgress();
 });
 
-menuAnimationsToggle.addEventListener('click', (e) => {
-  if (e.target.classList.contains('switch-input')) return;
+menuAnimationsToggle.addEventListener("click", (e) => {
+  if (e.target.classList.contains("switch-input")) return;
   saveData.menuAnimationsEnabled = !saveData.menuAnimationsEnabled;
   updateSettings();
   saveProgress();
@@ -883,7 +951,7 @@ menuAnimationsToggle.addEventListener('click', (e) => {
   //   }
   // );
 });
-menuAnimationsCheckbox.addEventListener('change', () => {
+menuAnimationsCheckbox.addEventListener("change", () => {
   saveData.menuAnimationsEnabled = menuAnimationsCheckbox.checked;
   updateSettings();
   saveProgress();
@@ -900,37 +968,37 @@ menuAnimationsCheckbox.addEventListener('change', () => {
   // );
 });
 
-menuBlurToggle.addEventListener('click', (e) => {
-  if (e.target.classList.contains('switch-input')) return;
+menuBlurToggle.addEventListener("click", (e) => {
+  if (e.target.classList.contains("switch-input")) return;
   saveData.menuBlurEnabled = !saveData.menuBlurEnabled;
   updateSettings();
   saveProgress();
 });
-menuBlurCheckbox.addEventListener('change', () => {
+menuBlurCheckbox.addEventListener("change", () => {
   saveData.menuBlurEnabled = menuBlurCheckbox.checked;
   updateSettings();
   saveProgress();
 });
 
-bottomSafeZoneToggle.addEventListener('click', (e) => {
-  if (e.target.classList.contains('switch-input')) return;
+bottomSafeZoneToggle.addEventListener("click", (e) => {
+  if (e.target.classList.contains("switch-input")) return;
   saveData.bottomSafeZoneEnabled = !saveData.bottomSafeZoneEnabled;
   updateSettings();
   saveProgress();
 });
-bottomSafeZoneCheckbox.addEventListener('change', () => {
+bottomSafeZoneCheckbox.addEventListener("change", () => {
   saveData.bottomSafeZoneEnabled = bottomSafeZoneCheckbox.checked;
   updateSettings();
   saveProgress();
 });
 
-showLockedToggle.addEventListener('click', (e) => {
-  if (e.target.classList.contains('switch-input')) return;
+showLockedToggle.addEventListener("click", (e) => {
+  if (e.target.classList.contains("switch-input")) return;
   saveData.showLockedEnabled = !saveData.showLockedEnabled;
   updateSettings();
   saveProgress();
 });
-showLockedCheckbox.addEventListener('change', () => {
+showLockedCheckbox.addEventListener("change", () => {
   saveData.showLockedEnabled = showLockedCheckbox.checked;
   updateSettings();
   saveProgress();
@@ -1038,7 +1106,7 @@ function completeLevel() {
     case 26:
       completeAchievement(15);
       break;
-  
+
     default:
       break;
   }
@@ -1064,9 +1132,8 @@ function completeLevel() {
     completeAchievement(13);
   }
 
-
   if (levelManager.currentLevel !== 0) {
-    let completeMessage = "Level " + levelManager.currentLevel + " complete"
+    let completeMessage = "Level " + levelManager.currentLevel + " complete";
     if (levelManager.currentCompleteMessage !== "") {
       completeMessage = levelManager.currentCompleteMessage;
     }
@@ -1074,14 +1141,14 @@ function completeLevel() {
       if (button === "ok") {
         goToNextLevel(levelManager.currentLevel);
       }
-        // switch (levelManager.currentLevel) {
-        //   case 1:
-        //     unlockAchievementNotification(2);
-        //     break;
+      // switch (levelManager.currentLevel) {
+      //   case 1:
+      //     unlockAchievementNotification(2);
+      //     break;
 
-        // default:
-        //   break;
-        // }
+      // default:
+      //   break;
+      // }
     });
   } else {
     goToNextLevel(levelManager.currentLevel);
@@ -1104,12 +1171,16 @@ function showState() {
   let log = `Current level: ${levelManager.currentLevel}<br>
 Current page: ${iframe.src}`;
 
-  showDialog("Debug", log, "OK")
+  showDialog("Debug", log, "OK");
   // showNotification("Debug", log, "", "debug", null, 10000);
 }
 
 function clickElement(e) {
-  if (!menuPanel.contains(e.target) && !menuBtn.contains(e.target) && !levelLabel.contains(e.target)) {
+  if (
+    !menuPanel.contains(e.target) &&
+    !menuBtn.contains(e.target) &&
+    !levelLabel.contains(e.target)
+  ) {
     closeMenu();
   }
 }
@@ -1117,9 +1188,10 @@ function clickElement(e) {
 function openMenu() {
   closeAllNotifications();
   menuPanel.classList.toggle("menu-hidden");
-  menuBtn.setAttribute("data-tooltip", menuPanel.classList.contains("menu-hidden")
-    ? "Menu"
-    : "Close Menu");
+  menuBtn.setAttribute(
+    "data-tooltip",
+    menuPanel.classList.contains("menu-hidden") ? "Menu" : "Close Menu",
+  );
 
   menuBtn.querySelector("img").src = menuPanel.classList.contains("menu-hidden")
     ? "./res/images/icons/menu-icon.png"
@@ -1129,9 +1201,10 @@ function openMenu() {
 function closeMenu() {
   menuPanel.classList.add("menu-hidden");
   menuBtn.querySelector("img").src = "./res/images/icons/menu-icon.png";
-  menuBtn.setAttribute("data-tooltip", menuPanel.classList.contains("menu-hidden")
-    ? "Menu"
-    : "Close Menu");
+  menuBtn.setAttribute(
+    "data-tooltip",
+    menuPanel.classList.contains("menu-hidden") ? "Menu" : "Close Menu",
+  );
 }
 
 // Function to switch between menu pages
@@ -1141,11 +1214,11 @@ function switchMenuPage(targetIndex, force = false) {
   const isGoingRight = targetIndex > currentPageIndex;
 
   // Remove select class from all options
-  menuOptions.forEach(option => option.classList.remove("select"));
-  [...menuPages].forEach(page => {
+  menuOptions.forEach((option) => option.classList.remove("select"));
+  [...menuPages].forEach((page) => {
     // page.tabIndex = -1;
     let buttons = page.querySelectorAll("button");
-    buttons.forEach(button => {
+    buttons.forEach((button) => {
       button.disabled = true;
     });
   });
@@ -1154,12 +1227,16 @@ function switchMenuPage(targetIndex, force = false) {
   menuOptions[targetIndex].classList.add("select");
 
   // Hide current page by sliding it out
-  menuPages[currentPageIndex].style.transform = isGoingRight ? "translateX(-100%)" : "translateX(100%)";
+  menuPages[currentPageIndex].style.transform = isGoingRight
+    ? "translateX(-100%)"
+    : "translateX(100%)";
   menuPages[currentPageIndex].style.opacity = "0";
   menuPages[currentPageIndex].style.pointerEvents = "none";
 
   // Position new page off-screen on the opposite side
-  menuPages[targetIndex].style.transform = isGoingRight ? "translateX(100%)" : "translateX(-100%)";
+  menuPages[targetIndex].style.transform = isGoingRight
+    ? "translateX(100%)"
+    : "translateX(-100%)";
   menuPages[targetIndex].style.opacity = "0";
   menuPages[targetIndex].style.pointerEvents = "none";
 
@@ -1170,7 +1247,7 @@ function switchMenuPage(targetIndex, force = false) {
     menuPages[targetIndex].style.pointerEvents = "auto";
   }, 150);
 
-  menuPages[targetIndex].querySelectorAll("button").forEach(button => {
+  menuPages[targetIndex].querySelectorAll("button").forEach((button) => {
     if (button.classList.contains("locked")) {
       button.disabled = true;
     } else {
@@ -1209,7 +1286,13 @@ function initializeMenuPages() {
 let currentOkHandler = null;
 let currentCancelHandler = null;
 
-function showDialog(title, text, buttonType = "OK", callback = (button) => { }, options = {}) {
+function showDialog(
+  title,
+  text,
+  buttonType = "OK",
+  callback = (button) => {},
+  options = {},
+) {
   const dialogTitle = dialog.querySelector(".dialog-title");
   const dialogText = dialog.querySelector(".dialog-text");
   const okButton = dialog.querySelector(".ok-button");
@@ -1222,10 +1305,10 @@ function showDialog(title, text, buttonType = "OK", callback = (button) => { }, 
   okButton.classList.remove("hide");
   okButton.classList.remove("delete");
   cancelButton.classList.remove("hide");
-  
+
   dialogTitle.textContent = title;
   dialogText.innerHTML = text;
-  
+
   // Remove any existing closing class
   dialog.classList.remove("closing");
 
@@ -1266,7 +1349,7 @@ function showDialog(title, text, buttonType = "OK", callback = (button) => { }, 
   if (currentCancelHandler) {
     cancelButton.removeEventListener("click", currentCancelHandler);
   }
-  
+
   if (buttonType === "Delete") {
     cancelButton.focus();
   } else {
@@ -1327,7 +1410,6 @@ function refresh() {
   // goTo(levelManager.currentLevel)
   iframe.src = iframe.src;
 
-
   if (!isAchievementUnlocked(7)) {
     completeAchievement(7);
   }
@@ -1354,19 +1436,29 @@ function showTip() {
 }
 
 function askRefresh() {
-  showDialog("Refresh", "Are you sure you want to refresh this level?", "YesNo", (button) => {
-    if (button === "yes") {
-      refresh();
-    }
-  })
+  showDialog(
+    "Refresh",
+    "Are you sure you want to refresh this level?",
+    "YesNo",
+    (button) => {
+      if (button === "yes") {
+        refresh();
+      }
+    },
+  );
 }
 
 function askSkip() {
-  showDialog("Skip", "Are you sure you want to skip this level? You can come back later.", "YesNo", (button) => {
-    if (button === "yes") {
-      skip();
-    }
-  })
+  showDialog(
+    "Skip",
+    "Are you sure you want to skip this level? <br>You can come back later.",
+    "YesNo",
+    (button) => {
+      if (button === "yes") {
+        skip();
+      }
+    },
+  );
 }
 
 // Start with menu open or closed as desired
@@ -1414,19 +1506,27 @@ document.querySelector("#visit-github").addEventListener("click", () => {
 
 document.querySelector("#about-the-game").addEventListener("click", () => {
   closeMenu();
-  showDialog("Button Game 3", `Version: ${version} ${versionType} (${updateName})`, "OK");
+  showDialog(
+    "Button Game 3",
+    `Version: ${version} ${versionType} (${updateName})`,
+    "OK",
+  );
 });
 
 document.querySelector("#change-log").addEventListener("click", () => {
   closeMenu();
-  showDialog("Change log", `<style>
+  showDialog(
+    "Change log",
+    `<style>
   .whatsnew-iframe {
     width: 500px;
     height: 400px;
     border: none;
   }
 </style>
-<iframe src="./src/html/whatsnew.html" class="whatsnew-iframe"></iframe>`, "OK");
+<iframe src="./src/html/whatsnew.html" class="whatsnew-iframe"></iframe>`,
+    "OK",
+  );
 });
 
 document.querySelector("#about-game-2").addEventListener("click", () => {
@@ -1436,7 +1536,11 @@ document.querySelector("#about-game-2").addEventListener("click", () => {
 
 document.querySelector("#about-game-1").addEventListener("click", () => {
   closeMenu();
-  showDialog("The Button Game 1", "The Button Game 1 is made by @ChathamHung, <br>but it is using PowerPoint to maked.", "OK");
+  showDialog(
+    "The Button Game 1",
+    "The Button Game 1 is made by @ChathamHung, <br>but it is using PowerPoint to maked.",
+    "OK",
+  );
 });
 
 levelLabel.addEventListener("click", () => {
@@ -1499,39 +1603,72 @@ document.querySelector("#debug-delete-level").addEventListener("click", () => {
   if (!value) return;
   const num = Number(value);
   // Remove from unlockedLevels
-  saveData.unlockedLevels = saveData.unlockedLevels.filter(lvl => lvl !== num);
+  saveData.unlockedLevels = saveData.unlockedLevels.filter(
+    (lvl) => lvl !== num,
+  );
   // Remove from skippedLevels
-  saveData.skippedLevels = saveData.skippedLevels.filter(lvl => lvl !== num);
+  saveData.skippedLevels = saveData.skippedLevels.filter((lvl) => lvl !== num);
   saveProgress();
   generateLevelButtons();
   updateLevelButtons(levelManager.currentLevel);
-  showNotification("Debug", "Level " + value + " deleted from save.", "", "debug");
+  showNotification(
+    "Debug",
+    "Level " + value + " deleted from save.",
+    "",
+    "debug",
+  );
 });
 
 // Debug: Unlock a achievement
-document.querySelector("#debug-unlock-achievement").addEventListener("click", () => {
-  let value = prompt("Enter achievement id to unlock:", "1");
-  if (!value) return;
-  unlockAchievement(value);
-  showNotification("Debug", "Achievement " + value + " (" + achievementsData[value].name + ") unlocked.", "", "debug");
-});
+document
+  .querySelector("#debug-unlock-achievement")
+  .addEventListener("click", () => {
+    let value = prompt("Enter achievement id to unlock:", "1");
+    if (!value) return;
+    unlockAchievement(value);
+    showNotification(
+      "Debug",
+      "Achievement " +
+        value +
+        " (" +
+        achievementsData[value].name +
+        ") unlocked.",
+      "",
+      "debug",
+    );
+  });
 
-document.querySelector("#debug-lock-achievement").addEventListener("click", () => {
-  let value = prompt("Enter achievement id to lock:", "1");
-  if (!value) return;
-  lockAchievement(value);
-  showNotification("Debug", "Achievement " + value + " (" + achievementsData[value].name + ") locked.", "", "debug");
-});
+document
+  .querySelector("#debug-lock-achievement")
+  .addEventListener("click", () => {
+    let value = prompt("Enter achievement id to lock:", "1");
+    if (!value) return;
+    lockAchievement(value);
+    showNotification(
+      "Debug",
+      "Achievement " +
+        value +
+        " (" +
+        achievementsData[value].name +
+        ") locked.",
+      "",
+      "debug",
+    );
+  });
 
-document.querySelector("#debug-unlock-all-achievements").addEventListener("click", () => {
-  unlockAllAchievements();
-  showNotification("Debug", "All achievements unlocked.", "", "debug");
-});
+document
+  .querySelector("#debug-unlock-all-achievements")
+  .addEventListener("click", () => {
+    unlockAllAchievements();
+    showNotification("Debug", "All achievements unlocked.", "", "debug");
+  });
 
-document.querySelector("#debug-lock-all-achievements").addEventListener("click", () => {
-  lockAllAchievements();
-  showNotification("Debug", "All achievements locked.", "", "debug");
-});
+document
+  .querySelector("#debug-lock-all-achievements")
+  .addEventListener("click", () => {
+    lockAllAchievements();
+    showNotification("Debug", "All achievements locked.", "", "debug");
+  });
 
 // Settings
 
@@ -1553,17 +1690,19 @@ document.querySelector("#reset-all-game").addEventListener("click", () => {
               localStorage.removeItem(ACHIEVEMENTS_SAVE_KEY);
               location.reload();
             }
-          }
+          },
         );
       }
-    }
+    },
   );
 });
 
 document.querySelector("#fulllscreen-toggle").addEventListener("click", () => {
   if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(err => {
-      console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+    document.documentElement.requestFullscreen().catch((err) => {
+      console.error(
+        `Error attempting to enable full-screen mode: ${err.message} (${err.name})`,
+      );
     });
   } else {
     document.exitFullscreen();
@@ -1571,7 +1710,7 @@ document.querySelector("#fulllscreen-toggle").addEventListener("click", () => {
 });
 
 // Disable right click context menu
-document.addEventListener('contextmenu', (e) => {
+document.addEventListener("contextmenu", (e) => {
   e.preventDefault();
 });
 

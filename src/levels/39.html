@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1e3799;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 177, 153, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Desktop Background */
+    .desktop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      z-index: 1;
+    }
+
+    .taskbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: #2c3e50;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+    }
+
+    .start-button {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    /* Virus Warning Popups */
+    .popup {
+      position: absolute;
+      background: white;
+      border: 2px solid #c0392b;
+      border-radius: 5px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      z-index: 100;
+      min-width: 350px;
+      animation: popupAppear 0.3s ease-out;
+    }
+
+    @keyframes popupAppear {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .popup-header {
+      background: linear-gradient(to bottom, #e74c3c, #c0392b);
+      color: white;
+      padding: 8px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 0;
+      width: 20px;
+      height: 20px;
+    }
+
+    .popup-content {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .virus-icon {
+      font-size: 48px;
+      color: #e74c3c;
+      margin-bottom: 15px;
+    }
+
+    .warning-text {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .urgent {
+      color: #e74c3c;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .popup-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .fake-button {
+      background: linear-gradient(to bottom, #e74c3c, #c0392b);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+      font-size: 14px;
+    }
+
+    .fake-button:hover {
+      background: linear-gradient(to bottom, #c0392b, #a93226);
+    }
+
+    .real-button {
+      background: linear-gradient(to bottom, #75c64f, #60a83e);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s;
+      font-size: 14px;
+    }
+
+    .real-button:hover {
+      background: linear-gradient(to bottom, #60a83e, #4e8b32);
+    }
+
+    .blinking {
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0.3; }
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background: #ecf0f1;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, #e74c3c, #f39c12);
+      animation: scan 2s infinite;
+    }
+
+    @keyframes scan {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    /* Hidden elements */
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Desktop Environment -->
+  <div class="desktop"></div>
+  <div class="taskbar">
+    <button class="start-button">Start</button>
+  </div>
+
+  <!-- Virus Warning Popups -->
+  <div class="popup" id="popup1" style="top: 15%; left: 10%;">
+    <div class="popup-header">
+      <span>⚠️ VIRUS ALERT!</span>
+      <button class="close-btn" onclick="closePopup('popup1')">×</button>
+    </div>
+    <div class="popup-content">
+      <div class="virus-icon">💻🥺</div>
+      <div class="urgent blinking">IMMEDIATE ACTION REQUIRED!</div>
+      <div class="warning-text">
+        Your computer has been infected with 47 viruses!<br>
+        <strong>Trojan.Win32.Danger</strong> detected!
+      </div>
+      <div class="progress-bar">
+        <div class="progress"></div>
+      </div>
+      <div class="popup-buttons">
+        <button class="fake-button" onclick="showFakeAction()">REMOVE VIRUS NOW</button>
+        <button class="fake-button" onclick="showFakeAction()">DOWNLOAD ANTIVIRUS</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup" id="popup2" style="top: 25%; right: 15%;">
+    <div class="popup-header">
+      <span>🛑 SECURITY WARNING</span>
+      <button class="close-btn" onclick="closePopup('popup2')">×</button>
+    </div>
+    <div class="popup-content">
+      <div class="virus-icon">🔥🛡️</div>
+      <div class="urgent">SYSTEM COMPROMISED!</div>
+      <div class="warning-text">
+        Malicious software detected on your system.<br>
+        Your personal data is at risk!
+      </div>
+      <div class="popup-buttons">
+        <button class="fake-button" onclick="showFakeAction()">CLEAN NOW</button>
+        <button class="fake-button" onclick="showFakeAction()">CALL SUPPORT</button>
+        <button class="real-button" id="realButton" onclick="foundRealButton()">Continue Game</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup" id="popup3" style="bottom: 20%; left: 20%;">
+    <div class="popup-header">
+      <span>🐛 MALWARE DETECTED</span>
+      <button class="close-btn" onclick="closePopup('popup3')">×</button>
+    </div>
+    <div class="popup-content">
+      <div class="virus-icon">👾📱</div>
+      <div class="urgent blinking">CRITICAL ALERT!</div>
+      <div class="warning-text">
+        Ransomware attempting to encrypt your files!<br>
+        <strong>Act now to prevent data loss!</strong>
+      </div>
+      <div class="popup-buttons">
+        <button class="fake-button" onclick="showFakeAction()">BLOCK ATTACK</button>
+        <button class="fake-button" onclick="showFakeAction()">SECURE FILES</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="popup" id="popup4" style="top: 40%; left: 45%;">
+    <div class="popup-header">
+      <span>⚙️ SYSTEM OPTIMIZER</span>
+      <button class="close-btn" onclick="closePopup('popup4')">×</button>
+    </div>
+    <div class="popup-content">
+      <div class="virus-icon">📈🔧</div>
+      <div class="warning-text">
+        Your system is running slowly due to junk files.<br>
+        <strong>Speed up your computer now!</strong>
+      </div>
+      <div class="popup-buttons">
+        <button class="fake-button" onclick="showFakeAction()">OPTIMIZE NOW</button>
+        <button class="fake-button" onclick="showFakeAction()">FREE SCAN</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 39;
+
+    init(levelNumber); // Initialize the level
+
+    let popupsRemaining = 4;
+    let realButtonFound = false;
+
+    levelManager.updateTip(`Oh no! Your computer seems to be "infected"! Close the fake virus warnings and find the real way to continue...`);
+    levelManager.updateCompleteMessage(`You successfully ignored the fake virus warnings! 🛡️`);
+    levelManager.setRefreshEnable(true);
+
+    // Add some random movement to popups
+    function addPopupMovement() {
+      const popups = document.querySelectorAll('.popup');
+      popups.forEach(popup => {
+        if (!popup.classList.contains('hidden')) {
+          const randomX = Math.random() * 50 - 25; // -25 to 25px
+          const randomY = Math.random() * 50 - 25;
+          popup.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        }
+      });
+    }
+
+    // Start popup movement
+    setInterval(addPopupMovement, 3000);
+
+    // Close popup function
+    window.closePopup = function(popupId) {
+      const popup = document.getElementById(popupId);
+      popup.style.animation = 'popupAppear 0.3s ease-out reverse';
+      setTimeout(() => {
+        popup.classList.add('hidden');
+        popupsRemaining--;
+        
+        if (popupsRemaining <= 2 && !realButtonFound) {
+          // Make the real button more obvious
+          const realBtn = document.getElementById('realButton');
+          if (realBtn) {
+            realBtn.style.animation = 'blink 0.5s infinite';
+          }
+        }
+      }, 300);
+    };
+
+    // Fake action function
+    window.showFakeAction = function() {
+      const fakeMessages = [
+        "This is a fake virus warning!",
+        "Don't fall for scam popups!",
+        "Real antivirus doesn't work like this!",
+        "Look for the real continue button!",
+        "Hint: It's not red like the others..."
+      ];
+      
+      const randomMessage = fakeMessages[Math.floor(Math.random() * fakeMessages.length)];
+      
+      // // Show temporary message
+      // const messageDiv = document.createElement('div');
+      // messageDiv.style.cssText = `
+      //   position: fixed;
+      //   top: 50%;
+      //   left: 50%;
+      //   transform: translate(-50%, -50%);
+      //   background: rgba(0,0,0,0.8);
+      //   color: white;
+      //   padding: 20px;
+      //   border-radius: 10px;
+      //   z-index: 1000;
+      //   font-size: 18px;
+      //   text-align: center;
+      // `;
+      // messageDiv.textContent = randomMessage;
+      // document.body.appendChild(messageDiv);
+      
+      // setTimeout(() => {
+      //   messageDiv.remove();
+      // }, 2000);
+
+      levelManager.showNotification("Oh no!", randomMessage);
+    };
+
+    // Real button function
+    window.foundRealButton = function() {
+      realButtonFound = true;
+      
+      // Hide all popups
+      const popups = document.querySelectorAll('.popup');
+      popups.forEach(popup => {
+        popup.style.animation = 'popupAppear 0.5s ease-out reverse';
+        setTimeout(() => {
+          popup.classList.add('hidden');
+        }, 500);
+      });
+      
+      // Show success message
+      setTimeout(() => {
+        const successDiv = document.createElement('div');
+        successDiv.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: linear-gradient(135deg, #2ecc71, #27ae60);
+          color: white;
+          padding: 30px;
+          border-radius: 15px;
+          z-index: 1000;
+          font-size: 24px;
+          text-align: center;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        `;
+        successDiv.innerHTML = `
+          <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
+          <div>Congratulations!</div>
+          <div style="font-size: 16px; margin-top: 10px;">You found the real button!</div>
+          <button id="manualNextLevel" style="
+            background: linear-gradient(to bottom, #75c64f, #60a83e);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background 0.2s;
+          " onmouseover="this.style.background='linear-gradient(to bottom, #60a83e, #4e8b32)'" onmouseout="this.style.background='linear-gradient(to bottom, #75c64f, #60a83e)'" onclick="levelManager.completeLevel()">Next Level</button>
+        `;
+        document.body.appendChild(successDiv);
+        
+        setTimeout(() => {
+          levelManager.completeLevel();
+        }, 500);
+      }, 1000);
+    };
+
+    // Add some fake popup spawning
+    setTimeout(() => {
+      if (popupsRemaining > 0 && !realButtonFound) {
+        const newPopup = document.createElement('div');
+        newPopup.className = 'popup';
+        newPopup.style.cssText = `
+          top: ${Math.random() * 60 + 10}%;
+          left: ${Math.random() * 60 + 10}%;
+        `;
+        newPopup.innerHTML = `
+          <div class="popup-header">
+            <span>🚨 FINAL WARNING</span>
+            <button class="close-btn" onclick="closePopup('newPopup')">×</button>
+          </div>
+          <div class="popup-content">
+            <div class="virus-icon">⚡️🔴</div>
+            <div class="urgent blinking">LAST CHANCE!</div>
+            <div class="warning-text">
+              This is your final warning!<br>
+              Your computer will be destroyed in 60 seconds!
+            </div>
+            <div class="popup-buttons">
+              <button class="fake-button" onclick="showFakeAction()">SAVE COMPUTER</button>
+              <button class="fake-button" onclick="showFakeAction()">PAY $99.99</button>
+            </div>
+          </div>
+        `;
+        newPopup.id = 'newPopup';
+        document.body.appendChild(newPopup);
+        popupsRemaining++;
+      }
+    }, 8000);
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>
