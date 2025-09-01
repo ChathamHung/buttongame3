@@ -12,9 +12,9 @@ const levelPage = document.querySelector(".level-page");
 const dialog = document.querySelector(".dialog");
 const notifications = document.querySelector(".notifications");
 
-const version = 0.17;
-const versionType = "Beta";
-const updateName = "update 17";
+const version = 0.18;
+const versionType = "RC";
+const updateName = "update 18";
 
 let currentPageIndex = 0;
 let currentTip = ``;
@@ -22,269 +22,289 @@ let debugEnabled = false;
 let levelsData = {};
 
 let allLevelsData = {
-  0: {
-    name: "Welcome",
-    file: "0.html",
+  "0": {
+    "name": "Welcome",
+    "file": "0.html"
   },
-  1: {
-    name: "Basic",
-    file: "1.html",
+  "1": {
+    "name": "Basic",
+    "file": "1.html"
   },
-  2: {
-    name: "More Buttons",
-    file: "2.html",
+  "2": {
+    "name": "More Buttons",
+    "file": "2.html"
   },
-  3: {
-    name: "Hiding Button",
-    file: "3.html",
+  "3": {
+    "name": "Hiding Button",
+    "file": "3.html"
   },
-  4: {
-    name: "Emojis",
-    file: "4.html",
+  "4": {
+    "name": "Emojis",
+    "file": "4.html"
   },
-  5: {
-    name: "No button",
-    file: "5.html",
+  "5": {
+    "name": "No button",
+    "file": "5.html"
   },
-  6: {
-    name: "Some questions",
-    file: "6.html",
+  "6": {
+    "name": "Some questions",
+    "file": "6.html"
   },
-  7: {
-    name: "Captcha",
-    file: "7.html",
+  "7": {
+    "name": "Captcha",
+    "file": "7.html"
   },
-  8: {
-    name: "Catch Button",
-    file: "8.html",
+  "8": {
+    "name": "Catch Button",
+    "file": "8.html"
   },
-  9: {
-    name: "More questions",
-    file: "9.html",
+  "9": {
+    "name": "More questions",
+    "file": "9.html"
   },
-  10: {
-    name: "Chatting",
-    file: "10.html",
+  "10": {
+    "name": "Chatting",
+    "file": "10.html"
   },
-  11: {
-    name: "Really no button",
-    file: "11.html",
+  "11": {
+    "name": "Really no button",
+    "file": "11.html"
   },
-  12: {
-    name: "Code cracking",
-    file: "12.html",
+  "12": {
+    "name": "Code cracking",
+    "file": "12.html"
   },
-  13: {
-    name: "Checking",
-    file: "13.html",
+  "13": {
+    "name": "Checking",
+    "file": "13.html"
   },
-  14: {
-    name: "Puzzle",
-    file: "14.html",
+  "14": {
+    "name": "Puzzle",
+    "file": "14.html"
   },
-  15: {
-    name: "More and more buttons",
-    file: "15.html",
+  "15": {
+    "name": "More and more buttons",
+    "file": "15.html"
   },
-  16: {
-    name: "Clicking button",
-    file: "16.html",
+  "16": {
+    "name": "Clicking button",
+    "file": "16.html"
   },
-  17: {
-    name: "The Password Game",
-    file: "17.html",
+  "17": {
+    "name": "The Password Game",
+    "file": "17.html"
   },
-  18: {
-    name: "Typing",
-    file: "18.html",
+  "18": {
+    "name": "Typing",
+    "file": "18.html"
   },
-  19: {
-    name: "Memory Game",
-    file: "19.html",
+  "19": {
+    "name": "Memory Game",
+    "file": "19.html"
   },
-  20: {
-    name: "Timer",
-    file: "20.html",
+  "20": {
+    "name": "Timer",
+    "file": "20.html"
   },
-  21: {
-    name: "Send to Boss",
-    file: "21.html",
+  "21": {
+    "name": "Send to Boss",
+    "file": "21.html"
   },
-  22: {
-    name: "Advertisements",
-    file: "22.html",
+  "22": {
+    "name": "Advertisements",
+    "file": "22.html"
   },
-  23: {
-    name: "A Message",
-    file: "23.html",
+  "23": {
+    "name": "A Message",
+    "file": "23.html"
   },
-  24: {
-    name: "Google",
-    file: "24.html",
+  "24": {
+    "name": "Google",
+    "file": "24.html"
   },
-  25: {
-    name: "QR code",
-    file: "25.html",
+  "25": {
+    "name": "QR code",
+    "file": "25.html"
   },
-  26: {
-    name: "Update",
-    file: "26.html",
+  "26": {
+    "name": "Update",
+    "file": "26.html"
   },
-  27: {
-    name: "Color Matching",
-    file: "27.html",
+  "27": {
+    "name": "Color Matching",
+    "file": "27.html"
   },
-  28: {
-    name: "Email Scam",
-    file: "28.html",
+  "28": {
+    "name": "Email Scam",
+    "file": "28.html"
   },
-  29: {
-    name: "Terms of Use",
-    file: "29.html",
+  "29": {
+    "name": "Terms of Use",
+    "file": "29.html"
   },
-  30: {
-    name: "RNG Game",
-    file: "30.html",
+  "30": {
+    "name": "RNG Game",
+    "file": "30.html"
   },
-  31: {
-    name: "Simon Says",
-    file: "31.html",
+  "31": {
+    "name": "Simon Says",
+    "file": "31.html"
   },
-  32: {
-    name: "Morse Code",
-    file: "32.html",
+  "32": {
+    "name": "Morse Code",
+    "file": "32.html"
   },
-  33: {
-    name: "Clicking Moveing Button",
-    file: "33.html",
+  "33": {
+    "name": "Clicking Moveing Button",
+    "file": "33.html"
   },
-  34: {
-    name: "Find Emoji",
-    file: "34.html",
+  "34": {
+    "name": "Find Emoji",
+    "file": "34.html"
   },
-  35: {
-    name: "Error 404",
-    file: "35.html",
+  "35": {
+    "name": "Error 404",
+    "file": "35.html"
   },
-  36: {
-    name: "Slider bar",
-    file: "36.html",
+  "36": {
+    "name": "Slider bar",
+    "file": "36.html"
   },
-  37: {
-    name: "Math Challenge",
-    file: "37.html",
+  "37": {
+    "name": "Math Challenge",
+    "file": "37.html"
   },
-  38: {
-    name: "Drag & Drop Puzzle",
-    file: "38.html",
+  "38": {
+    "name": "Drag & Drop Puzzle",
+    "file": "38.html"
   },
-  39: {
-    name: "Fake Virus Warning",
-    file: "39.html",
+  "39": {
+    "name": "Fake Virus Warning",
+    "file": "39.html"
   },
-  40: {
-    name: "Social Media Feed",
-    file: "40.html",
+  "40": {
+    "name": "Social Media Feed",
+    "file": "40.html"
   },
+  "41": {
+    "name": "Website Navigation",
+    "file": "41.html"
+  },
+  "42": {
+    "name": "Shape Clicking",
+    "file": "42.html"
+  }
 };
 
 let allAchievementsData = {
-  1: {
-    name: "Welcome!",
-    tip: "Play Button Game 3!",
-    icon: "Welcome.png",
-    hide: false,
+  "1": {
+    "name": "Welcome!",
+    "tip": "Play Button Game 3!",
+    "icon": "Welcome.png",
+    "hide": false
   },
-  2: {
-    name: "Very Basic, right?",
-    tip: "Complete Level 1",
-    icon: "Basic.png",
-    hide: false,
+  "2": {
+    "name": "Very Basic, right?",
+    "tip": "Complete Level 1",
+    "icon": "Basic.png",
+    "hide": false
   },
-  3: {
-    name: "I'm really not a robot!",
-    tip: "Complete Level 7",
-    icon: "Robot.png",
-    hide: false,
+  "3": {
+    "name": "I'm really not a robot!",
+    "tip": "Complete Level 7",
+    "icon": "Robot.png",
+    "hide": false
   },
-  4: {
-    name: "I can't do it!",
-    tip: "Skipped a level",
-    icon: "Skip.png",
-    hide: false,
+  "4": {
+    "name": "I can't do it!",
+    "tip": "Skipped a level",
+    "icon": "Skip.png",
+    "hide": false
   },
-  5: {
-    name: "I did it!.. again...",
-    tip: "Complete a skipped level",
-    icon: "NoSkip.png",
-    hide: false,
+  "5": {
+    "name": "I did it!.. again...",
+    "tip": "Complete a skipped level",
+    "icon": "NoSkip.png",
+    "hide": false
   },
-  6: {
-    name: "A little help",
-    tip: "First time using tip button",
-    icon: "Tip.png",
-    hide: false,
+  "6": {
+    "name": "A little help",
+    "tip": "First time using tip button",
+    "icon": "Tip.png",
+    "hide": false
   },
-  7: {
-    name: "Refreshing",
-    tip: "Refresh a level",
-    icon: "Refresh.png",
-    hide: false,
+  "7": {
+    "name": "Refreshing",
+    "tip": "Refresh a level",
+    "icon": "Refresh.png",
+    "hide": false
   },
-  8: {
-    name: "Top 10 easily levels",
-    tip: "Complete Levels 1-10",
-    icon: "Easily.png",
-    hide: false,
+  "8": {
+    "name": "Top 10 easily levels",
+    "tip": "Complete Levels 1-10",
+    "icon": "Easily.png",
+    "hide": false
   },
-  9: {
-    name: "I got a new job!",
-    tip: "Complete Level 10",
-    icon: "Job.png",
-    hide: false,
+  "9": {
+    "name": "I got a new job!",
+    "tip": "Complete Level 10",
+    "icon": "Job.png",
+    "hide": false
   },
-  10: {
-    name: "Super Clicker",
-    tip: "Clicked 1,000 times in Level 16",
-    icon: "Clicker.png",
-    hide: false,
+  "10": {
+    "name": "Super Clicker",
+    "tip": "Clicked 1,000 times in Level 16",
+    "icon": "Clicker.png",
+    "hide": false
   },
-  11: {
-    name: "God of Password Game",
-    tip: "Complete Level 17",
-    icon: "Password.png",
-    hide: false,
+  "11": {
+    "name": "God of Password Game",
+    "tip": "Complete Level 17",
+    "icon": "Password.png",
+    "hide": false
   },
-  12: {
-    name: "God of Memory Match",
-    tip: "Complete Level 14 in 15 moves or less",
-    icon: "Match.png",
-    hide: false,
+  "12": {
+    "name": "God of Memory Match",
+    "tip": "Complete Level 14 in 15 moves or less",
+    "icon": "Match.png",
+    "hide": false
   },
-  13: {
-    name: "20 basic levels",
-    tip: "Complete Levels 1-20",
-    icon: "20Basic.png",
-    hide: false,
+  "13": {
+    "name": "20 basic levels",
+    "tip": "Complete Levels 1-20",
+    "icon": "20Basic.png",
+    "hide": false
   },
-  14: {
-    name: "Message",
-    tip: "A chat from Level 23",
-    icon: "Message.png",
-    hide: false,
+  "14": {
+    "name": "Message",
+    "tip": "A chat from Level 23",
+    "icon": "Message.png",
+    "hide": false
   },
-  15: {
-    name: "A update",
-    tip: "Complete Level 26",
-    icon: "Update.png",
-    hide: false,
+  "15": {
+    "name": "A update",
+    "tip": "Complete Level 26",
+    "icon": "Update.png",
+    "hide": false
   },
-  16: {
-    name: "Chooses you 🫵",
-    tip: 'Click "CHOOSES YOU 🫵" in Level 29',
-    icon: "ChoosesYOU.png",
-    hide: false,
+  "16": {
+    "name": "Chooses you 🫵",
+    "tip": "Click \"CHOOSES YOU 🫵\" in Level 29",
+    "icon": "ChoosesYOU.png",
+    "hide": false
   },
+  "17": {
+    "name": "No clicking arrow",
+    "tip": "Complete Level 36 without clicking the arrow",
+    "icon": "NoArrow.png",
+    "hide": false
+  },
+  "18": {
+    "name": "All levels!",
+    "tip": "Complete all existing levels",
+    "icon": "AllLevels.png",
+    "hide": false
+  }
 };
 
 // Achievements save system
@@ -1130,6 +1150,22 @@ function completeLevel() {
   }
   if (hasAllLevels1to20) {
     completeAchievement(13);
+  }
+
+  // Check if player has completed all levels
+  let hasCompletedAllLevels = true;
+  const totalLevels = Object.keys(levelsData).length;
+
+  // Check if all levels from 1 to the highest level are unlocked (excluding level 0 which is tutorial)
+  for (let i = 1; i < totalLevels; i++) {
+    if (!saveData.unlockedLevels.includes(i)) {
+      hasCompletedAllLevels = false;
+      break;
+    }
+  }
+
+  if (hasCompletedAllLevels && levelManager.currentLevel === totalLevels - 1) {
+    completeAchievement(18);
   }
 
   if (levelManager.currentLevel !== 0) {

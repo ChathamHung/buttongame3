@@ -162,5 +162,13 @@
   "40": {
     "name": "Social Media Feed",
     "file": "40.html"
+  },
+  "41": {
+    "name": "Website Navigation",
+    "file": "41.html"
+  },
+  "42": {
+    "name": "Shape Clicking",
+    "file": "42.html"
   }
 }

@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        font-family: Arial, Helvetica, sans-serif;
+        -webkit-user-select: none; /* Safari */
+        user-select: none;
+      }
+
+      body {
+        margin-top: 60px; /* Topbar area */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 100px);
+        background-color: #f0f0f0;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+      }
+
+      .screen {
+        width: 300px;
+        height: 200px;
+        background-color: #222;
+        border: 3px solid #444;
+        border-radius: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .shape {
+        transition: all 0.3s ease;
+      }
+
+      .shape.circle {
+        width: 80px;
+        height: 80px;
+        background-color: #ff6b6b;
+        border-radius: 50%;
+      }
+
+      .shape.square {
+        width: 80px;
+        height: 80px;
+        background-color: #4ecdc4;
+      }
+
+      .shape.triangle {
+        width: 0;
+        height: 0;
+        border-left: 40px solid transparent;
+        border-right: 40px solid transparent;
+        border-bottom: 80px solid #45b7d1;
+      }
+
+      .shape.star {
+        width: 80px;
+        height: 80px;
+        background-color: #f9ca24;
+        clip-path: polygon(
+          50% 0%,
+          61% 35%,
+          98% 35%,
+          68% 57%,
+          79% 91%,
+          50% 70%,
+          21% 91%,
+          32% 57%,
+          2% 35%,
+          39% 35%
+        );
+      }
+
+      .buttons-container {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .shape-button {
+        width: 100px;
+        height: 100px;
+        border: none;
+        border-radius: 15px;
+        background-color: #fff;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .shape-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .shape-button:active {
+        transform: translateY(-2px);
+      }
+
+      .shape-button .shape {
+        transform: scale(0.7);
+      }
+
+      .correct {
+        background-color: #2ecc71 !important;
+        animation: correctFlash 0.5s ease;
+      }
+
+      .wrong {
+        background-color: #e74c3c !important;
+        animation: wrongShake 0.5s ease;
+      }
+
+      @keyframes correctFlash {
+        0%,
+        100% {
+          background-color: #2ecc71;
+        }
+        50% {
+          background-color: #27ae60;
+        }
+      }
+
+      @keyframes wrongShake {
+        0%,
+        20%,
+        40%,
+        60%,
+        80%,
+        100% {
+          transform: translateX(0);
+        }
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+          transform: translateX(-5px);
+        }
+      }
+
+      .progress {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .score {
+        font-size: 18px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Shape Matcher</h1>
+    <div class="game-container">
+      <div class="progress">Progress: <span id="progress">0</span>/20</div>
+      <div class="screen">
+        <div id="currentShape" class="shape circle"></div>
+      </div>
+      <div class="buttons-container">
+        <button class="shape-button" data-shape="circle">
+          <div class="shape circle"></div>
+        </button>
+        <button class="shape-button" data-shape="square">
+          <div class="shape square"></div>
+        </button>
+        <button class="shape-button" data-shape="triangle">
+          <div class="shape triangle"></div>
+        </button>
+        <button class="shape-button" data-shape="star">
+          <div class="shape star"></div>
+        </button>
+      </div>
+      <div class="score">Click the matching shape!</div>
+    </div>
+
+    <script src="../js/levelsManager.js"></script>
+    <script>
+      const levelManager = new level();
+      const levelNumber = 42;
+
+      init(levelNumber);
+
+      const shapes = ["circle", "square", "triangle", "star"];
+      let currentShapeType = "";
+      let correctClicks = 0;
+      const totalClicks = 20;
+
+      const currentShapeElement = document.getElementById("currentShape");
+      const progressElement = document.getElementById("progress");
+      const shapeButtons = document.querySelectorAll(".shape-button");
+
+      levelManager.updateTip(
+        `Match the shape on the screen with the correct button. You need ${totalClicks} correct matches!`,
+      );
+      levelManager.updateCompleteMessage(
+        `Excellent! You matched all ${totalClicks} shapes correctly!`,
+      );
+
+      function getRandomShape() {
+        return shapes[Math.floor(Math.random() * shapes.length)];
+      }
+
+      function displayNewShape() {
+        currentShapeType = getRandomShape();
+        currentShapeElement.className = `shape ${currentShapeType}`;
+      }
+
+      function updateProgress() {
+        progressElement.textContent = correctClicks;
+      }
+
+      function handleShapeClick(event) {
+        const clickedShape = event.currentTarget.dataset.shape;
+        const button = event.currentTarget;
+
+        if (clickedShape === currentShapeType) {
+          // Correct answer
+          correctClicks++;
+          updateProgress();
+
+          button.classList.add("correct");
+          setTimeout(() => {
+            button.classList.remove("correct");
+          }, 500);
+
+          if (correctClicks >= totalClicks) {
+            // Level completed
+            setTimeout(() => {
+              levelManager.completeLevel();
+            }, 500);
+          } else {
+            // Show next shape after a short delay
+            setTimeout(() => {
+              displayNewShape();
+            }, 600);
+          }
+        } else {
+          // Wrong answer
+          button.classList.add("wrong");
+          setTimeout(() => {
+            button.classList.remove("wrong");
+          }, 500);
+
+          levelManager.showNotification(
+            "Try Again!",
+            "That's not the right shape. Look carefully at the screen!",
+          );
+        }
+      }
+
+      // Add click event listeners to shape buttons
+      shapeButtons.forEach((button) => {
+        button.addEventListener("click", handleShapeClick);
+      });
+
+      // Initialize the game
+      displayNewShape();
+      updateProgress();
+
+      document.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+      });
+    </script>
+  </body>
+</html>

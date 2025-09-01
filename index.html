@@ -28,7 +28,7 @@
     <meta property="og:image:height" content="630" />
   </head>
   <body>
-    <div class="topbar">
+    <header class="topbar">
       <div class="left">
         <div class="title" title="Refresh the game">Button Game 3</div>
         <div class="level-label hide">Level 0</div>
@@ -47,7 +47,7 @@
           <img src="./res/images/icons/tip-icon.png" draggable="false" />
         </button>
       </div>
-    </div>
+    </header>
     <div class="menu menu-hidden" id="menu-panel">
       <div class="menu-options">
         <button class="menu-option select" title="Levels">
@@ -156,7 +156,7 @@
             class="toggle-btn"
             title="Add a safe zone at the bottom of the menu to avoid browser bars on mobile."
           >
-            <span class="toggle-label">Enable bottom safe zone</span>
+            <span class="toggle-label">Enable safe zone (For mobile)</span>
             <span class="switch-container">
               <input
                 type="checkbox"
@@ -211,16 +211,10 @@
           <button id="debug-delete-level">Lock a level...</button>
           <button id="debug-unlock-level">Unlock a level...</button>
           <hr />
-          <button id="debug-unlock-achievement">
-            Unlock an achievement...
-          </button>
+          <button id="debug-lock-all-achievements">Lock all achievements</button>
+          <button id="debug-unlock-all-achievements">Unlock all achievements</button>
           <button id="debug-lock-achievement">Lock an achievement...</button>
-          <button id="debug-unlock-all-achievements">
-            Unlock all achievements
-          </button>
-          <button id="debug-lock-all-achievements">
-            Lock all achievements
-          </button>
+          <button id="debug-unlock-achievement">Unlock an achievement...</button>
         </div>
       </div>
     </div>

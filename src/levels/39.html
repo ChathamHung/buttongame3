@@ -66,7 +66,123 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       z-index: 100;
       min-width: 350px;
+      max-width: 90vw;
       animation: popupAppear 0.3s ease-out;
+    }
+
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      .popup {
+        min-width: 280px;
+        max-width: 95vw;
+        position: fixed !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+      
+      /* Distribute popups vertically on mobile */
+      #popup1 {
+        top: 5% !important;
+      }
+      
+      #popup2 {
+        top: 30% !important;
+        right: auto !important;
+      }
+      
+      #popup3 {
+        top: 55% !important;
+        left: 50% !important;
+        bottom: auto !important;
+      }
+      
+      #popup4 {
+        top: 80% !important;
+        left: 50% !important;
+      }
+      
+      .popup-content {
+        padding: 15px;
+      }
+      
+      .virus-icon {
+        font-size: 36px;
+        margin-bottom: 10px;
+      }
+      
+      .urgent {
+        font-size: 16px;
+      }
+      
+      .warning-text {
+        font-size: 14px;
+        margin-bottom: 15px;
+      }
+      
+      .popup-buttons {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .fake-button, .real-button {
+        padding: 14px 20px;
+        font-size: 16px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      
+      .taskbar {
+        height: 35px;
+      }
+      
+      .start-button {
+        padding: 6px 12px;
+        font-size: 11px;
+      }
+      
+      .popup-header {
+        font-size: 13px;
+        padding: 6px 12px;
+      }
+      
+      .close-btn {
+        font-size: 18px;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .popup {
+        min-width: 260px;
+        max-width: 98vw;
+      }
+      
+      .popup-content {
+        padding: 12px;
+      }
+      
+      .virus-icon {
+        font-size: 28px;
+      }
+      
+      .urgent {
+        font-size: 14px;
+      }
+      
+      .warning-text {
+        font-size: 13px;
+      }
+      
+      .fake-button, .real-button {
+        padding: 12px 16px;
+        font-size: 15px;
+      }
     }
 
     @keyframes popupAppear {
@@ -300,10 +416,13 @@
 
     levelManager.updateTip(`Oh no! Your computer seems to be "infected"! Close the fake virus warnings and find the real way to continue...`);
     levelManager.updateCompleteMessage(`You successfully ignored the fake virus warnings! 🛡️`);
-    levelManager.setRefreshEnable(true);
+    levelManager.setSkipEnable(true);
 
-    // Add some random movement to popups
+    // Add some random movement to popups (disabled on mobile)
     function addPopupMovement() {
+      // Disable popup movement on mobile for better usability
+      if (window.innerWidth <= 768) return;
+      
       const popups = document.querySelectorAll('.popup');
       popups.forEach(popup => {
         if (!popup.classList.contains('hidden')) {
@@ -401,6 +520,9 @@
           font-size: 24px;
           text-align: center;
           box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+          max-width: 90vw;
+          max-height: 80vh;
+          overflow-y: auto;
         `;
         successDiv.innerHTML = `
           <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
@@ -432,10 +554,19 @@
       if (popupsRemaining > 0 && !realButtonFound) {
         const newPopup = document.createElement('div');
         newPopup.className = 'popup';
-        newPopup.style.cssText = `
-          top: ${Math.random() * 60 + 10}%;
-          left: ${Math.random() * 60 + 10}%;
-        `;
+        // Mobile-responsive positioning for dynamically created popup
+        if (window.innerWidth <= 768) {
+          newPopup.style.cssText = `
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+          `;
+        } else {
+          newPopup.style.cssText = `
+            top: ${Math.random() * 60 + 10}%;
+            left: ${Math.random() * 60 + 10}%;
+          `;
+        }
         newPopup.innerHTML = `
           <div class="popup-header">
             <span>🚨 FINAL WARNING</span>

@@ -94,5 +94,17 @@
     "tip": "Click \"CHOOSES YOU 🫵\" in Level 29",
     "icon": "ChoosesYOU.png",
     "hide": false
+  },
+  "17": {
+    "name": "No clicking arrow",
+    "tip": "Complete Level 36 without clicking the arrow",
+    "icon": "NoArrow.png",
+    "hide": false
+  },
+  "18": {
+    "name": "All levels!",
+    "tip": "Complete all existing levels",
+    "icon": "AllLevels.png",
+    "hide": false
   }
 }

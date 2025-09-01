@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <style>
+    * {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px;
+      background: #f8f9fa;
+      min-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 60px);
+      display: flex;
+    }
+
+    /* Wiki Layout */
+    .wiki-container {
+      display: flex;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      min-height: calc(100vh - 60px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: #f1f3f4;
+      border-right: 1px solid #e0e0e0;
+      padding: 20px 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 0 20px 15px 20px;
+      border-bottom: 1px solid #e0e0e0;
+      margin-bottom: 15px;
+    }
+
+    .sidebar h3 {
+      color: #333;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .nav-section {
+      margin-bottom: 20px;
+    }
+
+    .nav-section-title {
+      padding: 5px 20px;
+      color: #666;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 8px 20px;
+      color: #0066cc;
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .nav-item:hover {
+      background: #e8f0fe;
+      color: #0052a3;
+    }
+
+    .nav-item.active {
+      background: #1976d2;
+      color: white;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .page-title {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .page-content {
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .page-content h2 {
+      color: #333;
+      margin: 25px 0 15px 0;
+      font-size: 20px;
+    }
+
+    .page-content h3 {
+      color: #555;
+      margin: 20px 0 10px 0;
+      font-size: 16px;
+    }
+
+    .page-content p {
+      margin-bottom: 15px;
+    }
+
+    .page-content ul {
+      margin: 10px 0 15px 20px;
+    }
+
+    .page-content li {
+      margin-bottom: 5px;
+    }
+
+    .page-content code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+
+    .next-level-btn {
+      padding: 12px 24px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 20px;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .next-level-btn:hover {
+      background: #45a049;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    }
+
+    .infobox {
+      background: #f8f9ff;
+      border: 1px solid #a2a9b1;
+      border-radius: 3px;
+      padding: 15px;
+      margin: 15px 0;
+      font-size: 13px;
+    }
+
+    .infobox-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .wiki-container {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        max-height: 200px;
+        order: -1;
+      }
+      
+      .main-content {
+        padding: 20px;
+      }
+      
+      .page-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wiki-container">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h3>GameDev Wiki</h3>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Getting Started</div>
+        <a class="nav-item active" data-page="home">Main Page</a>
+        <a class="nav-item" data-page="introduction">Introduction</a>
+        <a class="nav-item" data-page="installation">Installation</a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Development</div>
+        <a class="nav-item" data-page="basics">Basic Concepts</a>
+        <a class="nav-item" data-page="advanced">Advanced Topics</a>
+        <a class="nav-item" data-page="tutorial">Tutorial</a>
+        <a class="nav-item" data-page="api">API Reference</a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Resources</div>
+        <a class="nav-item" data-page="examples">Code Examples</a>
+        <a class="nav-item" data-page="tools">Development Tools</a>
+        <a class="nav-item" data-page="community">Community</a>
+        <a class="nav-item" data-page="support">Support</a>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Help</div>
+        <a class="nav-item" data-page="faq">FAQ</a>
+        <a class="nav-item" data-page="troubleshooting">Troubleshooting</a>
+        <a class="nav-item" data-page="contact">Contact Us</a>
+      </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Home Page -->
+      <div class="page active" id="home">
+        <h1 class="page-title">Welcome to GameDev Wiki</h1>
+        <div class="page-content">
+          <p>Welcome to the comprehensive GameDev Wiki, your ultimate resource for game development knowledge and tutorials.</p>
+          
+          <h2>What you'll find here:</h2>
+          <ul>
+            <li><strong>Getting Started</strong> - New to game development? Start here!</li>
+            <li><strong>Development Guides</strong> - Step-by-step tutorials and best practices</li>
+            <li><strong>API Documentation</strong> - Complete reference for our development tools</li>
+            <li><strong>Community Resources</strong> - Connect with other developers</li>
+          </ul>
+          
+          <div class="infobox">
+            <div class="infobox-title">📝 Quick Start</div>
+            Navigate through the sidebar to explore different sections of our wiki. Each page contains detailed information to help you on your game development journey.
+          </div>
+        </div>
+      </div>
+      <!-- Support Page (Contains the Next Level Button) -->
+      <div class="page" id="support">
+        <h1 class="page-title">Support & Help</h1>
+        <div class="page-content">
+          <p>Need help with your game development journey? We're here to assist you every step of the way.</p>
+          
+          <h2>Getting Help</h2>
+          <h3>Documentation</h3>
+          <p>Start with our comprehensive documentation:</p>
+          <ul>
+            <li>API Reference - Complete function documentation</li>
+            <li>Tutorials - Step-by-step guides</li>
+            <li>Code Examples - Working code samples</li>
+            <li>Best Practices - Proven development strategies</li>
+          </ul>
+          
+          <h3>Community Support</h3>
+          <p>Connect with our community:</p>
+          <ul>
+            <li><strong>Discord Server</strong> - Real-time chat support</li>
+            <li><strong>Forums</strong> - Detailed discussions and solutions</li>
+            <li><strong>Stack Overflow</strong> - Technical Q&A</li>
+          </ul>
+          
+          <h2>Technical Support</h2>
+          <p>For technical issues and bug reports:</p>
+          <ul>
+            <li>Check our FAQ section first</li>
+            <li>Search existing forum posts</li>
+            <li>Submit detailed bug reports</li>
+            <li>Include system specifications</li>
+          </ul>
+          
+          <div class="infobox">
+            <div class="infobox-title">🎯 Found what you were looking for?</div>
+            Great! You've successfully navigated our wiki and found the support section. Ready to continue your journey?
+          </div>
+          
+          <button class="next-level-btn" id="nextLevel">Continue to Next Level →</button>
+        </div>
+      </div>
+      
+      <!-- Other content pages -->
+      <div class="page" id="introduction">
+        <h1 class="page-title">Introduction to Game Development</h1>
+        <div class="page-content">
+          <p>Game development is the art and science of creating interactive digital experiences.</p>
+          <h2>Core Disciplines</h2>
+          <ul><li>Programming and Logic</li><li>Art and Design</li><li>Audio Engineering</li><li>Project Management</li></ul>
+        </div>
+      </div>
+      
+      <div class="page" id="installation">
+        <h1 class="page-title">Installation Guide</h1>
+        <div class="page-content">
+          <p>Get started by installing our development tools.</p>
+          <h2>System Requirements</h2>
+          <ul><li>8GB RAM minimum</li><li>5GB free disk space</li><li>DirectX 11 compatible graphics</li></ul>
+        </div>
+      </div>
+      
+      <div class="page" id="basics">
+        <h1 class="page-title">Basic Concepts</h1>
+        <div class="page-content">
+          <p>Learn the fundamental concepts of game development.</p>
+          <h2>Game Loop</h2>
+          <p>The heart of every game: Input → Update → Render</p>
+        </div>
+      </div>
+      
+      <div class="page" id="advanced">
+        <h1 class="page-title">Advanced Topics</h1>
+        <div class="page-content">
+          <p>Dive deeper into optimization and advanced techniques.</p>
+          <h2>Performance</h2>
+          <ul><li>Memory Management</li><li>Rendering Optimization</li></ul>
+        </div>
+      </div>
+      
+      <div class="page" id="tutorial">
+        <h1 class="page-title">Tutorial</h1>
+        <div class="page-content">
+          <p>Step-by-step guide to creating your first game.</p>
+          <h2>Chapters</h2>
+          <ul><li>Project Setup</li><li>Player Character</li><li>World Building</li></ul>
+        </div>
+      </div>
+      
+      <div class="page" id="api">
+        <h1 class="page-title">API Reference</h1>
+        <div class="page-content">
+          <p>Complete documentation of available functions and classes.</p>
+          <h2>Core Classes</h2>
+          <ul><li>GameObject</li><li>Input</li><li>Physics</li></ul>
+        </div>
+      </div>
+      
+      <div class="page" id="examples">
+        <h1 class="page-title">Code Examples</h1>
+        <div class="page-content">
+          <p>Practical code samples for common scenarios.</p>
+          <h2>Common Patterns</h2>
+          <ul><li>Player Movement</li><li>Collision Detection</li><li>State Machines</li></ul>
+        </div>
+      </div>
+      
+      <div class="page" id="tools">
+        <h1 class="page-title">Development Tools</h1>
+        <div class="page-content">
+          <p>Essential tools for game development workflow.</p>
+          <h2>Categories</h2>
+          <ul><li>IDEs and Editors</li><li>Graphics Tools</li><li>Audio Software</li></ul>
+        </div>
+      </div>
+      
+      <div class="page" id="community">
+        <h1 class="page-title">Community</h1>
+        <div class="page-content">
+          <p>Connect with other developers and share your work.</p>
+          <h2>Platforms</h2>
+          <ul><li>Forums and Discord</li><li>Social Media</li><li>Game Jams</li></ul>
+        </div>
+      </div>
+      
+      <div class="page" id="faq">
+        <h1 class="page-title">Frequently Asked Questions</h1>
+        <div class="page-content">
+          <p>Common questions and their answers.</p>
+          <h2>Popular Topics</h2>
+          <ul><li>Getting Started</li><li>Technical Issues</li><li>Best Practices</li></ul>
+        </div>
+      </div>
+      
+      <div class="page" id="troubleshooting">
+        <h1 class="page-title">Troubleshooting</h1>
+        <div class="page-content">
+          <p>Solutions to common problems and issues.</p>
+          <h2>Common Issues</h2>
+          <ul><li>Performance Problems</li><li>Build Errors</li><li>Runtime Issues</li></ul>
+        </div>
+      </div>
+      
+      <div class="page" id="contact">
+        <h1 class="page-title">Contact Us</h1>
+        <div class="page-content">
+          <p>Get in touch with our team for support and questions.</p>
+          <h2>Contact Methods</h2>
+          <ul><li>Email Support</li><li>Community Forums</li><li>Social Media</li></ul>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 41;
+
+    init(levelNumber);
+
+    // Set up tip and complete message
+    levelManager.updateTip(`Explore the wiki pages using the sidebar navigation. Find the page with the button to continue!`);
+    levelManager.updateCompleteMessage(`Great job! You successfully navigated the wiki and found the support page!`);
+
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Navigation functionality
+      const navItems = document.querySelectorAll('.nav-item');
+      const pages = document.querySelectorAll('.page');
+      const nextButton = document.querySelector('#nextLevel');
+
+      console.log('DOM loaded, nav items found:', navItems.length);
+      console.log('Pages found:', pages.length);
+
+      // Handle navigation clicks
+      navItems.forEach((item, index) => {
+        console.log(`Setting up listener for nav item ${index}:`, item.textContent);
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          console.log('Nav item clicked:', item.textContent);
+          
+          const targetPage = item.getAttribute('data-page');
+          console.log('Target page:', targetPage);
+          
+          // Remove active class from all nav items and pages
+          navItems.forEach(nav => nav.classList.remove('active'));
+          pages.forEach(page => page.classList.remove('active'));
+          
+          // Add active class to clicked nav item and corresponding page
+          item.classList.add('active');
+          const targetElement = document.getElementById(targetPage);
+          if (targetElement) {
+            targetElement.classList.add('active');
+            console.log('Switched to page:', targetPage);
+          } else {
+            console.error('Page not found:', targetPage);
+          }
+        });
+      });
+
+      // Next level button functionality
+      if (nextButton) {
+        nextButton.addEventListener('click', () => {
+          levelManager.completeLevel();
+        });
+      } else {
+        console.error('Next level button not found!');
+      }
+    });
+
+    // Disable right-click menu
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>
