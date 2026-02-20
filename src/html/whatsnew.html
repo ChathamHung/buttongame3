@@ -7,16 +7,9 @@
     <style>
       * {
         font-family: Arial, Helvetica, sans-serif;
-        -webkit-user-select: none;
-        /* Safari */
-        user-select: none;
-        color: white;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(190, 190, 190, 0.3) transparent;
       }
 
       body {
-        background-color: transparent;
         padding: 0;
       }
 
@@ -24,12 +17,75 @@
         margin-top: 0;
       }
     </style>
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const inGame = urlParams.get("inGame");
+      if (inGame) {
+        const style = document.createElement('style');
+        style.innerHTML = `* {
+          color: white !important;
+          -webkit-user-select: none;
+          user-select: none;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(190, 190, 190, 0.3) transparent;
+        }`;
+        document.head.appendChild(style);
+
+        document.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+        });
+      }
+    </script>
   </head>
 
   <body>
+    <h2>v0.19 RC 2 - update 19 (01/03/2026)</h2>
+    <ul>
+      <li>
+        New levels:
+        <ul>
+          <li>Level 43 - More Ads</li>
+          <li>Level 44 - Flappy Button</li>
+        </ul>
+      </li>
+      <li>
+        Changed levels:
+        <ul>
+          <li>Level 11 - Changed clearer tip</li>
+        </ul>
+      </li>
+      <li>
+        Fixed:
+        <ul>
+          <li>Level label clicked again will be closed</li>
+        </ul>
+      </li>
+      <li>
+        Changed:
+        <ul>
+          <li>Now can open what's new and TBG2 in new tab</li>
+          <li>Now in setting are show all tips</li>
+        </ul>
+      </li>
+      <li>
+        Add:
+        <ul>
+          <li>Button hover and focus shadow</li>
+          <li>Fullscreen button and setting for it
+            <ul>
+              <li>And also can focus disabled fullscreen</li>
+            </ul>
+          </li>
+          <li>Add demo mode</li>
+        </ul>
+      </li>
+      <li><strong>New: </strong>You can now play the game in desktop app!</li>
+    </ul>
+    <hr />
+
     <h2>v0.18 RC - update 18 (01/09/2025)</h2>
     <p>
-      Welcome to RC version, We are going to final test! No longer to the gamma version (release)!
+      Welcome to RC version, We are going to final test! No longer to the release!
     </p>
     <ul>
       <li>
@@ -115,7 +171,7 @@
     <ul>
       <p>
         New day! We finally the Alpha version, welcome to Beta version! No
-        longer will go on gamma version (release).
+        longer will go on release.
       </p>
       <li>Add icon for all achievements</li>
       <li>Fix the button wll deformed in menu</li>

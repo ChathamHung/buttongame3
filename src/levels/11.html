@@ -97,7 +97,7 @@
     const title = document.querySelector(".title");
     const customMenu = document.getElementById('customContextMenu');
 
-    levelManager.updateTip("Right-click (or long press on mobile) in white area <strong>(NOT IN THE TOPBAR MENU!)</strong>");
+    levelManager.updateTip("Right-click or long-press anywhere on the page to open the context menu and find the button!");
     levelManager.updateCompleteMessage(`The button is in the context menu!`);
     levelManager.setRefreshEnable(false);
     levelManager.setSkipEnable(true);
@@ -128,27 +128,27 @@
     // Custom context menu logic
     document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
-      
+
       // Get window dimensions and menu size
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const menuWidth = customMenu.offsetWidth;
       const menuHeight = customMenu.offsetHeight;
-      
+
       // Calculate position, ensuring menu stays within viewport
       let x = e.pageX;
       let y = e.pageY;
-      
+
       // Check right boundary
       if (x + menuWidth > windowWidth) {
         x = windowWidth - menuWidth;
       }
-      
+
       // Check bottom boundary
       if (y + menuHeight > windowHeight) {
         y = windowHeight - menuHeight;
       }
-      
+
       customMenu.style.left = x + 'px';
       customMenu.style.top = y + 'px';
       setContextMenuDisplay(true);

@@ -154,6 +154,17 @@
         display: none !important;
       }
     } */
+
+    #note {
+      margin-top: 20px;
+      color: white;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   </style>
 </head>
 <body>
@@ -174,6 +185,8 @@
     <hr>
     <button id="menu">Menu</button>
   </div> -->
+
+  <span id="note" style="display: none;"></span>
   <script src="../js/levelsManager.js"></script>
   <script>
     const levelManager = new level();
@@ -195,8 +208,14 @@
       e.preventDefault();
     });
 
-
-    // JS here
+    document.addEventListener("DOMContentLoaded", () => {
+      let urlParams = new URLSearchParams(window.location.search);
+      let note = document.querySelector("#note");
+      if (urlParams.get("demo") === "true") {
+        note.style.display = "block";
+        note.innerHTML = "Your progress will not be saved in Demo.";
+      }
+    })
   </script>
 </body>
 </html>

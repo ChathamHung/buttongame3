@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px;
+      display: flex;
+      justify-content: center;
+      min-height: calc(100vh - 100px);
+      color: #1b2b34;
+    }
+
+    .game {
+      width: 100%;
+      max-width: 420px;
+      padding: 0 12px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .hud {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 14px;
+      padding: 12px 16px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .title {
+      font-weight: 700;
+      font-size: 20px;
+    }
+
+    .score {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    #gameCanvas {
+      width: 100%;
+      height: auto;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #88d4ff 0%, #e9f9ff 100%);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+      display: block;
+    }
+
+    .screen {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    button {
+      padding: 10px 18px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+      touch-action: manipulation;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    .status {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2d3d;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 14px 18px;
+      border-radius: 12px;
+      box-shadow: 0 12px 22px rgba(0, 0, 0, 0.18);
+      width: 80%;
+      max-width: 300px;
+      display: none;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        margin-top: 60px;
+      }
+
+      .hud {
+        padding: 10px 12px;
+      }
+
+      .title {
+        font-size: 18px;
+      }
+
+      .score {
+        font-size: 16px;
+      }
+
+      .controls {
+        width: 100%;
+      }
+
+      button {
+        flex: 1;
+        font-size: 15px;
+        padding: 10px 0;
+      }
+
+      .status {
+        font-size: 14px;
+        padding: 12px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game">
+    <div class="hud">
+      <div class="title">Flappy Button</div>
+      <div class="score"><span id="score">0</span>/10</div>
+    </div>
+    <div class="screen">
+      <canvas id="gameCanvas" width="360" height="520"></canvas>
+      <div class="status" id="status"></div>
+    </div>
+    <div class="controls">
+      <button id="actionButton">Start</button>
+      <button id="nextLevelButton" style="display: none;">Next level</button>
+    </div>
+  </div>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 44;
+
+    init(levelNumber);
+
+    const canvas = document.getElementById("gameCanvas");
+    const context = canvas.getContext("2d");
+    const scoreLabel = document.getElementById("score");
+    const statusLabel = document.getElementById("status");
+    const actionButton = document.getElementById("actionButton");
+    const nextLevelButton = document.getElementById("nextLevelButton");
+
+    const targetScore = 10;
+    const gravity = 0.45;
+    const flapStrength = -7.5;
+    const pipeGap = 140;
+    const pipeWidth = 60;
+    const pipeSpacing = 190;
+    const pipeSpeed = 2.7;
+    const birdRadius = 14;
+
+    let birdY = canvas.height / 2;
+    let birdVelocity = 0;
+    let pipes = [];
+    let score = 0;
+    let running = false;
+    let started = false;
+    let lastFrame = 0;
+
+    levelManager.updateTip("Reach 10 points without crashing. Tap, click, or press Space to flap.");
+    levelManager.updateCompleteMessage("Nice flying!");
+    levelManager.setSkipEnable(true);
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    const spawnPipe = (xPosition) => {
+      const padding = 90;
+      const gapCenter = Math.random() * (canvas.height - padding * 2) + padding;
+      pipes.push({ x: xPosition, gapCenter, scored: false });
+    };
+
+    const hideStatus = () => {
+      statusLabel.style.display = "none";
+    };
+
+    const showStatus = (message) => {
+      statusLabel.textContent = message;
+      statusLabel.style.display = "block";
+    };
+
+    const resetGame = () => {
+      birdY = canvas.height / 2;
+      birdVelocity = 0;
+      pipes = [];
+      score = 0;
+      running = false;
+      started = false;
+      lastFrame = 0;
+      scoreLabel.textContent = score;
+      hideStatus();
+      actionButton.disabled = false;
+      actionButton.textContent = "Start";
+      spawnPipe(canvas.width + 120);
+      spawnPipe(canvas.width + 120 + pipeSpacing);
+      drawScene();
+    };
+
+    const startGame = () => {
+      if (running) {
+        return;
+      }
+      if (!started) {
+        started = true;
+      }
+      running = true;
+      hideStatus();
+      actionButton.textContent = "Flap";
+      lastFrame = performance.now();
+      requestAnimationFrame(gameLoop);
+    };
+
+    const gameOver = () => {
+      running = false;
+      showStatus("Crash! Tap the screen or press the button to try again.");
+      actionButton.disabled = false;
+      actionButton.textContent = "Restart";
+      drawScene();
+    };
+
+    const winGame = () => {
+      running = false;
+      showStatus("You reached 10! Level complete.");
+      actionButton.disabled = false;
+      actionButton.textContent = "Restart";
+      nextLevelButton.style.display = "inline-block";
+      drawScene();
+    };
+
+    const flap = () => {
+      if (!started) {
+        startGame();
+      }
+      birdVelocity = flapStrength;
+    };
+
+    const circleRectCollision = (circleX, circleY, radius, rectX, rectY, rectW, rectH) => {
+      const closestX = clamp(circleX, rectX, rectX + rectW);
+      const closestY = clamp(circleY, rectY, rectY + rectH);
+      const dx = circleX - closestX;
+      const dy = circleY - closestY;
+      return dx * dx + dy * dy <= radius * radius;
+    };
+
+    const updateGame = (delta) => {
+      birdVelocity += gravity * delta;
+      birdY += birdVelocity * delta;
+
+      if (birdY - birdRadius <= 0 || birdY + birdRadius >= canvas.height) {
+        gameOver();
+        return;
+      }
+
+      pipes.forEach((pipe) => {
+        pipe.x -= pipeSpeed * delta;
+      });
+
+      if (pipes.length && pipes[0].x + pipeWidth < -10) {
+        pipes.shift();
+      }
+
+      const lastPipe = pipes[pipes.length - 1];
+      if (lastPipe && lastPipe.x < canvas.width - pipeSpacing) {
+        spawnPipe(canvas.width + 40);
+      }
+
+      for (const pipe of pipes) {
+        const topHeight = pipe.gapCenter - pipeGap / 2;
+        const bottomY = pipe.gapCenter + pipeGap / 2;
+        const hitTop = circleRectCollision(80, birdY, birdRadius, pipe.x, 0, pipeWidth, topHeight);
+        const hitBottom = circleRectCollision(80, birdY, birdRadius, pipe.x, bottomY, pipeWidth, canvas.height - bottomY);
+        if (hitTop || hitBottom) {
+          gameOver();
+          return;
+        }
+
+        if (!pipe.scored && pipe.x + pipeWidth < 80 - birdRadius) {
+          pipe.scored = true;
+          score += 1;
+          scoreLabel.textContent = score;
+          if (score >= targetScore) {
+            winGame();
+            return;
+          }
+        }
+      }
+    };
+
+    const drawScene = () => {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      const gradient = context.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, "#7cd1ff");
+      gradient.addColorStop(1, "#e9faff");
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      context.fillStyle = "#5dbb63";
+      context.fillRect(0, canvas.height - 40, canvas.width, 40);
+      context.fillStyle = "#4b9c55";
+      context.fillRect(0, canvas.height - 20, canvas.width, 20);
+
+      context.fillStyle = "#2f7c57";
+      pipes.forEach((pipe) => {
+        const topHeight = pipe.gapCenter - pipeGap / 2;
+        const bottomY = pipe.gapCenter + pipeGap / 2;
+        context.fillRect(pipe.x, 0, pipeWidth, topHeight);
+        context.fillRect(pipe.x, bottomY, pipeWidth, canvas.height - bottomY - 40);
+        context.fillStyle = "#256949";
+        context.fillRect(pipe.x, topHeight - 12, pipeWidth, 12);
+        context.fillRect(pipe.x, bottomY, pipeWidth, 12);
+        context.fillStyle = "#2f7c57";
+      });
+
+      context.beginPath();
+      context.arc(80, birdY, birdRadius, 0, Math.PI * 2);
+      context.fillStyle = "#ffcc4d";
+      context.fill();
+      context.lineWidth = 3;
+      context.strokeStyle = "#d19a2b";
+      context.stroke();
+      context.closePath();
+
+      context.beginPath();
+      context.arc(85, birdY - 4, 3, 0, Math.PI * 2);
+      context.fillStyle = "#2b2b2b";
+      context.fill();
+      context.closePath();
+    };
+
+    const gameLoop = (timestamp) => {
+      if (!running) {
+        return;
+      }
+      const delta = (timestamp - lastFrame) / 16.6667;
+      lastFrame = timestamp;
+      updateGame(delta);
+      if (running) {
+        drawScene();
+        requestAnimationFrame(gameLoop);
+      }
+    };
+
+    actionButton.addEventListener("click", () => {
+      if (!running && started) {
+        resetGame();
+      }
+      startGame();
+      flap();
+    });
+
+    nextLevelButton.addEventListener("click", () => {
+      levelManager.completeLevel();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.code === "Space" || event.code === "ArrowUp") {
+        event.preventDefault();
+        flap();
+      }
+    });
+
+    canvas.addEventListener("pointerdown", () => {
+      if (!running && started) {
+        resetGame();
+      }
+      startGame();
+      flap();
+    });
+
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+
+    resetGame();
+  </script>
+</body>
+</html>

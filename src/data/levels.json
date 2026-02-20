@@ -170,5 +170,13 @@
   "42": {
     "name": "Shape Clicking",
     "file": "42.html"
+  },
+  "43": {
+    "name": "More Ads",
+    "file": "43.html"
+  },
+  "44": {
+    "name": "Flappy Button",
+    "file": "44.html"
   }
 }

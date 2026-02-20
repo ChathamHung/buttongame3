@@ -287,6 +287,7 @@ body {
   -webkit-backdrop-filter: blur(6px); /* Safari */
   border-radius: 20px;
   padding: 15px;
+  margin-bottom: env(safe-area-inset-bottom);
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -344,6 +345,7 @@ body {
 
 .menu-options button:hover {
   background-color: rgba(190, 190, 190, 0.3);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
   transform: scale(1.1);
 }
 
@@ -452,11 +454,13 @@ body {
 
 .menu-pages button:hover {
   background-color: rgba(190, 190, 190, 0.3);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
   transform: scale(1);
 }
 
 .menu-pages button:focus {
   background-color: rgba(190, 190, 190, 0.4);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
   outline: none;
   transform: scale(1);
 }
@@ -494,9 +498,18 @@ body {
 .menu-pages button.locked {
   background-color: transparent !important;
   color: rgb(189, 189, 189);
+  box-shadow: none;
   cursor: not-allowed;
   transform: scale(0.97);
   display: none;
+}
+
+.menu-pages button.disabled {
+  background-color: transparent !important;
+  color: rgb(189, 189, 189);
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: scale(0.97);
 }
 
 body.show-locked-levels .menu-pages button.locked {
@@ -576,6 +589,28 @@ body.show-locked-levels .menu-pages button.locked {
 .toggle-label {
   flex: 1;
   text-align: left;
+}
+
+.menu-pages .settings-page .note-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 10px 15px 5px 15px;
+  font-weight: bold;
+}
+
+.menu-pages .settings-page .toggle-btn {
+  height: auto;
+  min-height: 48px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  padding-bottom: 12px;
+}
+
+.menu-pages .settings-page .toggle-btn .setting-label {
+  flex-basis: 100%;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 2px;
 }
 
 .switch-container {
@@ -835,9 +870,9 @@ body.show-locked-levels .menu-pages button.locked {
   .menu {
     top: 60px;
     left: 8px;
-    width: calc(100vw - 32px);
+    width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 32px);
     max-width: none;
-    height: calc(100vh - 90px);
+    height: calc(100vh - env(safe-area-inset-bottom) - 90px);
     border-radius: 16px;
     padding: 15px 8px 8px;
   }
@@ -899,8 +934,8 @@ body.show-locked-levels .menu-pages button.locked {
   .menu {
     top: 54px;
     left: 6px;
-    width: calc(100vw - 24px);
-    height: calc(100vh - 75px);
+    width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 24px);
+    height: calc(100vh - env(safe-area-inset-bottom) - 75px);
     border-radius: 12px;
     padding: 10px 6px 6px;
   }
@@ -967,4 +1002,9 @@ body.no-menu-blur .right div {
 body.bottom-safezone .menu {
   height: calc(100vh - 200px) !important;
   margin-bottom: 50px !important;
+}
+
+.demo-tag {
+  color: rgba(207, 207, 207, 0.8);
+  margin-right: 10px;
 }

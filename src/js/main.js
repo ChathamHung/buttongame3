@@ -11,15 +11,25 @@ const menuPages = document.querySelectorAll(".menu-pages > div");
 const levelPage = document.querySelector(".level-page");
 const dialog = document.querySelector(".dialog");
 const notifications = document.querySelector(".notifications");
+const fullscreenButton = document.querySelector(".fullscreen-button");
+const fullscreenToggle = document.querySelector("#fulllscreen-toggle");
+const DownloadGameButton = document.querySelector("#download-game");
 
-const version = 0.18;
-const versionType = "RC";
-const updateName = "update 18";
+const version = 0.19;
+const versionType = "RC 2";
+const updateName = "update 19";
 
 let currentPageIndex = 0;
 let currentTip = ``;
 let debugEnabled = false;
+let demoEnabled = false;
+let allowFullscreen = true;
 let levelsData = {};
+let menuOpened = false;
+
+let appMode = false;
+let appVersion = "";
+let appUpdates = 0;
 
 let allLevelsData = {
   "0": {
@@ -193,6 +203,14 @@ let allLevelsData = {
   "42": {
     "name": "Shape Clicking",
     "file": "42.html"
+  },
+  "43": {
+    "name": "More Ads",
+    "file": "43.html"
+  },
+  "44": {
+    "name": "Flappy Button",
+    "file": "44.html"
   }
 };
 
@@ -325,6 +343,7 @@ function loadAchievementsSave() {
 }
 
 function saveAchievementsProgress() {
+  if (demoEnabled) return;
   localStorage.setItem(
     ACHIEVEMENTS_SAVE_KEY,
     JSON.stringify(achievementsSaveData),
@@ -679,6 +698,7 @@ let saveData = {
   menuBlurEnabled: true,
   bottomSafeZoneEnabled: false,
   showLockedEnabled: false,
+  fullscreenButtonEnabled: true,
 };
 
 function loadSave() {
@@ -693,11 +713,13 @@ function loadSave() {
 }
 
 function saveProgress() {
+  if (demoEnabled) return;
   localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
   saveAchievementsProgress();
 }
 
 function saveEverything() {
+  if (demoEnabled) return;
   saveProgress();
   saveAchievementsProgress();
 }
@@ -831,9 +853,34 @@ function init() {
   if (urlParams.get("debug") === "true") {
     debugEnabled = true;
   }
+  
+  if (urlParams.get("app") === "true") {
+    appMode = true;
+    appVersion = urlParams.get("appVersion") || "unknown";
+    appUpdates = parseInt(urlParams.get("appUpdates")) || 0;
+  }
+  
+  if (urlParams.get("demo") === "true") {
+    demoEnabled = true;
+    document.querySelector(".demo-tag").classList.remove("hide");
+    // autoSaveToggle.querySelector(".setting-label").innerHTML += "<br><br><strong>Not available in demo.</strong>"
+    autoSaveToggle.querySelector(".toggle-label").innerHTML = `* ${autoSaveToggle.querySelector(".toggle-label").innerHTML}`
+    document.querySelector(".note-label").classList.remove("hide");
+    iframe.src = "./src/levels/0.html?demo=true";
+  }
+  
+  if (urlParams.get("noFullscreen") === "true") {
+    allowFullscreen = false;
+    fullscreenToggle.classList.add("disabled");
+    fullscreenButtonToggle.classList.add("disabled");
+  }
 
   if (debugEnabled) {
     document.querySelector(".debug-option").classList.remove("hide");
+  }
+
+  if (appMode || demoEnabled) {
+    DownloadGameButton.classList.add("hide");
   }
 
   // Load last played level if auto-save is enabled
@@ -892,6 +939,12 @@ const bottomSafeZoneCheckbox = document.querySelector(
 );
 const showLockedToggle = document.querySelector("#show-locked-toggle");
 const showLockedCheckbox = document.querySelector("#show-locked-checkbox");
+const fullscreenButtonToggle = document.querySelector(
+  "#fullscreen-button-toggle",
+);
+const fullscreenButtonCheckbox = document.querySelector(
+  "#fullscreen-button-checkbox",
+);
 
 function updateSettings() {
   autoSaveCheckbox.checked = !!saveData.autoSaveEnabled;
@@ -900,7 +953,27 @@ function updateSettings() {
   menuBlurCheckbox.checked = saveData.menuBlurEnabled !== false;
   bottomSafeZoneCheckbox.checked = !!saveData.bottomSafeZoneEnabled;
   showLockedCheckbox.checked = saveData.showLockedEnabled;
+  fullscreenButtonCheckbox.checked = saveData.fullscreenButtonEnabled !== false;
   // Optionally update text or style if needed
+
+  if (!allowFullscreen) {
+    fullscreenToggle.disabled = true;
+    fullscreenButtonToggle.disabled = true;
+    fullscreenButtonCheckbox.checked = false;
+  }
+
+  if (demoEnabled) {
+    autoSaveToggle.disabled = true;
+    autoSaveToggle.classList.add("disabled");
+    autoSaveCheckbox.checked = false;
+  }
+
+  if (appMode) {
+    bottomSafeZoneToggle.disabled = true;
+    bottomSafeZoneToggle.classList.add("hide");
+    bottomSafeZoneCheckbox.checked = false;
+    saveData.bottomSafeZoneEnabled = false;
+  }
 
   if (saveData.levelLabelEnabled) {
     levelLabel.classList.add("enabled");
@@ -927,34 +1000,49 @@ function updateSettings() {
   } else {
     document.body.classList.remove("show-locked-levels");
   }
+  if (saveData.fullscreenButtonEnabled === false || !allowFullscreen) {
+    fullscreenButton.classList.add("hide");
+  } else {
+    fullscreenButton.classList.remove("hide");
+  }
 }
 
 autoSaveToggle.addEventListener("click", (e) => {
   // Prevent double toggling if clicking the switch directly
+  if (demoEnabled) return;
+  if (autoSaveToggle.disabled) return;
   if (e.target.classList.contains("switch-input")) return;
   saveData.autoSaveEnabled = !saveData.autoSaveEnabled;
   updateSettings();
   saveProgress();
 });
 autoSaveCheckbox.addEventListener("change", () => {
+  if (demoEnabled) {
+    autoSaveCheckbox.checked = false;
+    return;
+  };
+  if (autoSaveCheckbox.disabled) return;
   saveData.autoSaveEnabled = autoSaveCheckbox.checked;
   updateSettings();
   saveProgress();
 });
 
 levelLabelToggle.addEventListener("click", (e) => {
+  if (levelLabelToggle.disabled) return;
   if (e.target.classList.contains("switch-input")) return;
   saveData.levelLabelEnabled = !saveData.levelLabelEnabled;
   updateSettings();
   saveProgress();
 });
 levelLabelCheckbox.addEventListener("change", () => {
+  if (levelLabelCheckbox.disabled) return;
   saveData.levelLabelEnabled = levelLabelCheckbox.checked;
   updateSettings();
   saveProgress();
 });
 
 menuAnimationsToggle.addEventListener("click", (e) => {
+  if (menuAnimationsToggle.disabled) return;
   if (e.target.classList.contains("switch-input")) return;
   saveData.menuAnimationsEnabled = !saveData.menuAnimationsEnabled;
   updateSettings();
@@ -972,6 +1060,7 @@ menuAnimationsToggle.addEventListener("click", (e) => {
   // );
 });
 menuAnimationsCheckbox.addEventListener("change", () => {
+  if (menuAnimationsCheckbox.disabled) return;
   saveData.menuAnimationsEnabled = menuAnimationsCheckbox.checked;
   updateSettings();
   saveProgress();
@@ -989,37 +1078,65 @@ menuAnimationsCheckbox.addEventListener("change", () => {
 });
 
 menuBlurToggle.addEventListener("click", (e) => {
+  if (menuBlurToggle.disabled) return;
   if (e.target.classList.contains("switch-input")) return;
   saveData.menuBlurEnabled = !saveData.menuBlurEnabled;
   updateSettings();
   saveProgress();
 });
 menuBlurCheckbox.addEventListener("change", () => {
+  if (menuBlurCheckbox.disabled) return;
   saveData.menuBlurEnabled = menuBlurCheckbox.checked;
   updateSettings();
   saveProgress();
 });
 
 bottomSafeZoneToggle.addEventListener("click", (e) => {
+  if (bottomSafeZoneToggle.disabled) return;
   if (e.target.classList.contains("switch-input")) return;
   saveData.bottomSafeZoneEnabled = !saveData.bottomSafeZoneEnabled;
   updateSettings();
   saveProgress();
 });
 bottomSafeZoneCheckbox.addEventListener("change", () => {
+  if (bottomSafeZoneCheckbox.disabled) return;
   saveData.bottomSafeZoneEnabled = bottomSafeZoneCheckbox.checked;
   updateSettings();
   saveProgress();
 });
 
 showLockedToggle.addEventListener("click", (e) => {
+  if (showLockedToggle.disabled) return;
   if (e.target.classList.contains("switch-input")) return;
   saveData.showLockedEnabled = !saveData.showLockedEnabled;
   updateSettings();
   saveProgress();
 });
 showLockedCheckbox.addEventListener("change", () => {
+  if (showLockedCheckbox.disabled) return;
   saveData.showLockedEnabled = showLockedCheckbox.checked;
+  updateSettings();
+  saveProgress();
+});
+
+fullscreenButtonToggle.addEventListener("click", (e) => {
+  if (fullscreenButtonToggle.disabled) return;
+  if (e.target.classList.contains("switch-input")) return;
+  if (!allowFullscreen) {
+    fullscreenButtonCheckbox.checked = false;
+    return;
+  };
+  saveData.fullscreenButtonEnabled = !saveData.fullscreenButtonEnabled;
+  updateSettings();
+  saveProgress();
+});
+fullscreenButtonCheckbox.addEventListener("change", () => {
+  if (fullscreenButtonCheckbox.disabled) return;
+  if (!allowFullscreen) {
+    fullscreenButtonCheckbox.checked = false;
+    return;
+  };
+  saveData.fullscreenButtonEnabled = fullscreenButtonCheckbox.checked;
   updateSettings();
   saveProgress();
 });
@@ -1222,6 +1339,7 @@ function clickElement(e) {
 }
 
 function openMenu() {
+  menuOpened = true;
   closeAllNotifications();
   menuPanel.classList.toggle("menu-hidden");
   menuBtn.setAttribute(
@@ -1235,6 +1353,7 @@ function openMenu() {
 }
 
 function closeMenu() {
+  menuOpened = false;
   menuPanel.classList.add("menu-hidden");
   menuBtn.querySelector("img").src = "./res/images/icons/menu-icon.png";
   menuBtn.setAttribute(
@@ -1356,23 +1475,34 @@ function showDialog(
   } else if (cancelButton) {
     cancelButton.style.display = "inline-block";
   }
-  if (buttonType === "OK") {
-    okButton.textContent = "OK";
-  } else if (buttonType === "OKCancel") {
-    okButton.textContent = "OK";
-    cancelButton.textContent = "Cancel";
-  } else if (buttonType === "YesNo") {
-    okButton.textContent = "Yes";
-    cancelButton.textContent = "No";
-  } else if (buttonType === "Delete") {
-    okButton.textContent = "Delete";
-    cancelButton.textContent = "No";
-  } else if (buttonType === "CompleteLevel") {
-    okButton.textContent = "Next Level";
-    cancelButton.textContent = "Stay here";
-  } else if (buttonType === "Achievement") {
-    okButton.textContent = "OK";
-    cancelButton.textContent = "Show Tip";
+  switch (buttonType) {
+    case "OK":
+      okButton.textContent = "OK";
+      break;
+    case "OKCancel":
+      okButton.textContent = "OK";
+      cancelButton.textContent = "Cancel";
+      break;
+    case "YesNo":
+      okButton.textContent = "Yes";
+      cancelButton.textContent = "No";
+      break;
+    case "Delete":
+      okButton.textContent = "Delete";
+      cancelButton.textContent = "No";
+      break;
+    case "CompleteLevel":
+      okButton.textContent = "Next Level";
+      cancelButton.textContent = "Stay here";
+      break;
+    case "Achievement":
+      okButton.textContent = "OK";
+      cancelButton.textContent = "Show Tip";
+      break;
+    case "OKOpen":
+      okButton.textContent = "OK";
+      cancelButton.textContent = "Open in new tab";
+      break;
   }
 
   // Show the dialog
@@ -1537,13 +1667,17 @@ document.addEventListener("click", (e) => {
 
 document.querySelector("#visit-github").addEventListener("click", () => {
   closeMenu();
-  window.open("https://github.com/ChathamHung/buttongame3", "_blank");
+  if (!demoEnabled && !appMode) {
+    window.open("https://github.com/ChathamHung/buttongame3", "_blank");
+  } else {
+    showDialog("Visit on GitHub", "Please vist: https://github.com/ChathamHung/buttongame3");
+  }
 });
 
 document.querySelector("#about-the-game").addEventListener("click", () => {
   closeMenu();
   showDialog(
-    "Button Game 3",
+    demoEnabled ? "Button Game 3 (Demo)" : "Button Game 3",
     `Version: ${version} ${versionType} (${updateName})`,
     "OK",
   );
@@ -1560,28 +1694,51 @@ document.querySelector("#change-log").addEventListener("click", () => {
     border: none;
   }
 </style>
-<iframe src="./src/html/whatsnew.html" class="whatsnew-iframe"></iframe>`,
-    "OK",
+<iframe src="./src/html/whatsnew.html?inGame=true" class="whatsnew-iframe"></iframe>`,
+    demoEnabled || appMode ? "OK" : "OKOpen", function (button) {
+      if (button === "cancel") window.open("./src/html/whatsnew.html", "_blank");
+    },
   );
 });
 
 document.querySelector("#about-game-2").addEventListener("click", () => {
   closeMenu();
-  window.open("https://chathamhung.github.io/TheButtonGame2", "_blank");
+  showDialog(
+    "The Button Game 2",
+    demoEnabled || appMode ? "The Button Game 2 is a older version, and it have 20 levels.<br> To play the old version, please visit: https://chathamhung.github.io/TheButtonGame2"  : "The Button Game 2 is a older version, and it have 20 levels.",
+    demoEnabled || appMode ? "OK" : "OKOpen", function (button) {
+      if (button === "cancel") window.open("https://chathamhung.github.io/TheButtonGame2", "_blank");
+    },
+  );
 });
 
 document.querySelector("#about-game-1").addEventListener("click", () => {
   closeMenu();
   showDialog(
     "The Button Game 1",
-    "The Button Game 1 is made by @ChathamHung, <br>but it is using PowerPoint to maked.",
+    "The Button Game 1 is made by @ChathamHung,<br> but it is using PowerPoint to maked.<br> But it did not available to play now.",
     "OK",
   );
 });
 
+DownloadGameButton.addEventListener("click", () => {
+  closeMenu();
+  if (!demoEnabled && !appMode) {
+    showDialog(
+      "Download Desktop App",
+      "You can download The Button Game 3 Desktop App from GitHub releases page.",
+      "OKOpen", function (button) {
+        if (button === "cancel") window.open("https://github.com/ChathamHung/buttongame3-desktop/releases", "_blank");
+      },
+    );
+  }
+});
+
 levelLabel.addEventListener("click", () => {
   if (saveData.levelLabelEnabled) {
-    openMenu();
+    if (!menuOpened) {
+      openMenu();
+    }
     switchMenuPage(0);
   }
 });
@@ -1710,40 +1867,69 @@ document
 
 document.querySelector("#reset-all-game").addEventListener("click", () => {
   closeMenu();
-  showDialog(
-    "Reset",
-    "Are you sure you want to reset all game progress? <br>This will delete all save data and reload the game.",
-    "Delete",
-    (button) => {
-      if (button === "ok") {
-        showDialog(
-          "Reset",
-          "<strong>It's last warning! </strong><br><br>Are you very sure you want to reset all game progress? <br><strong>It's not joking!</strong>",
-          "Delete",
-          (button) => {
-            if (button === "ok") {
-              localStorage.removeItem(SAVE_KEY);
-              localStorage.removeItem(ACHIEVEMENTS_SAVE_KEY);
-              location.reload();
-            }
-          },
-        );
-      }
-    },
-  );
+  if (!demoEnabled) {
+    showDialog(
+      "Reset",
+      "Are you sure you want to reset all game progress? <br>This will delete all save data and reload the game.",
+      "Delete",
+      (button) => {
+        if (button === "ok") {
+          showDialog(
+            "Reset",
+            "<strong>It's last warning! </strong><br><br>Are you very sure you want to reset all game progress? <br><strong>It's not joking!</strong>",
+            "Delete",
+            (button) => {
+              if (button === "ok") {
+                localStorage.removeItem(SAVE_KEY);
+                localStorage.removeItem(ACHIEVEMENTS_SAVE_KEY);
+                location.reload();
+              }
+            },
+          );
+        }
+      },
+    );
+  } else {
+    showDialog(
+      "Reset",
+      "Are you sure you want to reset all game progress?",
+      "Delete",
+      (button) => {
+        if (button === "ok") {
+          localStorage.removeItem(SAVE_KEY);
+          localStorage.removeItem(ACHIEVEMENTS_SAVE_KEY);
+          location.reload();
+        }
+      },
+    );
+    // showDialog("Reset", "Reset are not available in demo.", "OK");
+  }
 });
 
-document.querySelector("#fulllscreen-toggle").addEventListener("click", () => {
+fullscreenToggle.addEventListener("click", () => {
+  toggleFullscreen();
+});
+
+fullscreenButton.addEventListener("click", () => {
+  toggleFullscreen();
+});
+
+function toggleFullscreen() {
+  if (!allowFullscreen) return;
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen().catch((err) => {
       console.error(
         `Error attempting to enable full-screen mode: ${err.message} (${err.name})`,
       );
     });
+    fullscreenButton.querySelector("img").src = "./res/images/icons/unfullscreen-icon.png";
+    fullscreenButton.setAttribute("data-tooltip", "Unfullscreen");
   } else {
     document.exitFullscreen();
+    fullscreenButton.querySelector("img").src = "./res/images/icons/fullscreen-icon.png";
+    fullscreenButton.setAttribute("data-tooltip", "Fullscreen");
   }
-});
+}
 
 // Disable right click context menu
 document.addEventListener("contextmenu", (e) => {

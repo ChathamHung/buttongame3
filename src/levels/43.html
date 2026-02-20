@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      background: #0f0f0f;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    .video-container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      margin: 20px auto;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .video-player {
+      position: relative;
+      width: 100%;
+      height: 450px;
+      background: linear-gradient(45deg, #1e1e1e, #2a2a2a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #aaa;
+    }
+
+    .ad-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    .ad-content {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .ad-title {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .ad-description {
+      font-size: 16px;
+      margin-bottom: 20px;
+      max-width: 400px;
+    }
+
+    .skip-button {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      z-index: 20;
+      transition: all 0.3s ease;
+    }
+
+    .skip-button:hover {
+      background: rgba(0, 0, 0, 0.9);
+      border-color: white;
+    }
+
+    .fake-skip {
+      background: rgba(60, 60, 60, 0.8) !important;
+      cursor: not-allowed !important;
+    }
+
+    .fake-skip:hover {
+      background: rgba(60, 60, 60, 0.8) !important;
+      border-color: #666 !important;
+    }
+
+    .ad-timer {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      z-index: 20;
+    }
+
+    .progress-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      background: #ff0000;
+      z-index: 15;
+      animation: progressFill 5s linear;
+    }
+
+    .small-ads {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .small-ad {
+      position: relative;
+      height: 140px;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 15px;
+      color: white;
+      font-weight: bold;
+      overflow: hidden;
+    }
+
+    .small-ad .skip-button {
+      bottom: 8px;
+      right: 8px;
+      padding: 4px 8px;
+      font-size: 12px;
+    }
+
+    .popup-ads {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      width: 100%;
+      height: 200px;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .popup-ad {
+      position: absolute;
+      width: 300px;
+      height: 200px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: 3px solid #fff;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      pointer-events: auto;
+      animation: popupBounce 0.5s ease-out;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .popup-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .banner-ad {
+      width: 100%;
+      height: 90px;
+      background: linear-gradient(90deg, #ff6b6b, #feca57);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .real-skip {
+      background: rgba(0, 150, 0, 0.9) !important;
+      border-color: #00ff00 !important;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+      animation: glow 2s infinite alternate;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes progressFill {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+
+    @keyframes popupBounce {
+      0% { transform: scale(0) rotate(180deg); }
+      50% { transform: scale(1.1) rotate(-10deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 5px rgba(0, 255, 0, 0.3); }
+      to { box-shadow: 0 0 20px rgba(0, 255, 0, 0.8); }
+    }
+
+    h1 {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+      font-size: 28px;
+    }
+
+    .instruction {
+      text-align: center;
+      color: #aaa;
+      margin: 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ad Maze Challenge</h1>
+  <div class="instruction">Find and click the REAL skip button to complete this level!</div>
+
+  <div class="banner-ad">
+    🎮 AMAZING GAME DEALS - 90% OFF TODAY ONLY! 🎮
+    <button class="skip-button fake-skip">Skip Ad</button>
+  </div>
+
+  <div class="video-container">
+    <div class="video-player">
+      Video Player - Main Content
+      <div class="ad-overlay" id="mainAd">
+        <div class="ad-content">
+          <div class="ad-title">🚗 NEW CAR COMMERCIAL</div>
+          <div class="ad-description">The most amazing car you've never seen! Revolutionary technology that will change your life forever!</div>
+        </div>
+        <div class="ad-timer">Ad • 0:05</div>
+        <button class="skip-button fake-skip">Skip Ad</button>
+        <div class="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="small-ads">
+    <div class="small-ad">
+      <div>
+        💊 MIRACLE PILLS<br>
+        Lose 50lbs in 1 day!
+      </div>
+      <button class="skip-button fake-skip">Skip</button>
+    </div>
+
+    <div class="small-ad">
+      <div>
+        📱 PHONE SCAM<br>
+        Your phone has virus!
+      </div>
+      <button class="skip-button fake-skip">Close</button>
+    </div>
+
+    <div class="small-ad">
+      <div>
+        💰 GET RICH QUICK<br>
+        Make $5000/day at home!
+      </div>
+      <button class="skip-button fake-skip">Skip Ad</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        🎨 DESIGN TOOLS<br>
+        Professional graphics free!
+      </div>
+      <button class="skip-button fake-skip">Skip</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        🔒 ANTIVIRUS WARNING<br>
+        Your PC is infected!
+      </div>
+      <button class="skip-button fake-skip">Fix Now</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        🎵 MUSIC STREAMING<br>
+        Premium for $0.99/month
+      </div>
+      <button class="skip-button fake-skip">Skip</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        ⚡ ENERGY DRINK<br>
+        100x more energy guaranteed!
+      </div>
+      <button class="skip-button fake-skip">Skip Ad</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        🏋️ FITNESS PROGRAM<br>
+        6-pack abs in 3 days!
+      </div>
+      <button class="skip-button fake-skip">Skip</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        💳 CREDIT REPAIR<br>
+        Fix credit score instantly!
+      </div>
+      <button class="skip-button fake-skip">Close</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        🎪 CIRCUS TICKETS<br>
+        Amazing show tonight!
+      </div>
+      <button class="skip-button fake-skip">Skip</button>
+    </div>
+
+    <div class="small-ad">
+      <div>
+        🎯 DATING APP<br>
+        Hot singles in your area!
+      </div>
+      <button class="skip-button fake-skip">Skip</button>
+    </div>
+  </div>
+
+  <div class="banner-ad">
+    🏠 MORTGAGE REFINANCE - CALL NOW! 🏠
+    <button class="skip-button fake-skip">Skip Ad</button>
+  </div>
+
+  <div class="small-ads">
+    <div class="small-ad">
+      <div>
+        🚀 CRYPTO INVESTMENT<br>
+        Turn $100 into $10,000!
+      </div>
+      <button class="skip-button fake-skip">Skip</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        🦷 TEETH WHITENING<br>
+        Hollywood smile in 1 day!
+      </div>
+      <button class="skip-button fake-skip">Close</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        🎮 GAME HACK TOOL<br>
+        Unlimited coins & gems!
+      </div>
+      <button class="skip-button fake-skip">Skip Ad</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        🍔 FOOD DELIVERY<br>
+        Free delivery this week!
+      </div>
+      <button class="skip-button fake-skip">Skip</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        📚 LEARN CODING<br>
+        Become developer in 1 week!
+      </div>
+      <button class="skip-button fake-skip">Skip</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        🎁 MYSTERY BOX<br>
+        Worth $500 for only $10!
+      </div>
+      <button class="skip-button real-skip" id="realSkip" style="opacity: 0.7;">Skip</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        🌟 CELEBRITY SECRETS<br>
+        Shocking truth revealed!
+      </div>
+      <button class="skip-button fake-skip">Skip Ad</button>
+    </div>
+    
+    <div class="small-ad">
+      <div>
+        🔮 PSYCHIC READING<br>
+        Know your future today!
+      </div>
+      <button class="skip-button fake-skip">Close</button>
+    </div>
+  </div>
+
+  <div class="banner-ad">
+    💊 DOCTORS HATE THIS TRICK - LOSE WEIGHT FAST! 💊
+    <button class="skip-button fake-skip">Skip Ad</button>
+  </div></div>
+
+<old_text line=347>
+    <div class="popup-ad" style="top: 100px; left: 50px;">
+      <button class="popup-close fake-skip">×</button>
+      <div>🎰 CASINO BONUS<br>Win $1000 FREE!</div>
+    </div>
+    
+    <div class="popup-ad" style="top: 150px; right: 50px;">
+      <button class="popup-close fake-skip">×</button>
+      <div>🍕 PIZZA DELIVERY<br>30 min or FREE!</div>
+    </div>
+    
+    <div class="popup-ad" style="bottom: 200px; left: 100px;">
+      <button class="popup-close fake-skip">×</button>
+      <div>🎓 ONLINE DEGREE<br>Get PhD in 30 days!</div>
+    </div>
+
+  <div class="popup-ads">
+    <div class="popup-ad" style="top: 100px; left: 50px;">
+      <button class="popup-close fake-skip">×</button>
+      <div>🎰 CASINO BONUS<br>Win $1000 FREE!</div>
+    </div>
+
+    <div class="popup-ad" style="top: 150px; right: 50px;">
+      <button class="popup-close fake-skip">×</button>
+      <div>🍕 PIZZA DELIVERY<br>30 min or FREE!</div>
+    </div>
+
+    <div class="popup-ad" style="bottom: 200px; left: 100px;">
+      <button class="popup-close fake-skip">×</button>
+      <div>🎓 ONLINE DEGREE<br>Get PhD in 30 days!</div>
+    </div>
+  </div>
+
+  <script src="../js/levelsManager.js"></script>
+  <script>
+    const levelManager = new level();
+    const levelNumber = 43;
+
+    init(levelNumber);
+
+    levelManager.updateTip(`There are MANY ads now! Only ONE skip button works. Look for something subtle...`);
+    levelManager.updateCompleteMessage(`Excellent! You found the real skip button among all the fake ads!`);
+
+    let adsSkipped = 0;
+    const totalFakeAds = document.querySelectorAll('.fake-skip').length;
+
+    // Add click handlers for fake skip buttons
+    document.querySelectorAll('.fake-skip').forEach(fakeButton => {
+      fakeButton.addEventListener('click', () => {
+        adsSkipped++;
+
+        if (adsSkipped === 1) {
+          levelManager.showNotification('Fake!', 'That was a fake skip button! Keep looking...');
+        } else if (adsSkipped === 3) {
+          levelManager.showNotification('Still Fake!', 'Nope, still fake! Look for something different...');
+        } else if (adsSkipped === 5) {
+          levelManager.showNotification('Keep Trying!', 'You\'ve clicked many fake buttons. Look for a glowing one!');
+        } else if (adsSkipped > 10) {
+          levelManager.showNotification('Hint!', 'Look for a slightly transparent skip button in the second row of small ads!');
+        } else if (adsSkipped > 15) {
+          levelManager.showNotification('Big Hint!', 'The real skip button is in the "MYSTERY BOX" ad and looks slightly faded!');
+        }
+      });
+    });
+
+    // Real skip button handler
+    document.getElementById('realSkip').addEventListener('click', () => {
+      levelManager.completeLevel();
+    });
+
+    // Add some dynamic behavior
+    setTimeout(() => {
+      const mainAd = document.getElementById('mainAd');
+      const timer = mainAd.querySelector('.ad-timer');
+      let timeLeft = 5;
+
+      const countdown = setInterval(() => {
+        timeLeft--;
+        timer.textContent = `Ad • 0:0${timeLeft}`;
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          timer.textContent = 'Ad • 0:00';
+
+          // Make all fake skip buttons in main ad appear "clickable"
+          mainAd.querySelectorAll('.fake-skip').forEach(btn => {
+            btn.style.background = 'rgba(0, 0, 0, 0.9)';
+            btn.style.cursor = 'pointer';
+          });
+        }
+      }, 1000);
+    }, 1000);
+
+    // Add some popup movement
+    setInterval(() => {
+      const popups = document.querySelectorAll('.popup-ad');
+      popups.forEach(popup => {
+        const randomX = Math.random() * (window.innerWidth - 300);
+        const randomY = 60 + Math.random() * 140; // Keep in top area
+        popup.style.left = randomX + 'px';
+        popup.style.top = randomY + 'px';
+      });
+    }, 3000);
+
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  </script>
+</body>
+</html>
