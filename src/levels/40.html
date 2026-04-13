@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * {
       font-family: Arial, Helvetica, sans-serif;
-      -webkit-user-select: none; /* Safari */
+      -webkit-user-select: none;
+      /* Safari */
       user-select: none;
     }
 
@@ -26,7 +28,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -40,7 +42,7 @@
     }
 
     .search-bar {
-      background: rgba(255,255,255,0.2);
+      background: rgba(255, 255, 255, 0.2);
       border: none;
       border-radius: 20px;
       padding: 8px 15px;
@@ -51,14 +53,14 @@
     }
 
     .search-bar::placeholder {
-      color: rgba(255,255,255,0.8);
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .user-menu {
       display: flex;
       align-items: center;
       gap: 15px;
-      margin-right: 100px;
+      margin-right: 150px;
     }
 
     .user-avatar {
@@ -83,7 +85,7 @@
       background: white;
       border-radius: 8px;
       margin-bottom: 20px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
       overflow: hidden;
     }
 
@@ -228,6 +230,7 @@
         opacity: 0;
         transform: translateY(-20px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -239,6 +242,7 @@
         opacity: 0;
         transform: translate(-50%, -50%) scale(0.8);
       }
+
       to {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
@@ -289,6 +293,7 @@
     }
   </style>
 </head>
+
 <body>
   <!-- Social Media Header -->
   <div class="social-header">
@@ -311,7 +316,8 @@
         </div>
       </div>
       <div class="post-content">
-        Welcome to our social media challenge! Find the secret way to continue the game. It might be hidden in the most unexpected places... 🤔
+        Welcome to our social media challenge! Find the secret way to continue the game. It might be hidden in the most
+        unexpected places... 🤔
       </div>
       <div class="post-actions">
         <button class="action-btn" onclick="likePost(this)">👍 Like</button>
@@ -384,7 +390,8 @@
         </div>
       </div>
       <div class="post-content">
-        Did you know? The average person spends 2.5 hours on social media daily. But right now, you should be looking for a way to advance in this game! 🧐
+        Did you know? The average person spends 2.5 hours on social media daily. But right now, you should be looking
+        for a way to advance in this game! 🧐
       </div>
       <div class="post-actions">
         <button class="action-btn" onclick="likePost(this)">👍 Like</button>
@@ -417,12 +424,12 @@
     levelManager.updateCompleteMessage(`Great job! You found the secret in the social media comments! 📱`);
 
     // Like post functionality
-    window.likePost = function(button) {
+    window.likePost = function (button) {
       if (!button.classList.contains('liked')) {
         button.classList.add('liked');
         button.innerHTML = '👍 Liked';
         likesCount++;
-        
+
         if (likesCount >= 3) {
           // Give a hint after liking multiple posts
           setTimeout(() => {
@@ -433,22 +440,22 @@
     };
 
     // Share post functionality
-    window.sharePost = function() {
+    window.sharePost = function () {
       const shareMessages = [
         "Sharing won't help you advance! 😅",
         "Nice try, but the secret isn't in sharing!",
         "Keep exploring the feed for the real answer!",
         "Hint: Check the comments more carefully! 🔍"
       ];
-      
+
       const randomMessage = shareMessages[Math.floor(Math.random() * shareMessages.length)];
-      
+
       // Show temporary notification
       showNotification(randomMessage);
     };
 
     // Toggle comments visibility
-    window.toggleComments = function(commentsId) {
+    window.toggleComments = function (commentsId) {
       const comments = document.getElementById(commentsId);
       if (comments.style.display === 'none') {
         comments.style.display = 'block';
@@ -458,12 +465,12 @@
     };
 
     // Click image functionality
-    window.clickImage = function() {
+    window.clickImage = function () {
       showNotification("The image is just a meme! Look elsewhere for the secret! 🖼️");
     };
 
     // Found secret function
-    window.foundSecret = function() {
+    window.foundSecret = function () {
       levelManager.completeLevel();
     };
 
@@ -485,7 +492,7 @@
       // `;
       // notification.textContent = message;
       // document.body.appendChild(notification);
-      
+
       // setTimeout(() => {
       //   notification.style.animation = 'slideInRight 0.3s ease-out reverse';
       //   setTimeout(() => {
@@ -516,4 +523,5 @@
     });
   </script>
 </body>
+
 </html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none;
+      /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      min-height: calc(100vh - 100px);
+      padding: 0 16px;
+      text-align: center;
+      background: #f7fbf2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    .hide {
+      display: none !important;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      color: #264d00;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin: 0;
+      color: #333;
+      max-width: 560px;
+    }
+
+    #game {
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    #wordDisplay {
+      margin: 18px 0;
+      font-size: 2rem;
+      letter-spacing: 0.35em;
+      color: #1d5c10;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    input[type="text"] {
+      flex: 1 1 220px;
+      padding: 12px 14px;
+      border: 2px solid #c5d8b8;
+      border-radius: 12px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: #75c64f;
+      box-shadow: 0 0 0 4px rgba(117, 198, 79, 0.16);
+    }
+
+    button {
+      padding: 12px 20px;
+      border-radius: 12px;
+      background-color: #75c64f;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.15s ease;
+      min-width: 120px;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    #message {
+      min-height: 1.4em;
+      color: #556b2f;
+      font-weight: 600;
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="game">
+    <h1>Word Guess</h1>
+    <p>Guess the easy word. Use the hint, type your guess, and press Guess.</p>
+    <div id="wordDisplay">_ _ _</div>
+
+    <div class="row">
+      <input id="guessInput" type="text" placeholder="Type your guess" maxlength="10" autocomplete="off" autocapitalize="none" spellcheck="false" />
+      <button id="guessButton">Guess</button>
+    </div>
+
+    <div id="message" class="hide"></div>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 48;
+    const secretWord = "CAT";
+
+    init(levelNumber);
+    levelManager.updateTip("A three-letter pet that says meow.");
+    levelManager.updateCompleteMessage("Great job! You found the word.");
+
+    const guessInput = document.querySelector("#guessInput");
+    const guessButton = document.querySelector("#guessButton");
+    const wordDisplay = document.querySelector("#wordDisplay");
+    const message = document.querySelector("#message");
+
+    function updateWordDisplay(guessedWord) {
+      const display = guessedWord
+        .split("")
+        .map((letter) => (letter === "_" ? "_" : letter))
+        .join(" ");
+      wordDisplay.textContent = display;
+    }
+
+    function setMessage(text, isError = false) {
+      message.classList.remove("hide");
+      message.textContent = text;
+      message.style.color = isError ? "#c0392b" : "#556b2f";
+    }
+
+    function checkGuess() {
+      const guess = guessInput.value.trim().toUpperCase();
+      if (!guess) {
+        setMessage("Please enter a guess.", true);
+        return;
+      }
+
+      if (guess === secretWord) {
+        updateWordDisplay(secretWord);
+        setMessage("Correct! You guessed the word.");
+        guessButton.textContent = "Next Level";
+        guessInput.disabled = true;
+        levelManager.completeLevel();
+        return;
+      }
+
+      setMessage("Not quite. Try again.", true);
+      guessInput.value = "";
+      guessInput.focus();
+    }
+
+    guessButton.addEventListener("click", checkGuess);
+    guessInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        checkGuess();
+      }
+    });
+
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+  </script>
+</body>
+
+</html>

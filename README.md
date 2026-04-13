@@ -9,6 +9,7 @@
 ## 🌟 Overview
 
 Button Game 3 is an innovative browser-based puzzle game that combines creative challenges, brain teasers, and interactive gameplay. Players must think outside the box to progress through 43 carefully crafted levels, each presenting unique obstacles and puzzles to solve.
+In total the game has *50 levels* for you to play!
 
 ## 🎯 Game Features
 
@@ -41,7 +42,10 @@ Button Game 3 is an innovative browser-based puzzle game that combines creative 
 ### 🌐 Play Online (Recommended)
 Visit **[Button Game 3](https://chathamhung.github.io/buttongame3/)** and start playing immediately!
 
-### 💻 Local Development
+### 💻 Play On Desktop
+Visit **[Button Game 3 Desktop app](https://chathamhung.github.io/buttongame3-desktop/)** and download it!
+
+### 📂 Local Development
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/ChathamHung/buttongame3.git
@@ -66,10 +70,9 @@ Button Game 3/
 │   ├── 📁 levels/             # Individual level HTML files
 │   ├── 📁 js/                 # JavaScript game logic and utilities
 │   ├── 📁 css/                # Stylesheets and visual themes
-│   ├── 📁 html/               # Shared HTML components
-│   └── 📁 data/
-│       └── 📄 levels.json     # Level metadata and configuration
+│   └── 📁 html/               # Shared HTML components
 ├── 📁 res/
+│   ├── 📁 3d/                 # 3D assets
 │   └── 📁 images/             # Game assets, icons, and graphics
 └── 📄 README.md               # This file
 ```
@@ -81,7 +84,6 @@ The game features 43 diverse levels, including:
 - **Level 7:** Captcha - Prove you're human
 - **Level 17:** The Password Game - Complex password requirements
 - **Level 19:** Memory Game - Test your recall
-- **Level 24:** Google - Navigate a fake search interface
 - **Level 31:** Simon Says - Follow the pattern
 - **Level 35:** Error 404 - Work around a "broken" page
 - **Level 39:** Fake Virus Warning - Spot the scam
@@ -108,12 +110,9 @@ Please feel free to open an issue or submit a pull request.
 ## 📱 Browser Compatibility
 
 Button Game 3 works on all modern browsers:
-- ✅ Chrome & Edge (recommended)
+- ✅ Chrome & Edge
 - ✅ Firefox
-- ✅ Mobile browsers (Chrome Mobile, Edge Mobile)
-
-Button Game 3 needs works more on apple devices:
-- ⚠️ Safari & All apple devices (Need more testing)
+- ✅ Mobile browsers
 
 ## 📜 License
 

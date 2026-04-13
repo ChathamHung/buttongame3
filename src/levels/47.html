@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none;
+      /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px;
+      /* Topbar area */
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    #sokudo-grid {
+      display: inline-block;
+      border: 2px solid black;
+      margin: 20px;
+    }
+
+    .cell {
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      font-size: 24px;
+      border: 1px solid #ccc;
+      background-color: white;
+    }
+
+    .cell:disabled {
+      background-color: #f0f0f0;
+      font-weight: bold;
+    }
+  </style>
+
+</head>
+
+<body>
+  <h1>Simple 4x4 Sudoku Puzzle</h1>
+  <div id="sokudo-grid"></div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    /* Please remember to remove all example comments when you used example change to a level.
+    *
+    * Level Manager (levelManager) has core APIs for the game, here have some basic AIPs (not all):
+    * completeLevel() - When level is completed, then run this API
+    * updateTip(text) - Set / update the tip (want to disable the tip then put: "")
+    * showTip() - Show up the tip for the user (when tip is disabled, it will do nothing)
+    * showDialog(title, text) - To show up a message box
+    * showNotification(title, text) - To show up a notification
+    */
+
+    const levelManager = new level();
+    const levelNumber = 47;
+
+    init(levelNumber); // Initialize the level
+
+    const SIZE = 4;
+    let grid = [];
+    let puzzle = [];
+
+    function generateLatinSquare(size) {
+      let g = Array.from({length: size}, () => Array(size).fill(0));
+      for(let i = 0; i < size; i++) {
+        for(let j = 0; j < size; j++) {
+          g[i][j] = (i + j) % size + 1;
+        }
+      }
+      // Shuffle rows
+      for(let i = size - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [g[i], g[j]] = [g[j], g[i]];
+      }
+      // Transpose and shuffle again for columns
+      g = transpose(g);
+      for(let i = size - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [g[i], g[j]] = [g[j], g[i]];
+      }
+      g = transpose(g);
+      return g;
+    }
+
+    function transpose(g) {
+      return g[0].map((_, colIndex) => g.map(row => row[colIndex]));
+    }
+
+    function createPuzzle(g, emptyCount) {
+      let p = g.map(row => row.slice());
+      let positions = [];
+      for(let i = 0; i < SIZE; i++) {
+        for(let j = 0; j < SIZE; j++) {
+          positions.push([i, j]);
+        }
+      }
+      // Shuffle positions
+      for(let i = positions.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [positions[i], positions[j]] = [positions[j], positions[i]];
+      }
+      for(let k = 0; k < emptyCount; k++) {
+        let [i, j] = positions[k];
+        p[i][j] = 0;
+      }
+      return p;
+    }
+
+    function renderGrid(p) {
+      const gridDiv = document.getElementById('sokudo-grid');
+      gridDiv.innerHTML = '';
+      for(let i = 0; i < SIZE; i++) {
+        for(let j = 0; j < SIZE; j++) {
+          const cell = document.createElement('input');
+          cell.type = 'text';
+          cell.maxLength = 1;
+          cell.className = 'cell';
+          if(p[i][j] !== 0) {
+            cell.value = p[i][j];
+            cell.disabled = true;
+          } else {
+            cell.addEventListener('input', checkCompletion);
+          }
+          gridDiv.appendChild(cell);
+        }
+        gridDiv.appendChild(document.createElement('br'));
+      }
+    }
+
+    function checkCompletion() {
+      const cells = document.querySelectorAll('.cell');
+      let current = [];
+      for(let i = 0; i < SIZE; i++) {
+        current.push([]);
+        for(let j = 0; j < SIZE; j++) {
+          let val = cells[i * SIZE + j].value;
+          if(val === '' || isNaN(val)) val = '0';
+          current[i][j] = parseInt(val);
+        }
+      }
+      let complete = true;
+      for(let i = 0; i < SIZE; i++) {
+        for(let j = 0; j < SIZE; j++) {
+          if(current[i][j] !== grid[i][j]) complete = false;
+        }
+      }
+      if(complete) {
+        levelManager.completeLevel();
+      }
+    }
+
+    // Generate puzzle
+    grid = generateLatinSquare(SIZE);
+    puzzle = createPuzzle(grid, 4); // 4 empty cells for easy
+
+    renderGrid(puzzle);
+
+    levelManager.updateTip(`<img src="../../res/images/tips/47/tip.png" alt="Solving a 4x4 Sudoku" style="height:205.5px;width:249.5px;" draggable="false"/><br>
+    Sudoku is a puzzle where you fill a 4x4 grid with numbers 1-4 so that each row and each column contains each number exactly once. <br>Some numbers are already filled in for you. Fill in the empty cells to complete the puzzle.`); // Set the tip (Allow HTML elements)
+    levelManager.updateCompleteMessage(`Congratulations! You solved the Sudoku puzzle.`);
+    levelManager.setSkipEnable(true);
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+
+</html>

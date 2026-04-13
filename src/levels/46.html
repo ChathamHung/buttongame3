@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none;
+      /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px;
+      /* Topbar area */
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    button {
+      /* Example button (can be change) */
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    button:hover {
+      background-color: #60a83e;
+    }
+
+    button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    #reset {
+      background-color: #c93e3e;
+    }
+
+    #reset:hover {
+      background-color: #a83e3e;
+    }
+
+    #game {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #info {
+      margin-bottom: 20px;
+    }
+
+    #board {
+      display: grid;
+      grid-template-columns: repeat(5, 40px);
+      grid-template-rows: repeat(5, 40px);
+      gap: 1px;
+    }
+
+    .cell {
+      width: 40px;
+      height: 40px;
+      background-color: #ddd;
+      border: 1px solid #bbb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      cursor: pointer;
+      user-select: none;
+      touch-action: none; /* Prevent scrolling on touch */
+    }
+
+    .cell.revealed {
+      background-color: #fff;
+    }
+
+    .cell.flagged {
+      background-color: #ff6b6b;
+    }
+
+    .cell.mine {
+      background-color: #f00;
+    }
+
+    #mineCount {
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="game">
+    <h1>Minesweeper</h1>
+    <div id="info">
+      <span id="mineCount">Mines: 3</span>
+      <button id="flagMode">Flag Mode: Off</button>
+      <button id="reset">Reset</button>
+    </div>
+    <div id="board"></div>
+  </div>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    /* Please remember to remove all example comments when you used example change to a level.
+    *
+    * Level Manager (levelManager) has core APIs for the game, here have some basic AIPs (not all):
+    * completeLevel() - When level is completed, then run this API
+    * updateTip(text) - Set / update the tip (want to disable the tip then put: "")
+    * showTip() - Show up the tip for the user (when tip is disabled, it will do nothing)
+    * showDialog(title, text) - To show up a message box
+    * showNotification(title, text) - To show up a notification
+    */
+
+    const levelManager = new level();
+    const levelNumber = 46;
+
+    init(levelNumber); // Initialize the level
+
+    levelManager.updateTip(`<img src="../../res/images/tips/46/tip.png" alt="Step to play Minesweeper" style="width:433px;height:347.5px;" draggable="false"/>`); // Set the tip (Allow HTML elements)
+    levelManager.updateCompleteMessage(`Congratulations! You cleared the minefield!`); // Set the complete message (Allow HTML elements)
+
+    // Minesweeper game logic
+    const boardSize = 5;
+    const mineCount = 3;
+    let board = [];
+    let gameOver = false;
+    let revealed = 0;
+    let flagged = 0;
+    let flagMode = false;
+    const boardElement = document.getElementById('board');
+    const mineCountElement = document.getElementById('mineCount');
+    const resetButton = document.getElementById('reset');
+    const flagModeButton = document.getElementById('flagMode');
+
+    function createBoard() {
+      board = [];
+      for (let i = 0; i < boardSize; i++) {
+        board[i] = [];
+        for (let j = 0; j < boardSize; j++) {
+          board[i][j] = {
+            isMine: false,
+            isRevealed: false,
+            isFlagged: false,
+            neighborMines: 0
+          };
+        }
+      }
+    }
+
+    function placeMines() {
+      let minesPlaced = 0;
+      while (minesPlaced < mineCount) {
+        const x = Math.floor(Math.random() * boardSize);
+        const y = Math.floor(Math.random() * boardSize);
+        if (!board[x][y].isMine) {
+          board[x][y].isMine = true;
+          minesPlaced++;
+        }
+      }
+    }
+
+    function calculateNeighbors() {
+      for (let i = 0; i < boardSize; i++) {
+        for (let j = 0; j < boardSize; j++) {
+          if (!board[i][j].isMine) {
+            let count = 0;
+            for (let di = -1; di <= 1; di++) {
+              for (let dj = -1; dj <= 1; dj++) {
+                const ni = i + di;
+                const nj = j + dj;
+                if (ni >= 0 && ni < boardSize && nj >= 0 && nj < boardSize && board[ni][nj].isMine) {
+                  count++;
+                }
+              }
+            }
+            board[i][j].neighborMines = count;
+          }
+        }
+      }
+    }
+
+    function renderBoard() {
+      boardElement.innerHTML = '';
+      for (let i = 0; i < boardSize; i++) {
+        for (let j = 0; j < boardSize; j++) {
+          const cell = document.createElement('div');
+          cell.classList.add('cell');
+          cell.dataset.x = i;
+          cell.dataset.y = j;
+          if (board[i][j].isRevealed) {
+            cell.classList.add('revealed');
+            if (board[i][j].isMine) {
+              cell.classList.add('mine');
+              cell.textContent = '💣';
+            } else if (board[i][j].neighborMines > 0) {
+              cell.textContent = board[i][j].neighborMines;
+            }
+          } else if (board[i][j].isFlagged) {
+            cell.classList.add('flagged');
+            cell.textContent = '🚩';
+          }
+          cell.addEventListener('click', () => {
+            if (flagMode) {
+              flagCell(i, j);
+            } else {
+              revealCell(i, j);
+            }
+          });
+          cell.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            flagCell(i, j);
+          });
+          boardElement.appendChild(cell);
+        }
+      }
+      mineCountElement.textContent = `Mines: ${mineCount - flagged}`;
+    }
+
+    function revealCell(x, y) {
+      if (gameOver || board[x][y].isRevealed || board[x][y].isFlagged) return;
+      board[x][y].isRevealed = true;
+      revealed++;
+      if (board[x][y].isMine) {
+        gameOver = true;
+        revealAllMines();
+        levelManager.showDialog('Game Over', 'You clicked on a mine! Reset to try again.');
+        return;
+      }
+      if (board[x][y].neighborMines === 0) {
+        // Reveal neighbors
+        for (let di = -1; di <= 1; di++) {
+          for (let dj = -1; dj <= 1; dj++) {
+            const ni = x + di;
+            const nj = y + dj;
+            if (ni >= 0 && ni < boardSize && nj >= 0 && nj < boardSize) {
+              revealCell(ni, nj);
+            }
+          }
+        }
+      }
+      renderBoard();
+      checkWin();
+    }
+
+    function flagCell(x, y) {
+      if (gameOver || board[x][y].isRevealed) return;
+      board[x][y].isFlagged = !board[x][y].isFlagged;
+      flagged += board[x][y].isFlagged ? 1 : -1;
+      renderBoard();
+    }
+
+    function revealAllMines() {
+      for (let i = 0; i < boardSize; i++) {
+        for (let j = 0; j < boardSize; j++) {
+          if (board[i][j].isMine) {
+            board[i][j].isRevealed = true;
+          }
+        }
+      }
+      renderBoard();
+    }
+
+    function checkWin() {
+      if (revealed === boardSize * boardSize - mineCount) {
+        levelManager.completeLevel();
+      }
+    }
+
+    function resetGame() {
+      gameOver = false;
+      revealed = 0;
+      flagged = 0;
+      flagMode = false;
+      flagModeButton.textContent = 'Flag Mode: Off';
+      createBoard();
+      placeMines();
+      calculateNeighbors();
+      renderBoard();
+    }
+
+    resetButton.addEventListener('click', resetGame);
+    flagModeButton.addEventListener('click', () => {
+      flagMode = !flagMode;
+      flagModeButton.textContent = `Flag Mode: ${flagMode ? 'On' : 'Off'}`;
+    });
+
+    // Initialize game
+    resetGame();
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+  </script>
+</body>
+
+</html>

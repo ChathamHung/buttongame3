@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none; /* Safari */
+      user-select: none;
+    }
+
+    body {
+      margin-top: 60px; /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+      background-color: #f0f0f0;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .grid button {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      background-color: #ddd;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      transition: background-color 0.2s;
+    }
+
+    .grid button:hover {
+      background-color: #ccc;
+    }
+
+    .grid button.active {
+      background-color: #75c64f;
+      color: white;
+    }
+
+    .grid button:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+
+    #status {
+      font-size: 18px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    #startButton {
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease;
+    }
+
+    #startButton:hover {
+      background-color: #60a83e;
+    }
+
+    #startButton:disabled {
+      background-color: #7c7c7c;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>Memory Maze</h1>
+  <div id="status">Click Start to begin!</div>
+  <div class="grid" id="grid"></div>
+  <button id="startButton">Start</button>
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 45;
+
+    init(levelNumber); // Initialize the level
+
+    levelManager.updateTip("Watch the sequence and repeat it by clicking the buttons in order.");
+    levelManager.updateCompleteMessage("Congratulations! You've mastered the memory maze!");
+
+    const grid = document.getElementById('grid');
+    const status = document.getElementById('status');
+    const startButton = document.getElementById('startButton');
+
+    let buttons = [];
+    let sequence = [];
+    let playerSequence = [];
+    let sequenceIndex = 0;
+    let gameActive = false;
+    let showingSequence = false;
+
+    // Create 4x4 grid
+    for (let i = 0; i < 16; i++) {
+      const button = document.createElement('button');
+      button.textContent = i + 1;
+      button.addEventListener('click', () => handleButtonClick(i));
+      buttons.push(button);
+      grid.appendChild(button);
+    }
+
+    function resetGame() {
+      sequence = [];
+      playerSequence = [];
+      sequenceIndex = 0;
+      gameActive = false;
+      showingSequence = false;
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.remove('active');
+      });
+      status.textContent = "Click Start to begin!";
+      startButton.disabled = false;
+      startButton.textContent = "Start";
+    }
+
+    function startGame() {
+      resetGame();
+      gameActive = true;
+      startButton.disabled = true;
+      addToSequence();
+      showSequence();
+    }
+
+    function addToSequence() {
+      const available = buttons.map((_, i) => i);
+      const randomIndex = Math.floor(Math.random() * available.length);
+      sequence.push(available[randomIndex]);
+    }
+
+    function showSequence() {
+      showingSequence = true;
+      status.textContent = "Watch the sequence...";
+      buttons.forEach(btn => btn.disabled = true);
+
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < sequence.length) {
+          buttons[sequence[i]].classList.add('active');
+          setTimeout(() => {
+            buttons[sequence[i]].classList.remove('active');
+          }, 500);
+          i++;
+        } else {
+          clearInterval(interval);
+          showingSequence = false;
+          status.textContent = "Now repeat the sequence!";
+          buttons.forEach(btn => btn.disabled = false);
+        }
+      }, 800);
+    }
+
+    function handleButtonClick(index) {
+      if (!gameActive || showingSequence) return;
+
+      playerSequence.push(index);
+      buttons[index].classList.add('active');
+      setTimeout(() => {
+        buttons[index].classList.remove('active');
+      }, 200);
+
+      if (playerSequence[sequenceIndex] !== sequence[sequenceIndex]) {
+        status.textContent = "Wrong! Try again.";
+        setTimeout(() => {
+          startGame();
+        }, 1000);
+        return;
+      }
+
+      sequenceIndex++;
+
+      if (sequenceIndex === sequence.length) {
+        if (sequence.length >= 5) { // Win after 5 correct sequences
+          status.textContent = "You did it!";
+          levelManager.completeLevel();
+        } else {
+          sequenceIndex = 0;
+          playerSequence = [];
+          addToSequence();
+          setTimeout(() => {
+            showSequence();
+          }, 1000);
+        }
+      }
+    }
+
+    startButton.addEventListener('click', startGame);
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+
+    resetGame();
+  </script>
+</body>
+</html>

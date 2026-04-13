@@ -44,10 +44,6 @@ level.prototype.setSkipEnable = function (enable) {
   sendCommand("setSkipEnable", enable);
 };
 
-level.prototype.setSkipTime = function (time) { // Deprecation
-  sendCommand("setSkipTime", time);
-};
-
 level.prototype.showDialog = function (title, text) {
   sendCommand("showMessage", { title: title, text: text });
 };

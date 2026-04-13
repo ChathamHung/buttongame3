@@ -1,6 +1,56 @@
+:root {
+  --text-colour: white;
+  --background-colour: rgba(0, 0, 0, 0.6);
+  --highlight-background-colour: rgba(96, 96, 96, 0.7);
+  --button-highlight-background-colour: rgba(200, 200, 200, 0.3);
+  --tooltip-background-colour: rgba(32, 32, 32, 0.7);
+  --shadow-colour: rgba(0, 0, 0, 0.2);
+  --menu-option-background-colour: rgba(135, 135, 135, 0.5);
+  --menu-option-highlight-background-colour: rgba(190, 190, 190, 0.3);
+  --menu-option-selected-background-colour: rgba(190, 190, 190, 0.4);
+  --menu-option-selected-highlight-background-colour: rgba(190, 190, 190, 0.6);
+  --menu-option-shadow-colour: rgba(0, 0, 0, 0.1);
+  --menu-page-button-current-background-colour: rgba(190, 190, 190, 0.2);
+  --menu-page-button-shadow-colour: rgba(0, 0, 0, 0.1);
+  --menu-page-button-hover-background-colour: rgba(190, 190, 190, 0.3);
+  --menu-page-button-focus-background-colour: rgba(190, 190, 190, 0.4);
+  --menu-page-button-focus-hover-background-colour: rgba(190, 190, 190, 0.6);
+  --menu-page-button-active-background-colour: rgba(190, 190, 190, 0.4);
+  --menu-page-button-skiped-background-colour: rgba(255, 213, 0, 0.2);
+  --menu-page-button-skiped-text-colour: rgba(255, 213, 0, 1);
+  --menu-page-button-skiped-current-background-colour: rgba(255, 213, 0, 0.25);
+  --menu-page-button-skiped-hover-background-colour: rgba(255, 213, 0, 0.3);
+  --menu-page-button-skiped-focus-background-colour: rgba(255, 213, 0, 0.4);
+  --menu-page-button-skiped-focus-hover-background-colour: rgba(255, 213, 0, 0.6);
+  --menu-page-button-locked-text-colour: rgb(189, 189, 189);
+  --menu-page-button-disabled-text-colour: rgb(189, 189, 189);
+  --menu-page-hr-colour: rgba(190, 190, 190, 0.3);
+  --menu-page-about-logo-background-colour: rgba(190, 190, 190, 0.1);
+  --achievement-locked-colour: gray;
+  --achievement-unlocked-colour: white;
+  --about-logo-background-colour: white;
+  --about-logo-shadow-colour: rgba(0, 0, 0, 0.2);
+  --about-logo-button-background-colour: #75c64f;
+  --about-logo-link-colour: rgb(0, 0, 238);
+  --about-logo-link-decoration-colour: rgb(0, 0, 238);
+  --settings-label-text-colour: rgba(255, 255, 255, 0.75);
+  --switch-slider-background-colour: #bbb;
+  --switch-slider-before-background-colour: #fff;
+  --switch-slider-checked-background-colour: #4caf50;
+  --dialog-backdrop-background-colour: rgba(0, 0, 0, 0.3);
+  --dialog-button-hover-background-colour: rgba(190, 190, 190, 0.3);
+  --dialog-button-focus-background-colour: rgba(190, 190, 190, 0.4);
+  --dialog-button-focus-hover-background-colour: rgba(190, 190, 190, 0.6);
+  --delete-text-colour: red;
+  --delete-button-hover-background-colour: rgba(190, 0, 0, 0.3);
+  --delete-button-focus-background-colour: rgba(190, 0, 0, 0.4);
+  --delete-button-focus-hover-background-colour: rgba(190, 0, 0, 0.6);
+  --demo-tag-text-colour: rgba(207, 207, 207, 0.8);
+}
+
 * {
   font-family: Arial, Helvetica, sans-serif;
-  -webkit-user-select: none; /* Safari */
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -29,11 +79,11 @@ body {
   z-index: 10;
 }
 
-.topbar div, .topbar button {
+.topbar div {
   height: 30px;
-  padding: 6px 16px;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
+  padding: 6px;
+  background-color: var(--background-colour);
+  color: var(--text-colour);
   border-radius: 40px;
   display: flex;
   align-items: center;
@@ -41,8 +91,9 @@ body {
   font-size: 14px;
 }
 
-.topbar .left, .topbar .right {
-  background-color: transparent;
+.topbar .left,
+.topbar .right {
+  background: none;
   padding: 0%;
   display: flex;
   align-items: center;
@@ -50,11 +101,25 @@ body {
   flex-wrap: nowrap;
 }
 
+.topbar .buttons-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 5px;
+}
+
+.topbar .buttons-group:not(:has(> *:not(.hide))) {
+  display: none;
+}
+
 .topbar button {
-  height: 42px;
-  width: 42px;
-  min-width: 42px;
-  min-height: 42px;
+  background-color: transparent;
+  border-radius: 40px;
+  height: 30px;
+  width: 30px;
+  min-width: 30px;
+  min-height: 30px;
   border: none;
   cursor: pointer;
   display: flex;
@@ -67,8 +132,8 @@ body {
 }
 
 .topbar button:hover {
-  background-color: rgba(96, 96, 96, 0.7);
-  transform: scale(1.1);
+  background-color: var(--button-highlight-background-colour);
+  /* transform: scale(1.1); */
 }
 
 .topbar button:active {
@@ -83,19 +148,37 @@ body {
   flex-shrink: 0;
 }
 
-.left button, .right button, .left div, .right div {
+.left div,
+.right div {
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px); /* Safari */
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 3px 3px 10px var(--shadow-colour);
 }
 
 .title {
+  /* background-color: transparent !important; */
+  /* border-radius: 10px !important; */
+  height: 40px;
+  width: 100px;
+  /* padding: 0 !important; */
+  /* box-shadow: none !important; */
   cursor: pointer;
-  overflow: hidden;
+  /* overflow: hidden; */
   transition: background-color 0.1s ease;
+  /* padding: 6px 16px !important; */
+}
+
+.title img {
+  height: 40px;
+  width: 100px;
 }
 
 .title:hover {
-  background-color: rgba(96, 96, 96, 0.7);
+  background-color: var(--highlight-background-colour);
+}
+
+.level-label {
+  padding: 6px 16px !important;
 }
 
 .level-label.enabled {
@@ -105,7 +188,7 @@ body {
 }
 
 .level-label.enabled:hover {
-  background-color: rgba(96, 96, 96, 0.7);
+  background-color: var(--highlight-background-colour);
 }
 
 /* Custom tooltips */
@@ -118,10 +201,10 @@ body {
   content: attr(data-tooltip);
   position: absolute;
   left: 50%;
-  top: calc(100% + 8px);
+  top: calc(100% + 12px);
   transform: translateX(-50%);
-  background: rgba(32, 32, 32, 0.7);
-  color: #fff;
+  background: var(--tooltip-background-colour);
+  color: var(--text-colour);
   padding: 6px 14px;
   border-radius: 20px;
   white-space: nowrap;
@@ -129,7 +212,9 @@ body {
   pointer-events: none;
   opacity: 1;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px var(--shadow-colour);
 }
 
 .topbar button[data-tooltip]::after {
@@ -139,17 +224,17 @@ body {
   pointer-events: none;
 }
 
-/* Hide tooltips when menu is open */
-.menu:not(.menu-hidden) ~ .topbar button[data-tooltip]:hover::after,
-.menu:not(.menu-hidden) ~ .topbar button[data-tooltip]::after {
-  display: none !important;
-}
-
 @media (hover: none) and (pointer: coarse) {
+
   .topbar button[data-tooltip]:hover::after,
   .topbar button[data-tooltip]::after {
     display: none !important;
   }
+}
+
+.topbar button.tool-tip-max-right[data-tooltip]:hover::after {
+  left: calc(100% + 5px);
+  transform: translateX(-100%);
 }
 
 /* Notification */
@@ -171,10 +256,12 @@ body {
 } */
 
 .notifications .notification {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
+  background-color: var(--background-colour);
+  box-shadow: 3px 3px 10px var(--shadow-colour);
+  color: var(--text-colour);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px); /* Safari */
+  -webkit-backdrop-filter: blur(6px);
+  /* Safari */
   border-radius: 20px;
   padding: 15px;
   z-index: 10;
@@ -197,6 +284,7 @@ body {
     opacity: 0;
     transform: translateX(100%);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0);
@@ -208,6 +296,7 @@ body {
     opacity: 1;
     transform: translateX(0);
   }
+
   100% {
     opacity: 0;
     transform: translateX(100%);
@@ -237,7 +326,7 @@ body {
 }
 
 .notifications .notification .notification-close-button:hover {
-  background-color: rgba(96, 96, 96, 0.7);
+  background-color: var(--highlight-background-colour);
 }
 
 .notifications .notification .notification-close-button img {
@@ -280,14 +369,14 @@ body {
   top: 60px;
   left: 10px;
   width: 315px;
-  max-width: calc(100vw - 20px);
-  height: calc(100vh - 100px);
-  background-color: rgba(0, 0, 0, 0.7);
+  max-width: calc(100vw - 20px - env(safe-area-inset-left) - env(safe-area-inset-right));
+  height: calc(100vh - 100px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  background-color: var(--background-colour);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px); /* Safari */
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 0 10px var(--shadow-colour);
   border-radius: 20px;
   padding: 15px;
-  margin-bottom: env(safe-area-inset-bottom);
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -313,7 +402,7 @@ body {
   align-items: center;
   padding-bottom: 10px;
   margin-bottom: 5px;
-  border-bottom: rgba(135, 135, 135, 0.5) 1px solid;
+  border-bottom: var(--menu-option-background-colour) 1px solid;
 }
 
 .menu-option {
@@ -344,17 +433,17 @@ body {
 }
 
 .menu-options button:hover {
-  background-color: rgba(190, 190, 190, 0.3);
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+  background-color: var(--menu-option-highlight-background-colour);
+  box-shadow: 0 2px 3px var(--menu-option-shadow-colour);
   transform: scale(1.1);
 }
 
 .menu-options button.select {
-  background-color: rgba(190, 190, 190, 0.4);
+  background-color: var(--menu-option-selected-background-colour);
 }
 
 .menu-options button.select:hover {
-  background-color: rgba(190, 190, 190, 0.6);
+  background-color: var(--menu-option-selected-highlight-background-colour);
 }
 
 .menu-options button:active {
@@ -368,7 +457,7 @@ body {
   overflow: hidden;
 }
 
-.menu-pages > div {
+.menu-pages>div {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -380,7 +469,7 @@ body {
   height: 100%;
 
   scrollbar-width: thin;
-  scrollbar-color: rgba(190, 190, 190, 0.3) transparent;
+  scrollbar-color: var(--menu-option-highlight-background-colour) transparent;
 }
 
 .menu-pages .achievement-page {
@@ -390,7 +479,8 @@ body {
   justify-content: center;
   gap: 5px;
   height: 100%;
-  overflow-y: auto; /* Make achievement page scrollable */
+  overflow-y: auto;
+  /* Make achievement page scrollable */
 }
 
 .menu-pages .achievement-page .achievement-button {
@@ -403,11 +493,11 @@ body {
   width: calc(100% / 2 - 5px);
   height: auto;
   cursor: pointer;
-  color: gray;
+  color: var(--achievement-locked-colour);
 }
 
 .menu-pages .achievement-page .achievement-button.unlocked {
-  color: white;
+  color: var(--achievement-unlocked-colour);
 }
 
 .menu-pages .achievement-page .achievement-button .achievement-image {
@@ -431,7 +521,7 @@ body {
   background-color: transparent;
   border: none;
   outline: none;
-  color: white;
+  color: var(--text-colour);
   cursor: pointer;
   font-size: 16px;
   padding: 5px 15px;
@@ -441,63 +531,64 @@ body {
   flex-wrap: nowrap;
   border-radius: 20px;
   transition: background-color 0.1s ease, transform 0.1s ease;
-  -webkit-user-select: none !important; /* Safari */
+  -webkit-user-select: none !important;
   user-select: none !important;
   transform: scale(0.97);
 }
 
 .menu-pages button.current {
   font-weight: bold;
-  background-color: rgba(190, 190, 190, 0.2);
+  background-color: var(--menu-page-button-current-background-colour);
+  /* box-shadow: 0 2px 3px var(--menu-page-button-shadow-colour); */
   /*border: 3px solid rgba(0, 149, 255, 1);*/
 }
 
 .menu-pages button:hover {
-  background-color: rgba(190, 190, 190, 0.3);
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+  background-color: var(--menu-page-button-hover-background-colour);
+  box-shadow: 0 2px 3px var(--menu-page-button-shadow-colour);
   transform: scale(1);
 }
 
 .menu-pages button:focus {
-  background-color: rgba(190, 190, 190, 0.4);
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+  background-color: var(--menu-page-button-focus-background-colour);
+  box-shadow: 0 2px 3px var(--menu-page-button-shadow-colour);
   outline: none;
   transform: scale(1);
 }
 
 .menu-pages button:focus:hover {
-  background-color: rgba(190, 190, 190, 0.6);
+  background-color: var(--menu-page-button-focus-hover-background-colour);
 }
 
 .menu-pages button.skiped {
-  background-color: rgba(255, 213, 0, 0.2);
-  color: rgba(255, 213, 0, 1);
+  background-color: var(--menu-page-button-skiped-background-colour);
+  color: var(--menu-page-button-skiped-text-colour);
 }
 
 .menu-pages button.skiped.current {
-  background-color: rgba(255, 213, 0, 0.25);
+  background-color: var(--menu-page-button-skiped-current-background-colour);
 }
 
 .menu-pages button.skiped:hover {
-  background-color: rgba(255, 213, 0, 0.3);
+  background-color: var(--menu-page-button-skiped-hover-background-colour);
 }
 
 .menu-pages button.skiped:focus {
-  background-color: rgba(255, 213, 0, 0.4);
+  background-color: var(--menu-page-button-skiped-focus-background-colour);
 }
 
 .menu-pages button.skiped:focus:hover {
-  background-color: rgba(255, 213, 0, 0.6);
+  background-color: var(--menu-page-button-skiped-focus-hover-background-colour);
 }
 
 .menu-pages button:active {
-  background-color: rgba(190, 190, 190, 0.4);
+  background-color: var(--menu-page-button-active-background-colour);
   transform: scale(0.95);
 }
 
 .menu-pages button.locked {
   background-color: transparent !important;
-  color: rgb(189, 189, 189);
+  color: var(--menu-page-button-locked-text-colour);
   box-shadow: none;
   cursor: not-allowed;
   transform: scale(0.97);
@@ -506,7 +597,7 @@ body {
 
 .menu-pages button.disabled {
   background-color: transparent !important;
-  color: rgb(189, 189, 189);
+  color: var(--menu-page-button-disabled-text-colour);
   box-shadow: none;
   cursor: not-allowed;
   transform: scale(0.97);
@@ -523,13 +614,13 @@ body.show-locked-levels .menu-pages button.locked {
 .menu-pages hr {
   margin: 0 10px;
   width: calc(100% - 25px);
-  border: 1px solid rgba(190, 190, 190, 0.3);
+  border: 1px solid var(--menu-page-hr-colour);
 }
 
 .menu-pages .about-logo {
-  background-color: rgba(190, 190, 190, 0.1);
+  background-color: var(--menu-page-about-logo-background-colour);
   border-radius: 20px;
-  color: white;
+  color: var(--text-colour);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -537,10 +628,10 @@ body.show-locked-levels .menu-pages button.locked {
   margin-bottom: 10px;
 }
 
-.about-logo > .logo {
+.about-logo>.logo {
   display: flex;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  background-color: var(--about-logo-background-colour);
+  box-shadow: 0 0 10px var(--about-logo-shadow-colour);
   border-radius: 20px;
   height: 120px;
   width: 120px;
@@ -553,29 +644,31 @@ body.show-locked-levels .menu-pages button.locked {
   margin-bottom: 20px;
 }
 
-.about-logo > .logo > button {
+.about-logo>.logo>button {
   padding: 10px;
   border-radius: 10px;
-  background-color: #75c64f;
+  background-color: var(--about-logo-button-background-colour);
   height: auto;
   outline: none;
-  color: white;
+  color: var(--text-colour);
   border: none;
   cursor: pointer;
   font-size: 24px;
   transition: background-color 0.1s ease;
-  -webkit-user-select: none !important; /* Safari */
+  -webkit-user-select: none !important;
+  /* Safari */
   user-select: none !important;
 }
 
-.about-logo > .logo > a {
+.about-logo>.logo>a {
   text-decoration: underline;
-  color: rgb(0, 0, 238);
-  text-decoration-color: rgb(0, 0, 238);
+  color: var(--about-logo-link-colour);
+  text-decoration-color: var(--about-logo-link-decoration-colour);
   font-size: 24px;
   transition: color 0.1s ease;
   cursor: pointer;
-  -webkit-user-select: none !important; /* Safari */
+  -webkit-user-select: none !important;
+  /* Safari */
   user-select: none !important;
 }
 
@@ -593,7 +686,7 @@ body.show-locked-levels .menu-pages button.locked {
 
 .menu-pages .settings-page .note-label {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--settings-label-text-colour);
   margin: 10px 15px 5px 15px;
   font-weight: bold;
 }
@@ -609,7 +702,7 @@ body.show-locked-levels .menu-pages button.locked {
 .menu-pages .settings-page .toggle-btn .setting-label {
   flex-basis: 100%;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--settings-label-text-colour);
   margin-top: 2px;
 }
 
@@ -633,7 +726,7 @@ body.show-locked-levels .menu-pages button.locked {
 .switch-slider {
   width: 40px;
   height: 24px;
-  background: #bbb;
+  background: var(--switch-slider-background-colour);
   border-radius: 24px;
   position: relative;
   transition: background 0.2s;
@@ -647,16 +740,16 @@ body.show-locked-levels .menu-pages button.locked {
   top: 3px;
   width: 18px;
   height: 18px;
-  background: #fff;
+  background: var(--switch-slider-before-background-colour);
   border-radius: 50%;
   transition: transform 0.2s;
 }
 
-.switch-input:checked + .switch-slider {
-  background: #4caf50;
+.switch-input:checked+.switch-slider {
+  background: var(--switch-slider-checked-background-colour);
 }
 
-.switch-input:checked + .switch-slider:before {
+.switch-input:checked+.switch-slider:before {
   transform: translateX(16px);
 }
 
@@ -677,9 +770,9 @@ body.show-locked-levels .menu-pages button.locked {
   position: absolute;
   margin: 0;
   padding: 20px;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: var(--background-colour);
   border: none;
-  color: white;
+  color: var(--text-colour);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0);
@@ -690,6 +783,7 @@ body.show-locked-levels .menu-pages button.locked {
   z-index: 20;
   opacity: 0;
   transition: opacity 0.1s ease-out, transform 0.1s ease-out;
+  box-shadow: 0 0 10px var(--shadow-colour);
 }
 
 .dialog[open] {
@@ -707,10 +801,12 @@ body.show-locked-levels .menu-pages button.locked {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.8);
   }
+
   50% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1.05);
   }
+
   100% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -722,6 +818,7 @@ body.show-locked-levels .menu-pages button.locked {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
   }
+
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.9);
@@ -729,9 +826,10 @@ body.show-locked-levels .menu-pages button.locked {
 }
 
 .dialog::backdrop {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: var(--dialog-backdrop-background-colour);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px); /* Safari */
+  -webkit-backdrop-filter: blur(6px);
+  /* Safari */
   opacity: 0;
   transition: opacity 0.1s ease-out;
 }
@@ -785,7 +883,7 @@ body.show-locked-levels .menu-pages button.locked {
 .dialog .dialog-button {
   background-color: transparent;
   border: none;
-  color: white;
+  color: var(--text-colour);
   cursor: pointer;
   font-size: 16px;
   padding: 5px 15px;
@@ -796,22 +894,23 @@ body.show-locked-levels .menu-pages button.locked {
   outline: none;
   flex: 1;
   transition: background-color 0.1s ease, transform 0.1s ease;
-  -webkit-user-select: none !important; /* Safari */
+  -webkit-user-select: none !important;
+  /* Safari */
   user-select: none !important;
   transform: scale(1);
 }
 
 .dialog .dialog-button:hover {
-  background-color: rgba(190, 190, 190, 0.3);
+  background-color: var(--dialog-button-hover-background-colour);
 }
 
 .dialog .dialog-button:focus {
-  background-color: rgba(190, 190, 190, 0.4);
+  background-color: var(--dialog-button-focus-background-colour);
   outline: none;
 }
 
 .dialog .dialog-button:focus:hover {
-  background-color: rgba(190, 190, 190, 0.6);
+  background-color: var(--dialog-button-focus-hover-background-colour);
 }
 
 .dialog .dialog-button:active {
@@ -819,21 +918,22 @@ body.show-locked-levels .menu-pages button.locked {
 }
 
 
-.dialog .dialog-button.delete, .menu-pages .delete {
-  color: red;
+.dialog .dialog-button.delete,
+.menu-pages .delete {
+  color: var(--delete-text-colour);
 }
 
 .dialog .dialog-button.delete:hover {
-  background-color: rgba(190, 0, 0, 0.3);
+  background-color: var(--delete-button-hover-background-colour);
 }
 
 .dialog .dialog-button.delete:focus {
-  background-color: rgba(190, 0, 0, 0.4);
+  background-color: var(--delete-button-focus-background-colour);
   outline: none;
 }
 
 .dialog .dialog-button.delete:focus:hover {
-  background-color: rgba(190, 0, 0, 0.6);
+  background-color: var(--delete-button-focus-hover-background-colour);
 }
 
 /* Mobile optimizations */
@@ -844,43 +944,43 @@ body.show-locked-levels .menu-pages button.locked {
     gap: 6px;
     width: calc(100% - 16px);
   }
-  
+
   .topbar div {
     font-size: 12px;
-    padding: 4px 12px;
     height: 32px;
+    min-height: 32px;
   }
-  
+
   .topbar button {
-    height: 40px;
-    width: 40px;
-    min-width: 40px;
-    min-height: 40px;
+    height: 32px;
+    width: 32px;
+    min-width: 32px;
+    min-height: 32px;
   }
-  
+
   .topbar button img {
     width: 18px;
     height: 18px;
   }
-  
+
   .topbar .left {
     gap: 6px;
   }
-  
+
   .menu {
     top: 60px;
     left: 8px;
-    width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 32px);
+    width: calc(100vw - 32px - env(safe-area-inset-left) - env(safe-area-inset-right));
     max-width: none;
-    height: calc(100vh - env(safe-area-inset-bottom) - 90px);
+    height: calc(100vh - 90px - env(safe-area-inset-bottom) - env(safe-area-inset-top));
     border-radius: 16px;
     padding: 15px 8px 8px;
   }
-  
+
   .menu-option .option-text {
     font-size: 12px;
   }
-  
+
   .notifications {
     max-width: calc(100vw - 32px);
   }
@@ -897,40 +997,39 @@ body.show-locked-levels .menu-pages button.locked {
     flex-wrap: nowrap;
     width: calc(100% - 12px);
   }
-  
+
   .topbar div {
     font-size: 11px;
-    padding: 3px 12px;
-    height: 30px;
+    height: 32px;
     min-width: 0;
   }
-  
+
   .level {
     flex-shrink: 0;
   }
-  
+
   .topbar button {
-    height: 36px;
-    width: 36px;
-    min-width: 36px;
-    min-height: 36px;
+    height: 32px;
+    width: 32px;
+    min-width: 32px;
+    min-height: 32px;
   }
-  
+
   .topbar button img {
     width: 16px;
     height: 16px;
   }
-  
+
   .topbar .left {
     gap: 4px;
     min-width: 0;
   }
-  
+
   .topbar .right {
     gap: 4px;
     flex-shrink: 0;
   }
-  
+
   .menu {
     top: 54px;
     left: 6px;
@@ -939,7 +1038,7 @@ body.show-locked-levels .menu-pages button.locked {
     border-radius: 12px;
     padding: 10px 6px 6px;
   }
-  
+
   .menu-option .option-text {
     font-size: 11px;
   }
@@ -951,7 +1050,7 @@ body.show-locked-levels .menu-pages button.locked {
     right: 8px;
     left: 8px;
   }
-  
+
   .notifications .notification {
     border-radius: 12px;
   }
@@ -971,10 +1070,12 @@ body.no-animations .notifications .notification {
   transition: none !important;
   animation: none !important;
 }
+
 body.no-animations .dialog[open],
 body.no-animations .dialog.closing {
   animation: none !important;
 }
+
 body.no-animations .menu-pages button {
   transform: scale(1);
 }
@@ -990,10 +1091,10 @@ body.no-menu-blur .menu-pages button,
 body.no-menu-blur .dialog,
 body.no-menu-blur .dialog::backdrop,
 body.no-menu-blur .dialog .dialog-button,
-body.no-menu-blur .notifications .notification, 
-body.no-menu-blur .left button, 
-body.no-menu-blur .right button, 
-body.no-menu-blur .left div, 
+body.no-menu-blur .notifications .notification,
+body.no-menu-blur .left button,
+body.no-menu-blur .right button,
+body.no-menu-blur .left div,
 body.no-menu-blur .right div {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -1005,6 +1106,6 @@ body.bottom-safezone .menu {
 }
 
 .demo-tag {
-  color: rgba(207, 207, 207, 0.8);
+  color: var(--demo-tag-text-colour);
   margin-right: 10px;
 }

@@ -13,11 +13,12 @@ const dialog = document.querySelector(".dialog");
 const notifications = document.querySelector(".notifications");
 const fullscreenButton = document.querySelector(".fullscreen-button");
 const fullscreenToggle = document.querySelector("#fulllscreen-toggle");
-const DownloadGameButton = document.querySelector("#download-game");
+const downloadGameButton = document.querySelector("#download-game");
+const debugBtn = document.querySelector(".debug-button");
 
-const version = 0.19;
-const versionType = "RC 2";
-const updateName = "update 19";
+const version = "1.0";
+const versionType = "Release";
+const gameUpdates = 20;
 
 let currentPageIndex = 0;
 let currentTip = ``;
@@ -30,8 +31,10 @@ let menuOpened = false;
 let appMode = false;
 let appVersion = "";
 let appUpdates = 0;
+let appType = "unknown";
+let titleBarEnabled = false;
 
-let allLevelsData = {
+const allLevelsData = {
   "0": {
     "name": "Welcome",
     "file": "0.html"
@@ -211,10 +214,34 @@ let allLevelsData = {
   "44": {
     "name": "Flappy Button",
     "file": "44.html"
+  },
+  "45": {
+    "name": "Memory Maze",
+    "file": "45.html"
+  },
+  "46": {
+    "name": "Minesweeper",
+    "file": "46.html"
+  },
+  "47": {
+    "name": "Simple Sudoku",
+    "file": "47.html"
+  },
+  "48": {
+    "name": "Word Guess",
+    "file": "48.html"
+  },
+  "49": {
+    "name": "Button Cliker",
+    "file": "49.html"
+  },
+  "50": {
+    "name": "End Game",
+    "file": "50.html"
   }
 };
 
-let allAchievementsData = {
+const allAchievementsData = {
   "1": {
     "name": "Welcome!",
     "tip": "Play Button Game 3!",
@@ -222,7 +249,7 @@ let allAchievementsData = {
     "hide": false
   },
   "2": {
-    "name": "Very Basic, right?",
+    "name": "Very Basic... right?",
     "tip": "Complete Level 1",
     "icon": "Basic.png",
     "hide": false
@@ -322,6 +349,18 @@ let allAchievementsData = {
     "tip": "Complete all existing levels",
     "icon": "AllLevels.png",
     "hide": false
+  },
+  "19": {
+    "name": "Skip-Free!",
+    "tip": "Complete all existing levels without skipping any level",
+    "icon": "NoSkipping.png",
+    "hide": true
+  },
+  "20": {
+    "name": "100% Completion!",
+    "tip": "Complete all existing levels (without skipping) and unlock all achievements (including hidden ones, except this one)",
+    "icon": "100Completion.png",
+    "hide": true
   }
 };
 
@@ -355,7 +394,7 @@ function showNotification(
   message,
   icon,
   type,
-  callback = (closeType) => {},
+  callback = (closeType) => { },
   timeout = 5000,
 ) {
   let info = "";
@@ -493,7 +532,7 @@ function showAchievementNotification(achievementId) {
 
   const icon = achievement.icon
     ? `./res/images/achievements/${achievement.icon}`
-    : "./res/images/achievement-icon.png";
+    : "./res/images/achievements/achievement-icon.png";
   showNotification(
     achievement.name,
     achievement.tip,
@@ -559,14 +598,16 @@ function completeAchievement(id) {
 let achievementsData = {};
 
 async function loadAchievements() {
-  try {
-    const response = await fetch("./src/data/achievements.json");
-    achievementsData = await response.json();
-    generateAchievementButtons();
-  } catch (error) {
-    achievementsData = allAchievementsData;
-    generateAchievementButtons();
-  }
+  // try {
+  //   const response = await fetch("./src/data/achievements.json");
+  //   achievementsData = await response.json();
+  //   generateAchievementButtons();
+  // } catch (error) {
+  //   achievementsData = allAchievementsData;
+  //   generateAchievementButtons();
+  // }
+  achievementsData = allAchievementsData;
+  generateAchievementButtons();
 }
 
 // Generate achievement buttons
@@ -577,7 +618,7 @@ function generateAchievementButtons() {
     const ach = achievementsData[key];
     const icon = ach.icon
       ? `./res/images/achievements/${ach.icon}`
-      : "./res/images/achievement-icon.png";
+      : "./res/images/achievements/achievement-icon.png";
     const unlocked = isAchievementUnlocked(key);
 
     const button = document.createElement("button");
@@ -600,8 +641,9 @@ function generateAchievementButtons() {
     nameSpan.className = "achievement-name";
     nameSpan.textContent = ach.name;
 
-    if (ach.hide) {
-      button.classList.add("hide");
+    if (ach.hide && !unlocked) {
+      img.src = "./res/images/achievements/hidden-achievement-icon.png";
+      nameSpan.textContent = "???";
     }
 
     button.appendChild(img);
@@ -611,14 +653,16 @@ function generateAchievementButtons() {
     button.addEventListener("click", () => {
       closeMenu();
       if (unlocked) {
-        showDialog(ach.name, ach.tip, "Achievement", () => {}, {
+        showDialog(ach.name, ach.tip, "Achievement", () => { }, {
           icon: icon,
           achievementID: key,
+          hide: ach.hide,
         });
       } else {
-        showDialog(ach.name + " (Locked)", ach.tip, "Achievement", () => {}, {
+        showDialog(ach.name + " (Locked)", ach.tip, "Achievement", () => { }, {
           icon: icon,
           achievementID: key,
+          hide: ach.hide,
         });
       }
     });
@@ -659,19 +703,6 @@ level.prototype.setTipEnable = function (enable) {
 level.prototype.setSkipEnable = function (enable) {
   this.skipEnable = enable;
   skipButton.classList.toggle("hide", !enable);
-};
-
-level.prototype.setSkipTime = function (time) {
-  // this.skipTime = time;
-  // if (!time) return;
-  // timeout = setTimeout(function () {
-  //   if (this.skipTime === 0) {
-  //     clearTimeout(timeout);
-  //   }
-  //   levelManager.setSkipTime(0)
-  //   levelManager.setSkipEnable(true);
-  //   clearTimeout(timeout);
-  // }, time * 1000);
 };
 
 level.prototype.setLevelLabelEnable = function (enable) {
@@ -749,16 +780,18 @@ function unmarkSkipped(level) {
 
 // Function to load levels from JSON
 async function loadLevels() {
-  try {
-    const response = await fetch("./src/data/levels.json");
-    levelsData = await response.json();
-    generateLevelButtons();
-  } catch (error) {
-    console.error("Error loading levels:", error);
-    // Fallback to default levels if JSON loading fails
-    levelsData = allLevelsData;
-    generateLevelButtons();
-  }
+  // try {
+  //   const response = await fetch("./src/data/levels.json");
+  //   levelsData = await response.json();
+  //   generateLevelButtons();
+  // } catch (error) {
+  //   console.error("Error loading levels:", error);
+  //   // Fallback to default levels if JSON loading fails
+  //   levelsData = allLevelsData;
+  //   generateLevelButtons();
+  // }
+  levelsData = allLevelsData;
+  generateLevelButtons();
 }
 
 // Function to generate level buttons dynamically
@@ -853,13 +886,60 @@ function init() {
   if (urlParams.get("debug") === "true") {
     debugEnabled = true;
   }
-  
+
   if (urlParams.get("app") === "true") {
     appMode = true;
-    appVersion = urlParams.get("appVersion") || "unknown";
+    appVersion = urlParams.get("appVersion") || "0.0";
     appUpdates = parseInt(urlParams.get("appUpdates")) || 0;
+    appType = urlParams.get("appMode") || "unknown";
+    if (appType !== "offline" && appType !== "online") {
+      appType = "unknown";
+    }
+    document.querySelector("#about-the-desktop").classList.remove("hide");
   }
-  
+
+  if (urlParams.get("titleBar") === "true") {
+    titleBarEnabled = true;
+    document.querySelector(".title-bar").classList.remove("hide");
+    fullscreenButton.classList.remove("tool-tip-max-right");
+
+    const appWindow = window.__TAURI__.window.getCurrentWindow();
+    
+    // function updateMaximizeButton() {
+    //   appWindow.isMaximized().then((callback) => {
+    //     if (callback) {
+    //       document.querySelector(".title-bar .maximize-button img").src = "./res/images/icons/title-bar/restore-icon.png";
+    //       document.querySelector(".title-bar .maximize-button").setAttribute("data-tooltip", "Restore");
+    //     } else {
+    //       document.querySelector(".title-bar .maximize-button img").src = "./res/images/icons/title-bar/maximize-icon.png";
+    //       document.querySelector(".title-bar .maximize-button").setAttribute("data-tooltip", "Maximize");
+    //     }
+    //   });
+    // }
+
+    document.querySelector(".title-bar .minimize-button").addEventListener("click", () => {
+      appWindow.minimize();
+    });
+    document.querySelector(".title-bar .maximize-button").addEventListener("click", () => {
+      appWindow.toggleMaximize();
+      // updateMaximizeButton();
+    });
+    document.querySelector(".title-bar .close-button").addEventListener("click", () => {
+      appWindow.close();
+    });
+
+    // updateMaximizeButton();
+
+    // document.querySelector('.topbar')?.addEventListener('mousedown', (e) => {
+    //   if (e.buttons === 1) {
+    //     // Primary (left) button
+    //     e.detail === 2
+    //       ? appWindow.toggleMaximize() // Maximize on double click
+    //       : appWindow.startDragging(); // Else start dragging
+    //   }
+    // });
+  }
+
   if (urlParams.get("demo") === "true") {
     demoEnabled = true;
     document.querySelector(".demo-tag").classList.remove("hide");
@@ -868,19 +948,30 @@ function init() {
     document.querySelector(".note-label").classList.remove("hide");
     iframe.src = "./src/levels/0.html?demo=true";
   }
-  
+
   if (urlParams.get("noFullscreen") === "true") {
     allowFullscreen = false;
     fullscreenToggle.classList.add("disabled");
     fullscreenButtonToggle.classList.add("disabled");
   }
+  
+  if (urlParams.get("download") === "true") {
+    openDownloadDialog();
+    urlParams.delete("download");
+    window.history.replaceState(
+      {},
+      "",
+      `${location.pathname}?${urlParams.toString()}`,
+    );
+  }
 
   if (debugEnabled) {
     document.querySelector(".debug-option").classList.remove("hide");
+    debugBtn.classList.remove("hide");
   }
 
   if (appMode || demoEnabled) {
-    DownloadGameButton.classList.add("hide");
+    downloadGameButton.classList.add("hide");
   }
 
   // Load last played level if auto-save is enabled
@@ -919,6 +1010,14 @@ function init() {
   loadLevels();
   loadAchievements();
   saveEverything();
+}
+
+function openUrl(url) {
+  if (appMode) {
+    window.__TAURI__.opener.openUrl(url);
+  } else {
+    window.open(url, "_blank");
+  }
 }
 
 // Example: unlock "Welcome" achievement when game starts
@@ -1143,7 +1242,7 @@ fullscreenButtonCheckbox.addEventListener("change", () => {
 
 window.addEventListener("message", (e) => {
   if (!e.data) return;
-
+  dlog(e.data);
   switch (e.data.command) {
     case "init":
       levelManager.levelInit(e.data.level);
@@ -1177,9 +1276,6 @@ window.addEventListener("message", (e) => {
       break;
     case "setSkipEnable":
       levelManager.setSkipEnable(e.data.data);
-      break;
-    case "setSkipTime":
-      levelManager.setSkipTime(e.data.data);
       break;
     case "showMessage":
       showDialog(e.data.data.title, e.data.data.text, "OK");
@@ -1271,6 +1367,7 @@ function completeLevel() {
 
   // Check if player has completed all levels
   let hasCompletedAllLevels = true;
+  // let hasCompletedAllAchievements = true;
   const totalLevels = Object.keys(levelsData).length;
 
   // Check if all levels from 1 to the highest level are unlocked (excluding level 0 which is tutorial)
@@ -1281,8 +1378,25 @@ function completeLevel() {
     }
   }
 
+  // for (let i = 1; i <= Object.keys(achievementsData).length; i++) {
+  //   console.log(i)
+  //   if (!achievementsSaveData.unlocked.includes(i) && achievementsData[i] !== 20) {
+  //     hasCompletedAllAchievements = false;
+  //     break;
+  //   }
+  // }
+
+
   if (hasCompletedAllLevels && levelManager.currentLevel === totalLevels - 1) {
     completeAchievement(18);
+  }
+  
+  if (hasCompletedAllLevels && saveData.skippedLevels.length === 0 && levelManager.currentLevel === totalLevels - 1) {
+    completeAchievement(19);
+  }
+  
+  if (hasCompletedAllLevels && saveData.skippedLevels.length === 0 && levelManager.currentLevel === totalLevels - 1 && achievementsSaveData.unlocked.length === Object.keys(achievementsData).length - 1) {
+    completeAchievement(20);
   }
 
   if (levelManager.currentLevel !== 0) {
@@ -1332,7 +1446,8 @@ function clickElement(e) {
   if (
     !menuPanel.contains(e.target) &&
     !menuBtn.contains(e.target) &&
-    !levelLabel.contains(e.target)
+    !levelLabel.contains(e.target) &&
+    !debugBtn.contains(e.target)
   ) {
     closeMenu();
   }
@@ -1350,6 +1465,8 @@ function openMenu() {
   menuBtn.querySelector("img").src = menuPanel.classList.contains("menu-hidden")
     ? "./res/images/icons/menu-icon.png"
     : "./res/images/icons/close-icon.png";
+
+  debugBtn.classList.add("hide");
 }
 
 function closeMenu() {
@@ -1360,6 +1477,10 @@ function closeMenu() {
     "data-tooltip",
     menuPanel.classList.contains("menu-hidden") ? "Menu" : "Close Menu",
   );
+
+  if (debugEnabled) {
+    debugBtn.classList.remove("hide");
+  }
 }
 
 // Function to switch between menu pages
@@ -1445,7 +1566,7 @@ function showDialog(
   title,
   text,
   buttonType = "OK",
-  callback = (button) => {},
+  callback = (button) => { },
   options = {},
 ) {
   const dialogTitle = dialog.querySelector(".dialog-title");
@@ -1468,6 +1589,11 @@ function showDialog(
   dialog.classList.remove("closing");
 
   const achievementUnlocked = isAchievementUnlocked(options.achievementID);
+  const achievementHidden = isAchievementUnlocked(options.hide);
+
+  if (achievementHidden && achievementUnlocked) {
+    dialogTitle.textContent += " (Hidden)";
+  }
 
   // Handle button visibility and text
   if (cancelButton && buttonType === "OK") {
@@ -1497,11 +1623,15 @@ function showDialog(
       break;
     case "Achievement":
       okButton.textContent = "OK";
-      cancelButton.textContent = "Show Tip";
+      cancelButton.textContent = "Show tip";
       break;
     case "OKOpen":
       okButton.textContent = "OK";
       cancelButton.textContent = "Open in new tab";
+      break;
+    case "Download":
+      okButton.textContent = "Close";
+      cancelButton.textContent = "Download manually";
       break;
   }
 
@@ -1540,6 +1670,12 @@ function showDialog(
     okButton.classList.add("delete");
   }
 
+  if (achievementHidden && !achievementUnlocked) {
+    dialogImageContainer.querySelector(".dialog-image").src = "./res/images/achievements/hidden-achievement-icon.png";
+    dialogTitle.textContent = "Hidden Achievement (Locked)";
+    cancelButton.textContent = "Show spoiler";
+  }
+
   // Create new event handlers and store references
   currentOkHandler = () => {
     hideDialog(buttonType === "YesNo" ? "yes" : "ok", callback);
@@ -1560,7 +1696,7 @@ function showDialog(
   cancelButton.addEventListener("click", currentCancelHandler);
 }
 
-function hideDialog(button = "ok", callback = (button) => {}) {
+function hideDialog(button = "ok", callback = (button) => { }) {
   // Add closing animation class
   dialog.classList.add("closing");
 
@@ -1641,7 +1777,11 @@ menuOptions.forEach((option, index) => {
 });
 
 menuBtn.addEventListener("click", () => {
-  openMenu();
+  if (menuOpened) {
+    closeMenu();
+  } else {
+    openMenu();
+  }
 });
 
 tipButton.addEventListener("click", () => {
@@ -1657,7 +1797,11 @@ skipButton.addEventListener("click", () => {
 });
 
 title.addEventListener("click", () => {
-  document.location.reload();
+  if (!demoEnabled && !appMode) {
+    document.location.href = "./";
+  } else {
+    document.location.reload();
+  }
 });
 
 // Optional: close menu when clicking outside
@@ -1667,8 +1811,8 @@ document.addEventListener("click", (e) => {
 
 document.querySelector("#visit-github").addEventListener("click", () => {
   closeMenu();
-  if (!demoEnabled && !appMode) {
-    window.open("https://github.com/ChathamHung/buttongame3", "_blank");
+  if (!demoEnabled) {
+    openUrl("https://github.com/ChathamHung/buttongame3");
   } else {
     showDialog("Visit on GitHub", "Please vist: https://github.com/ChathamHung/buttongame3");
   }
@@ -1678,9 +1822,22 @@ document.querySelector("#about-the-game").addEventListener("click", () => {
   closeMenu();
   showDialog(
     demoEnabled ? "Button Game 3 (Demo)" : "Button Game 3",
-    `Version: ${version} ${versionType} (${updateName})`,
+    `Version: ${version} ${versionType} (update ${gameUpdates})`,
     "OK",
   );
+});
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
+document.querySelector("#about-the-desktop").addEventListener("click", async () => {
+  closeMenu();
+  if (appMode) {
+    await window.__TAURI__.dialog.message(`Version: v${appVersion} ${capitalizeFirstLetter(appType)} (update ${appUpdates})`, { title: 'Button Game 3 Desktop', kind: 'info' });
+  } else {
+    document.querySelector("#about-the-desktop").classList.add("hide");
+  }
 });
 
 document.querySelector("#change-log").addEventListener("click", () => {
@@ -1696,7 +1853,9 @@ document.querySelector("#change-log").addEventListener("click", () => {
 </style>
 <iframe src="./src/html/whatsnew.html?inGame=true" class="whatsnew-iframe"></iframe>`,
     demoEnabled || appMode ? "OK" : "OKOpen", function (button) {
-      if (button === "cancel") window.open("./src/html/whatsnew.html", "_blank");
+      if (button === "cancel") {
+        openUrl("./src/html/whatsnew.html");
+      }
     },
   );
 });
@@ -1705,9 +1864,11 @@ document.querySelector("#about-game-2").addEventListener("click", () => {
   closeMenu();
   showDialog(
     "The Button Game 2",
-    demoEnabled || appMode ? "The Button Game 2 is a older version, and it have 20 levels.<br> To play the old version, please visit: https://chathamhung.github.io/TheButtonGame2"  : "The Button Game 2 is a older version, and it have 20 levels.",
-    demoEnabled || appMode ? "OK" : "OKOpen", function (button) {
-      if (button === "cancel") window.open("https://chathamhung.github.io/TheButtonGame2", "_blank");
+    demoEnabled ? "The Button Game 2 is a older version, and it have 20 levels.<br> To play the old version, please visit: https://chathamhung.github.io/TheButtonGame2" : "The Button Game 2 is a older version, and it have 20 levels.",
+    demoEnabled ? "OK" : "OKOpen", function (button) {
+      if (button === "cancel") {
+        openUrl("https://chathamhung.github.io/TheButtonGame2");
+      }
     },
   );
 });
@@ -1721,18 +1882,33 @@ document.querySelector("#about-game-1").addEventListener("click", () => {
   );
 });
 
-DownloadGameButton.addEventListener("click", () => {
+function openDownloadDialog() {
   closeMenu();
   if (!demoEnabled && !appMode) {
+    closeMenu();
     showDialog(
-      "Download Desktop App",
-      "You can download The Button Game 3 Desktop App from GitHub releases page.",
-      "OKOpen", function (button) {
-        if (button === "cancel") window.open("https://github.com/ChathamHung/buttongame3-desktop/releases", "_blank");
-      },
+      "Download desktop app",
+      `<style>
+        .download-iframe {
+          height: 230px;
+          width: 400px;
+          border: none;
+        }
+      </style>
+      <iframe src="https://chathamhung.github.io/buttongame3-desktop?inGame=true" class="download-iframe"></iframe>`,
+      "Download",
+      (button) => {
+        if (button === "cancel") {
+          openUrl("https://github.com/ChathamHung/buttongame3-desktop/releases");
+        }
+      }
     );
+  } else if (appMode) {
+    openUrl("https://chathamhung.github.io/buttongame3-desktop");
   }
-});
+}
+
+downloadGameButton.addEventListener("click", openDownloadDialog);
 
 levelLabel.addEventListener("click", () => {
   if (saveData.levelLabelEnabled) {
@@ -1822,10 +1998,10 @@ document
     showNotification(
       "Debug",
       "Achievement " +
-        value +
-        " (" +
-        achievementsData[value].name +
-        ") unlocked.",
+      value +
+      " (" +
+      achievementsData[value].name +
+      ") unlocked.",
       "",
       "debug",
     );
@@ -1840,10 +2016,10 @@ document
     showNotification(
       "Debug",
       "Achievement " +
-        value +
-        " (" +
-        achievementsData[value].name +
-        ") locked.",
+      value +
+      " (" +
+      achievementsData[value].name +
+      ") locked.",
       "",
       "debug",
     );
@@ -1914,6 +2090,15 @@ fullscreenButton.addEventListener("click", () => {
   toggleFullscreen();
 });
 
+debugBtn.addEventListener("click", () => {
+  if (debugEnabled) {
+    if (!menuOpened) {
+      openMenu();
+    }
+    switchMenuPage(4);
+  }
+});
+
 function toggleFullscreen() {
   if (!allowFullscreen) return;
   if (!document.fullscreenElement) {
@@ -1924,10 +2109,14 @@ function toggleFullscreen() {
     });
     fullscreenButton.querySelector("img").src = "./res/images/icons/unfullscreen-icon.png";
     fullscreenButton.setAttribute("data-tooltip", "Unfullscreen");
+    document.querySelector(".title-bar").classList.add("hide");
   } else {
     document.exitFullscreen();
     fullscreenButton.querySelector("img").src = "./res/images/icons/fullscreen-icon.png";
     fullscreenButton.setAttribute("data-tooltip", "Fullscreen");
+    if (titleBarEnabled) {
+      document.querySelector(".title-bar").classList.remove("hide");
+    }
   }
 }
 

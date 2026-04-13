@@ -214,9 +214,7 @@
       const progressElement = document.getElementById("progress");
       const shapeButtons = document.querySelectorAll(".shape-button");
 
-      levelManager.updateTip(
-        `Match the shape on the screen with the correct button. You need ${totalClicks} correct matches!`,
-      );
+      levelManager.updateTip("");
       levelManager.updateCompleteMessage(
         `Excellent! You matched all ${totalClicks} shapes correctly!`,
       );

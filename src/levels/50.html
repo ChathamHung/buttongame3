@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-user-select: none;
+      /* Safari */
+      user-select: none;
+    }
+
+    .hiden {
+      display: none !important;
+    }
+
+    body {
+      margin-top: 60px;
+      /* Topbar area */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+    }
+
+    #nextLevel {
+      position: absolute;
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #75c64f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.1s ease, top 0.1s ease, left 0.1s ease;
+    }
+
+    #nextLevel:hover {
+      background-color: #60a83e;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="nextLevel">Click me!</button>
+
+  <!-- This button is not real, it cannot take you to complete the game... <br><br>
+    But I don't know how could you clcik on it? Are you resize the window or you are touch the button on a mobile device or
+    touch screen? <br><br>
+    However you did it, but this button cannot take you to the complete the game (I said it before). <br><br>
+    Do you know this game have 2 hidden achievements? You must complete this level to unclock the hardest one. <br><br>
+    And you are the very small number of people who can play to thsi level, so I am very proud of you can see this message
+    and you are very well done to try to click this button on level. <br><br>
+    In orginal version of the Button Game, I used PowerPoint to make the whole game, I add title, button and side to make it
+    more fun, and also have one side you need to click the title to take you to next level, but people who need tip to do
+    it. So that is the one of these origin design of the game. <br><br>
+    However this button is fake, but I already give you a tip to complete the this level. Good luck! -->
+
+  <script src="../js/levelsManager.js"></script> <!-- Do not delete -->
+  <script>
+    const levelManager = new level();
+    const levelNumber = 50;
+
+    init(levelNumber); // Initialize the level
+
+    const nextButton = document.querySelector("#nextLevel");
+
+    levelManager.updateTip("");
+    levelManager.updateCompleteMessage("Congratulations! You have completed all levels!");
+    levelManager.setRefreshEnable(false);
+
+    nextButton.addEventListener('mouseenter', function () {
+      positionButtonRandomly();
+    });
+
+    window.addEventListener("resize", function () {
+      // Reposition the button when the window is resized
+      positionButtonRandomly();
+    });
+
+    // Function to position the button randomly
+    function positionButtonRandomly() {
+      // Get viewport dimensions
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // Get button dimensions
+      const buttonWidth = nextButton.offsetWidth;
+      const buttonHeight = nextButton.offsetHeight;
+
+      // Calculate maximum positions
+      const maxX = viewportWidth - buttonWidth;
+      const maxY = viewportHeight - buttonHeight - 60; // -60 to avoid topbar area
+
+      // Set random position
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY + 60); // +60 to avoid topbar area
+
+      // Apply position
+      nextButton.style.left = randomX + 'px';
+      nextButton.style.top = randomY + 'px';
+    }
+
+    nextButton.addEventListener("click", () => {
+      nextButton.disabled = true;
+      nextButton.classList.add("hiden");
+      levelManager.setRefreshEnable(true);
+      // levelManager.updateTip(`Wanted more tips? No problem! <br><br>
+      // Likes level 5, there only have a title... but here is no title!`);
+      // levelManager.showDialog("Opps...", ``);
+      levelManager.completeLevel();
+    });
+
+    document.addEventListener("contextmenu", (e) => { // Disable right-click menu
+      e.preventDefault();
+    });
+
+    positionButtonRandomly(); // Initial position
+  </script>
+</body>
+
+</html>

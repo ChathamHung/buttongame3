@@ -1,43 +1,44 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Button Game 3</title>
-    <link rel="stylesheet" href="./src/css/main.css" />
-    <link rel="icon" href="./res/images/favicon.ico" type="image/x-icon" />
-    <meta
-      name="description"
-      content="Button Game 3 is a web-based puzzle and quiz game made with HTML, CSS, and JavaScript. Players progress through creative levels by solving challenges, finding hidden buttons, answering questions, and more."
-    />
-    <meta property="og:title" content="Button Game 3" />
-    <meta
-      property="og:description"
-      content="Button Game 3 is a web-based puzzle and quiz game made with HTML, CSS, and JavaScript. Players progress through creative levels by solving challenges, finding hidden buttons, answering questions, and more."
-    />
-    <meta
-      property="og:image"
-      content="https://chathamhung.github.io/buttongame3/res/images/preview.png"
-    />
-    <meta
-      property="og:url"
-      content="https://chathamhung.github.io/buttongame3"
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-  </head>
-  <body>
-    <header class="topbar">
-      <div class="left">
-        <div class="title" title="Refresh the game">Button Game 3</div>
-        <div class="level-label hide">Level 0</div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Button Game 3</title>
+  <link rel="stylesheet" href="./src/css/main.css" />
+  <link rel="icon" href="./res/images/favicon.ico" type="image/x-icon" />
+  <meta name="description"
+    content="Button Game 3 is a web-based puzzle and quiz game made with HTML, CSS, and JavaScript. Players progress through creative levels by solving challenges, finding hidden buttons, answering questions, and more." />
+  <meta property="og:title" content="Button Game 3" />
+  <meta property="og:description"
+    content="Button Game 3 is a web-based puzzle and quiz game made with HTML, CSS, and JavaScript. Players progress through creative levels by solving challenges, finding hidden buttons, answering questions, and more." />
+  <meta property="og:image" content="https://chathamhung.github.io/buttongame3/res/3d/LogoOnly.png" />
+  <meta property="og:url" content="https://chathamhung.github.io/buttongame3" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+</head>
+
+<body>
+  <header class="topbar" data-tauri-drag-region>
+    <div class="left">
+      <!-- <div class="title" title="Refresh the game">Button Game 3</div> -->
+      <div class="title">
+        <img src="./res/images/Title.png" draggable="false" />
+      </div>
+      <div class="level-label hide">Level 0</div>
+      <div class="buttons-group">
         <button class="menu-button" data-tooltip="Menu" id="menu-toggle-btn">
           <img src="./res/images/icons/menu-icon.png" draggable="false" />
         </button>
+        <button class="debug-button hide" data-tooltip="Open debug menu" id="debug-btn">
+          <img src="./res/images/icons/menu-options/debug-icon.png" draggable="false" />
+        </button>
       </div>
-      <div class="right">
-        <span class="demo-tag hide">The game are running on Demo</span>
+    </div>
+    <div class="right">
+      <span class="demo-tag hide">The game are running on Demo</span>
+      <div class="buttons-group">
         <button class="skip-button hide" data-tooltip="Skip">
           <img src="./res/images/icons/skip-icon.png" draggable="false" />
         </button>
@@ -47,227 +48,167 @@
         <button class="tip-button hide" data-tooltip="Tip">
           <img src="./res/images/icons/tip-icon.png" draggable="false" />
         </button>
-        <button class="fullscreen-button" data-tooltip="Fullscreen">
+        <button class="fullscreen-button tool-tip-max-right" data-tooltip="Fullscreen">
           <img src="./res/images/icons/fullscreen-icon.png" draggable="false" />
         </button>
       </div>
-    </header>
-    <div class="menu menu-hidden" id="menu-panel">
-      <div class="menu-options">
-        <button class="menu-option select" title="Levels">
-          <img
-            src="./res/images/icons/menu-options/level-icon.png"
-            draggable="false"
-          />
+      <div class="buttons-group title-bar hide">
+        <button class="minimize-button" data-tooltip="Minimize">
+          <img src="./res/images/icons/title-bar/minimize-icon.png" draggable="false" />
         </button>
-        <button class="menu-option" title="Achievements">
-          <img
-            src="./res/images/icons/menu-options/achievement-icon.png"
-            draggable="false"
-          />
+        <button class="maximize-button" data-tooltip="Maximize">
+          <img src="./res/images/icons/title-bar/maximize-icon.png" draggable="false" />
         </button>
-        <button class="menu-option" title="Settings">
-          <img
-            src="./res/images/icons/menu-options/settings-icon.png"
-            draggable="false"
-          />
+        <button class="close-button tool-tip-max-right" data-tooltip="Close">
+          <img src="./res/images/icons/close-icon.png" draggable="false" />
         </button>
-        <button class="menu-option" title="About">
-          <img
-            src="./res/images/icons/menu-options/about-icon.png"
-            draggable="false"
-          />
-        </button>
-        <button class="menu-option debug-option hide" title="Debug">
-          <img
-            src="./res/images/icons/menu-options/debug-icon.png"
-            draggable="false"
-          />
-        </button>
-      </div>
-      <div class="menu-pages">
-        <div class="level-page" tabindex="-1"></div>
-        <div class="achievement-page" tabindex="-1">
-          <!-- Achievement buttons will be generated by JS -->
-        </div>
-        <div class="settings-page" tabindex="-1">
-          <button id="fulllscreen-toggle">Toggle Fullscreen</button>
-          <hr />
-          <span class="note-label hide">* Not available in demo.</span>
-          <button
-            id="fullscreen-button-toggle"
-            class="toggle-btn"
-            title="Show or hide the fullscreen button in the top bar."
-          >
-            <span class="toggle-label">Show fullscreen button</span>
-            <span class="switch-container">
-              <input
-                type="checkbox"
-                id="fullscreen-button-checkbox"
-                class="switch-input"
-                checked
-              />
-              <span class="switch-slider"></span>
-            </span>
-            <span class="setting-label">Show or hide the fullscreen button in the top bar.</span>
-          </button>
-          <button
-            id="auto-save-toggle"
-            class="toggle-btn"
-            title="Automatically start from the last level you were playing when you reopen the game."
-          >
-            <span class="toggle-label">Auto Resume Level</span>
-            <span class="switch-container">
-              <input
-                type="checkbox"
-                id="auto-save-checkbox"
-                class="switch-input"
-              />
-              <span class="switch-slider"></span>
-            </span>
-            <span class="setting-label">Automatically start from the last level you were playing when you reopen the game.</span>
-          </button>
-          <button
-            id="level-label-toggle"
-            class="toggle-btn"
-            title="When enabled, you can click on level labels to quickly open the level page."
-          >
-            <span class="toggle-label">Clickable Level Labels</span>
-            <span class="switch-container">
-              <input
-                type="checkbox"
-                id="level-label-checkbox"
-                class="switch-input"
-              />
-              <span class="switch-slider"></span>
-            </span>
-            <span class="setting-label">When enabled, you can click on level labels to quickly open the level page.</span>
-          </button>
-          <button
-            id="menu-animations-toggle"
-            class="toggle-btn"
-            title="Enable or disable menu, topbar, and dialog animations."
-          >
-            <span class="toggle-label">Enable menu animations</span>
-            <span class="switch-container">
-              <input
-                type="checkbox"
-                id="menu-animations-checkbox"
-                class="switch-input"
-                checked
-              />
-              <span class="switch-slider"></span>
-            </span>
-            <span class="setting-label">Enable or disable menu, topbar, and dialog animations.</span>
-          </button>
-          <button
-            id="menu-blur-toggle"
-            class="toggle-btn"
-            title="Enable or disable blur effect on the menu background."
-          >
-            <span class="toggle-label">Enable menu blur</span>
-            <span class="switch-container">
-              <input
-                type="checkbox"
-                id="menu-blur-checkbox"
-                class="switch-input"
-                checked
-              />
-              <span class="switch-slider"></span>
-            </span>
-            <span class="setting-label">Enable or disable blur effect on the menu background.</span>
-          </button>
-          <button
-            id="bottom-safezone-toggle"
-            class="toggle-btn"
-            title="Add a safe zone at the bottom of the menu to avoid browser bars on mobile."
-          >
-            <span class="toggle-label">Enable safe zone (For mobile)</span>
-            <span class="switch-container">
-              <input
-                type="checkbox"
-                id="bottom-safezone-checkbox"
-                class="switch-input"
-              />
-              <span class="switch-slider"></span>
-            </span>
-            <span class="setting-label">Add a safe zone at the bottom of the menu to avoid browser bars on mobile.</span>
-          </button>
-          <button
-            id="show-locked-toggle"
-            class="toggle-btn"
-            title="Show or hide locked levels in the level menu."
-          >
-            <span class="toggle-label">Show locked levels (Spoilers)</span>
-            <span class="switch-container">
-              <input
-                type="checkbox"
-                id="show-locked-checkbox"
-                class="switch-input"
-              />
-              <span class="switch-slider"></span>
-            </span>
-            <span class="setting-label">Show or hide locked levels in the level menu.</span>
-          </button>
-          <hr />
-          <button id="reset-all-game" class="delete">Reset all game</button>
-        </div>
-        <div class="about-page" tabindex="-1">
-          <div class="about-logo">
-            <div class="logo" translate="no">
-              <button>Button</button>
-              <a>Game</a>
-            </div>
-            <span
-              ><strong>Button Game 3</strong> is a open source web game, using
-              HTML, CSS and JS.</span
-            >
-          </div>
-          <button id="about-the-game">About this game</button>
-          <button id="change-log">What's new? (Change log)</button>
-          <button id="visit-github">Visit on Github</button>
-          <button id="download-game">Download desktop app</button>
-          <hr />
-          <button id="about-game-2">The Button Game 2</button>
-          <button id="about-game-1">The Button Game 1</button>
-        </div>
-        <div class="debug-page" tabindex="-1">
-          <button id="debug-print-state">Show current state</button>
-          <button id="debug-goto-level">Go to a level...</button>
-          <hr />
-          <button id="debug-delete-data">Lock all levels</button>
-          <button id="debug-unlock-all">Unlock all levels</button>
-          <button id="debug-delete-level">Lock a level...</button>
-          <button id="debug-unlock-level">Unlock a level...</button>
-          <hr />
-          <button id="debug-lock-all-achievements">Lock all achievements</button>
-          <button id="debug-unlock-all-achievements">Unlock all achievements</button>
-          <button id="debug-lock-achievement">Lock an achievement...</button>
-          <button id="debug-unlock-achievement">Unlock an achievement...</button>
-        </div>
       </div>
     </div>
-    <iframe src="./src/levels/0.html" class="iframe">
-      Your browser does not support iframes.
-    </iframe>
-    <div class="notifications"></div>
-    <dialog class="dialog">
-      <div class="dialog-content">
-        <div class="dialog-image-container">
-          <img
-            class="dialog-image"
-            src="./res/images/achievement-icon.png"
-            draggable="false"
-          />
+  </header>
+  <div class="menu menu-hidden" id="menu-panel">
+    <div class="menu-options">
+      <button class="menu-option select" title="Levels">
+        <img src="./res/images/icons/menu-options/level-icon.png" draggable="false" />
+      </button>
+      <button class="menu-option" title="Achievements">
+        <img src="./res/images/icons/menu-options/achievement-icon.png" draggable="false" />
+      </button>
+      <button class="menu-option" title="Settings">
+        <img src="./res/images/icons/menu-options/settings-icon.png" draggable="false" />
+      </button>
+      <button class="menu-option" title="About">
+        <img src="./res/images/icons/menu-options/about-icon.png" draggable="false" />
+      </button>
+      <button class="menu-option debug-option hide" title="Debug">
+        <img src="./res/images/icons/menu-options/debug-icon.png" draggable="false" />
+      </button>
+    </div>
+    <div class="menu-pages">
+      <div class="level-page" tabindex="-1"></div>
+      <div class="achievement-page" tabindex="-1">
+        <!-- Achievement buttons will be generated by JS -->
+      </div>
+      <div class="settings-page" tabindex="-1">
+        <button id="fulllscreen-toggle">Toggle Fullscreen</button>
+        <hr />
+        <span class="note-label hide">* Not available in demo.</span>
+        <button id="fullscreen-button-toggle" class="toggle-btn"
+          title="Show or hide the fullscreen button in the top bar.">
+          <span class="toggle-label">Show fullscreen button</span>
+          <span class="switch-container">
+            <input type="checkbox" id="fullscreen-button-checkbox" class="switch-input" checked />
+            <span class="switch-slider"></span>
+          </span>
+          <span class="setting-label">Show or hide the fullscreen button in the top bar.</span>
+        </button>
+        <button id="auto-save-toggle" class="toggle-btn"
+          title="Automatically start from the last level you were playing when you reopen the game.">
+          <span class="toggle-label">Auto Resume Level</span>
+          <span class="switch-container">
+            <input type="checkbox" id="auto-save-checkbox" class="switch-input" />
+            <span class="switch-slider"></span>
+          </span>
+          <span class="setting-label">Automatically start from the last level you were playing when you reopen the
+            game.</span>
+        </button>
+        <button id="level-label-toggle" class="toggle-btn"
+          title="When enabled, you can click on level labels to quickly open the level page.">
+          <span class="toggle-label">Clickable Level Labels</span>
+          <span class="switch-container">
+            <input type="checkbox" id="level-label-checkbox" class="switch-input" />
+            <span class="switch-slider"></span>
+          </span>
+          <span class="setting-label">When enabled, you can click on level labels to quickly open the level page.</span>
+        </button>
+        <button id="menu-animations-toggle" class="toggle-btn"
+          title="Enable or disable menu, topbar, and dialog animations.">
+          <span class="toggle-label">Enable menu animations</span>
+          <span class="switch-container">
+            <input type="checkbox" id="menu-animations-checkbox" class="switch-input" checked />
+            <span class="switch-slider"></span>
+          </span>
+          <span class="setting-label">Enable or disable menu, topbar, and dialog animations.</span>
+        </button>
+        <button id="menu-blur-toggle" class="toggle-btn" title="Enable or disable blur effect on the menu background.">
+          <span class="toggle-label">Enable menu blur</span>
+          <span class="switch-container">
+            <input type="checkbox" id="menu-blur-checkbox" class="switch-input" checked />
+            <span class="switch-slider"></span>
+          </span>
+          <span class="setting-label">Enable or disable blur effect on the menu background.</span>
+        </button>
+        <button id="bottom-safezone-toggle" class="toggle-btn"
+          title="Add a safe zone at the bottom of the menu to avoid browser bars on mobile.">
+          <span class="toggle-label">Enable safe zone (For mobile)</span>
+          <span class="switch-container">
+            <input type="checkbox" id="bottom-safezone-checkbox" class="switch-input" />
+            <span class="switch-slider"></span>
+          </span>
+          <span class="setting-label">Add a safe zone at the bottom of the menu to avoid browser bars on mobile.</span>
+        </button>
+        <button id="show-locked-toggle" class="toggle-btn" title="Show or hide locked levels in the level menu.">
+          <span class="toggle-label">Show locked levels (Spoilers)</span>
+          <span class="switch-container">
+            <input type="checkbox" id="show-locked-checkbox" class="switch-input" />
+            <span class="switch-slider"></span>
+          </span>
+          <span class="setting-label">Show or hide locked levels in the level menu.</span>
+        </button>
+        <hr />
+        <button id="reset-all-game" class="delete">Reset all game</button>
+      </div>
+      <div class="about-page" tabindex="-1">
+        <div class="about-logo">
+          <div class="logo" translate="no">
+            <button>Button</button>
+            <a>Game</a>
+          </div>
+          <span><strong>Button Game 3</strong> is a open source web game, using
+            HTML, CSS and JS.</span>
         </div>
-        <h1 class="dialog-title"></h1>
-        <p class="dialog-text"></p>
+        <button id="about-the-game">About this game</button>
+        <button id="about-the-desktop" class="hide">About the desktop app</button>
+        <button id="change-log">What's new? (Change log)</button>
+        <button id="visit-github">Visit on Github</button>
+        <button id="download-game">Download desktop app</button>
+        <hr />
+        <button id="about-game-2">The Button Game 2</button>
+        <button id="about-game-1">The Button Game 1</button>
       </div>
-      <div class="dialog-buttons">
-        <button class="dialog-button ok-button" autofocus>OK</button>
-        <button class="dialog-button cancel-button">Cancel</button>
+      <div class="debug-page" tabindex="-1">
+        <button id="debug-print-state">Show current state</button>
+        <button id="debug-goto-level">Go to a level...</button>
+        <hr />
+        <button id="debug-delete-data">Lock all levels</button>
+        <button id="debug-unlock-all">Unlock all levels</button>
+        <button id="debug-delete-level">Lock a level...</button>
+        <button id="debug-unlock-level">Unlock a level...</button>
+        <hr />
+        <button id="debug-lock-all-achievements">Lock all achievements</button>
+        <button id="debug-unlock-all-achievements">Unlock all achievements</button>
+        <button id="debug-lock-achievement">Lock an achievement...</button>
+        <button id="debug-unlock-achievement">Unlock an achievement...</button>
       </div>
-    </dialog>
-    <script src="./src/js/main.js"></script>
-  </body>
+    </div>
+  </div>
+  <iframe src="./src/levels/0.html" class="iframe">
+    Your browser does not support iframes.
+  </iframe>
+  <div class="notifications"></div>
+  <dialog class="dialog">
+    <div class="dialog-content">
+      <div class="dialog-image-container">
+        <img class="dialog-image" src="./res/images/achievements/achievement-icon.png" draggable="false" />
+      </div>
+      <h1 class="dialog-title"></h1>
+      <p class="dialog-text"></p>
+    </div>
+    <div class="dialog-buttons">
+      <button class="dialog-button ok-button" autofocus>OK</button>
+      <button class="dialog-button cancel-button">Cancel</button>
+    </div>
+  </dialog>
+  <script src="./src/js/main.js"></script>
+</body>
+
 </html>
