@@ -16,9 +16,9 @@ const fullscreenToggle = document.querySelector("#fulllscreen-toggle");
 const downloadGameButton = document.querySelector("#download-game");
 const debugBtn = document.querySelector(".debug-button");
 
-const version = "1.0";
+const version = "1.1";
 const versionType = "Release";
-const gameUpdates = 20;
+const gameUpdates = 21;
 
 let currentPageIndex = 0;
 let currentTip = ``;
@@ -904,7 +904,7 @@ function init() {
     fullscreenButton.classList.remove("tool-tip-max-right");
 
     const appWindow = window.__TAURI__.window.getCurrentWindow();
-    
+
     // function updateMaximizeButton() {
     //   appWindow.isMaximized().then((callback) => {
     //     if (callback) {
@@ -954,7 +954,7 @@ function init() {
     fullscreenToggle.classList.add("disabled");
     fullscreenButtonToggle.classList.add("disabled");
   }
-  
+
   if (urlParams.get("download") === "true") {
     openDownloadDialog();
     urlParams.delete("download");
@@ -1032,10 +1032,10 @@ const menuAnimationsCheckbox = document.querySelector(
 );
 const menuBlurToggle = document.querySelector("#menu-blur-toggle");
 const menuBlurCheckbox = document.querySelector("#menu-blur-checkbox");
-const bottomSafeZoneToggle = document.querySelector("#bottom-safezone-toggle");
-const bottomSafeZoneCheckbox = document.querySelector(
-  "#bottom-safezone-checkbox",
-);
+// const bottomSafeZoneToggle = document.querySelector("#bottom-safezone-toggle");
+// const bottomSafeZoneCheckbox = document.querySelector(
+//   "#bottom-safezone-checkbox",
+// );
 const showLockedToggle = document.querySelector("#show-locked-toggle");
 const showLockedCheckbox = document.querySelector("#show-locked-checkbox");
 const fullscreenButtonToggle = document.querySelector(
@@ -1050,7 +1050,7 @@ function updateSettings() {
   levelLabelCheckbox.checked = !!saveData.levelLabelEnabled;
   menuAnimationsCheckbox.checked = saveData.menuAnimationsEnabled !== false;
   menuBlurCheckbox.checked = saveData.menuBlurEnabled !== false;
-  bottomSafeZoneCheckbox.checked = !!saveData.bottomSafeZoneEnabled;
+  // bottomSafeZoneCheckbox.checked = !!saveData.bottomSafeZoneEnabled;
   showLockedCheckbox.checked = saveData.showLockedEnabled;
   fullscreenButtonCheckbox.checked = saveData.fullscreenButtonEnabled !== false;
   // Optionally update text or style if needed
@@ -1089,11 +1089,11 @@ function updateSettings() {
   } else {
     document.body.classList.remove("no-menu-blur");
   }
-  if (saveData.bottomSafeZoneEnabled) {
-    document.body.classList.add("bottom-safezone");
-  } else {
-    document.body.classList.remove("bottom-safezone");
-  }
+  // if (saveData.bottomSafeZoneEnabled) {
+  //   document.body.classList.add("bottom-safezone");
+  // } else {
+  //   document.body.classList.remove("bottom-safezone");
+  // }
   if (saveData.showLockedEnabled) {
     document.body.classList.add("show-locked-levels");
   } else {
@@ -1190,19 +1190,19 @@ menuBlurCheckbox.addEventListener("change", () => {
   saveProgress();
 });
 
-bottomSafeZoneToggle.addEventListener("click", (e) => {
-  if (bottomSafeZoneToggle.disabled) return;
-  if (e.target.classList.contains("switch-input")) return;
-  saveData.bottomSafeZoneEnabled = !saveData.bottomSafeZoneEnabled;
-  updateSettings();
-  saveProgress();
-});
-bottomSafeZoneCheckbox.addEventListener("change", () => {
-  if (bottomSafeZoneCheckbox.disabled) return;
-  saveData.bottomSafeZoneEnabled = bottomSafeZoneCheckbox.checked;
-  updateSettings();
-  saveProgress();
-});
+// bottomSafeZoneToggle.addEventListener("click", (e) => {
+//   if (bottomSafeZoneToggle.disabled) return;
+//   if (e.target.classList.contains("switch-input")) return;
+//   saveData.bottomSafeZoneEnabled = !saveData.bottomSafeZoneEnabled;
+//   updateSettings();
+//   saveProgress();
+// });
+// bottomSafeZoneCheckbox.addEventListener("change", () => {
+//   if (bottomSafeZoneCheckbox.disabled) return;
+//   saveData.bottomSafeZoneEnabled = bottomSafeZoneCheckbox.checked;
+//   updateSettings();
+//   saveProgress();
+// });
 
 showLockedToggle.addEventListener("click", (e) => {
   if (showLockedToggle.disabled) return;
@@ -1294,6 +1294,9 @@ window.addEventListener("message", (e) => {
       break;
     case "completeAchievement":
       completeAchievement(e.data.data.id);
+      break;
+    case "switchMenu":
+      switchMenu();
       break;
   }
 });
@@ -1390,11 +1393,11 @@ function completeLevel() {
   if (hasCompletedAllLevels && levelManager.currentLevel === totalLevels - 1) {
     completeAchievement(18);
   }
-  
+
   if (hasCompletedAllLevels && saveData.skippedLevels.length === 0 && levelManager.currentLevel === totalLevels - 1) {
     completeAchievement(19);
   }
-  
+
   if (hasCompletedAllLevels && saveData.skippedLevels.length === 0 && levelManager.currentLevel === totalLevels - 1 && achievementsSaveData.unlocked.length === Object.keys(achievementsData).length - 1) {
     completeAchievement(20);
   }
@@ -1459,7 +1462,7 @@ function openMenu() {
   menuPanel.classList.toggle("menu-hidden");
   menuBtn.setAttribute(
     "data-tooltip",
-    menuPanel.classList.contains("menu-hidden") ? "Menu" : "Close Menu",
+    menuPanel.classList.contains("menu-hidden") ? "Menu (Esc)" : "Close Menu (Esc)",
   );
 
   menuBtn.querySelector("img").src = menuPanel.classList.contains("menu-hidden")
@@ -1475,7 +1478,7 @@ function closeMenu() {
   menuBtn.querySelector("img").src = "./res/images/icons/menu-icon.png";
   menuBtn.setAttribute(
     "data-tooltip",
-    menuPanel.classList.contains("menu-hidden") ? "Menu" : "Close Menu",
+    menuPanel.classList.contains("menu-hidden") ? "Menu (Esc)" : "Close Menu (Esc)",
   );
 
   if (debugEnabled) {
@@ -2108,15 +2111,29 @@ function toggleFullscreen() {
       );
     });
     fullscreenButton.querySelector("img").src = "./res/images/icons/unfullscreen-icon.png";
-    fullscreenButton.setAttribute("data-tooltip", "Unfullscreen");
+    fullscreenButton.setAttribute("data-tooltip", "Unfullscreen (F11)");
     document.querySelector(".title-bar").classList.add("hide");
   } else {
     document.exitFullscreen();
     fullscreenButton.querySelector("img").src = "./res/images/icons/fullscreen-icon.png";
-    fullscreenButton.setAttribute("data-tooltip", "Fullscreen");
+    fullscreenButton.setAttribute("data-tooltip", "Fullscreen (F11)");
     if (titleBarEnabled) {
       document.querySelector(".title-bar").classList.remove("hide");
     }
+  }
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    switchMenu();
+  }
+});
+
+function switchMenu() {
+  if (menuOpened) {
+    closeMenu();
+  } else {
+    openMenu();
   }
 }
 
@@ -2128,3 +2145,5 @@ document.addEventListener("contextmenu", (e) => {
 init();
 
 unlockAchievement(1);
+
+// showNotification("Testing", "message", "", "info", () => {  }, 50000)

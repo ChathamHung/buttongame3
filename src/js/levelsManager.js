@@ -70,3 +70,9 @@ document.addEventListener("click", (e) => {
     sendCommand("closeMenu");
   }
 });
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    sendCommand("switchMenu");
+  }
+});
